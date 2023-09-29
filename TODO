@@ -1,0 +1,4 @@
+- wie oder überhaupt MAX_CLIENTS handeln ? Sollte je nachdem noch in Server.run() angepasst werden
+- Signal-handler, um sockets zu schließen bei ctrl+c
+- partial Data receiving... (guck ins subject example)
+

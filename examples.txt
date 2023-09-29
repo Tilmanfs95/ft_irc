@@ -1,0 +1,77 @@
+
+
+    001 - RPL_WELCOME:
+
+    :irc.example.net 001 Nickname :Welcome to the Internet Relay Network Nickname!Username@hostname
+
+
+    002 - RPL_YOURHOST:
+
+    :irc.example.net 002 Nickname :Your host is irc.example.net, running version ircd-2.10.3+
+
+
+    376 - RPL_ENDOFMOTD:
+
+    :irc.example.net 376 Nickname :End of /MOTD command.
+
+
+    422 - ERR_NOMOTD:
+
+    :irc.example.net 422 Nickname :MOTD File is missing
+
+
+    353 - RPL_NAMREPLY:
+
+    :irc.example.net 353 Nickname = #channel :Nickname User1 User2
+
+
+    366 - RPL_ENDOFNAMES:
+
+    :irc.example.net 366 Nickname #channel :End of /NAMES list.
+
+
+    311 - RPL_WHOISUSER:
+
+    :irc.example.net 311 Nickname User1 user1 host1 * :real name
+
+
+    312 - RPL_WHOISSERVER:
+
+    :irc.example.net 312 Nickname User1 irc.example.net :Example IRC Server
+
+
+    315 - RPL_ENDOFWHO:
+
+    :irc.example.net 315 Nickname #channel :End of /WHO list.
+
+
+    401 - ERR_NOSUCHNICK:
+
+    :irc.example.net 401 Nickname UnknownNick :No such nick/channel
+
+
+    421 - ERR_UNKNOWNCOMMAND:
+
+    :irc.example.net 421 Nickname UNKNOWNCMD :Unknown command
+
+
+    471 - ERR_CHANNELISFULL:
+
+    :irc.example.net 471 Nickname #channel :Cannot join channel (+l)
+
+
+    473 - ERR_INVITEONLYCHAN:
+
+    :irc.example.net 473 Nickname #channel :Cannot join channel (+i)
+
+
+    474 - ERR_BANNEDFROMCHAN:
+
+    :irc.example.net 474 Nickname #channel :Cannot join channel (+b)
+
+
+    475 - ERR_BADCHANNELKEY:
+
+    :irc.example.net 475 Nickname #channel :Cannot join channel (+k)
+    
+
