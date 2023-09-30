@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/29 15:34:52 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/09/30 02:16:52 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,19 @@
 class Client
 {
 private:
-    // nickname
+    int         socket;
+    bool        registered;
+    int         mode;
     std::string nickname;
-    // username
     std::string username;
-    // realname
     std::string realname;
-    // hostname
     std::string hostname;
-    // mode
+    // mode:
     // 0 = normal user
     // 1 = maybe a bot or anything else ?
-    int mode;
-    // socket
-    int socket;
 public:
-    Client(/* args */);
+    Client();
+    Client(int socket);
     ~Client();
 };
 

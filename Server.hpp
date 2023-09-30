@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/29 20:11:12 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/09/30 02:48:39 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ public:
     // Methods
     void                    run();
     void                    stop();
+    // void                    addNewClient(Client client);
+    void                    addNewClient(struct sockaddr_in address, socklen_t addrlen);
 };
 
 #endif
