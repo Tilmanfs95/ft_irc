@@ -6,19 +6,20 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/30 02:17:15 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/09/30 15:29:56 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 
-Client::Client(/* args */)
+Client::Client()
 {
 }
 
 Client::Client(int socket)
 {
     this->socket = socket;
+    this->verified = false;
     this->registered = false;
     this->mode = 0;
     this->nickname = "";
@@ -31,3 +32,17 @@ Client::~Client()
 {
 }
 
+void        Client::processInput(const std::string &msg)
+{
+    std::cout << "Socket " << this->socket << ": " << msg << std::endl;
+    this->messagebuffer.append(msg);
+    // process messagebuffer:
+    while (this->messagebuffer.find(END_OF_MESSAGE) != std::string::npos)
+    {
+        std::string msg_str = this->messagebuffer.substr(0, this->messagebuffer.find(END_OF_MESSAGE));
+        this->messagebuffer.erase(0, this->messagebuffer.find(END_OF_MESSAGE) + 2);
+        Message msg = Message::fromString(msg_str);
+        // print message for debugging
+        printMessage(msg);
+    }
+}

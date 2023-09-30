@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/30 02:48:39 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/09/30 15:32:24 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
@@ -26,9 +27,7 @@
 #include "Channel.hpp"
 #include "Client.hpp"
 #include "Message.hpp"
-
-#define MAX_CLIENTS 10
-#define SERVER_NAME "ft_irc_42.de"
+#include "defines.hpp"
 
 class Server
 {
@@ -37,8 +36,8 @@ private:
     int                     port;
     int                     socket;
     struct sockaddr_in      address;
-    std::vector<Channel>    channels;
-    std::vector<Client>     clients;
+    std::vector<Channel>    channels; // maybe a map with name as key?
+    std::map<int, Client>   clients; // <socket, Client> // maybe better <nickname, Client> and another <socket, nickname> ?
     std::string             password;
     struct pollfd           fds[MAX_CLIENTS + 1];
     
@@ -57,8 +56,8 @@ public:
     // Methods
     void                    run();
     void                    stop();
-    // void                    addNewClient(Client client);
     void                    addNewClient(struct sockaddr_in address, socklen_t addrlen);
+    void                    removeClient(int fds_index);
 };
 
 #endif

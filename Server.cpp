@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
+/*   Updated: 2023/09/30 15:27:43 by tfriedri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Message.hpp"
+
 
 Server::Server(/* args */)
 {
@@ -75,50 +88,24 @@ void                    Server::run()
         {   
             if (this->fds[i].revents & POLLIN)
             {
-                if (i == 0)
+                if (i == 0) // add new client
                         addNewClient(c_address, c_addrlen);
-                else
+                else // read from client
                 {
-                    char buffer[1024] = {0};
-                    ssize_t valread = recv(this->fds[i].fd, buffer, sizeof(buffer) - 1, 0); // Needs 1025 buffer because of -1 for \0 ????
+                    char buffer[BUFFER_SIZE] = {0};
+                    ssize_t valread = recv(this->fds[i].fd, buffer, sizeof(buffer) - 1, 0); // Do we need 1025 buffer because of -1 for \0 ????
                     if (valread < 0)
                     {
+                        // how to handle this situation if we could not read from socket?
+                        
                         std::cerr << "Error reading from socket" << std::endl;
-                        // close(this->fds[i].fd);                    // how to handle this situation if we could not read from socket?
+                        // close(this->fds[i].fd);                    
                         // this->fds[i].fd = -1;
                     }
                     else if (valread == 0)
-                    {
-                        std::cout << "Client disconnected" << std::endl;
-                        close(this->fds[i].fd);
-                        // TODO: remove client from clients vector
-                        this->fds[i].fd = -1;
-                    }
+                        removeClient(i);
                     else
-                    {
-                        // Following code is for testing.
-                        // We should parse the message in another function and handle it there.
-                        // also we have to implement partial data receiving
-                        // (so store the data in a buffer and parse it when we have a full message with \r\n at the end) (or \n) ???
-                        std::cout << "Received from Socket " << this->fds[i].fd << ":\n" << buffer << std::endl;
-
-                        std::string line;
-                        std::istringstream iss(buffer);
-                        while (std::getline(iss, line))
-                        {
-                            Message msg = Message::fromString(line);
-                            std::cout << "Message:" << std::endl;
-                            std::cout << "    prefix: " << msg.getPrefix() << std::endl;
-                            std::cout << "    command: " << msg.getCommand() << std::endl;
-                            std::cout << "    params: ";
-                            for (size_t i = 0; i < msg.getParams().size(); i++)
-                            {
-                                std::cout << msg.getParams()[i] << " ";
-                            }
-                            std::cout << std::endl;
-                            std::cout << "    trailing: " << msg.getTrailing() << std::endl << std::endl;
-                        }
-                    }
+                        this->clients[this->fds[i].fd].processInput(buffer);
                 }
 
             }
@@ -147,11 +134,20 @@ void                    Server::addNewClient(struct sockaddr_in address, socklen
                 break;
             }
         }
-        this->clients.push_back(Client(c_socket));
+        this->clients[c_socket] = Client(c_socket);
         std::cout << "New connection from " << "\033[1;32m" << inet_ntoa(address.sin_addr) << "\033[0m" << ":" << "\033[1;32m" << ntohs(address.sin_port) << "\033[0m" << std::endl;
     }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
     }
+}
+
+void                    Server::removeClient(int fds_index)
+{
+    int socket = this->fds[fds_index].fd;
+    this->fds[fds_index].fd = -1;
+    this->clients.erase(socket);
+    close(socket);
+    std::cout << "Client disconnected and removed" << std::endl;
 }
