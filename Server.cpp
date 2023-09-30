@@ -14,10 +14,12 @@ Server::Server(const char* name, const char* port, const char* password)
     if ((this->socket = ::socket(AF_INET, SOCK_STREAM, 0)) < 0)
         throw std::runtime_error("Socket creation failed");
     // set server address
-    memset(&this->address, '0', sizeof(this->address));
+    memset(&this->address, 0, sizeof(this->address));
     this->address.sin_family = AF_INET;
     this->address.sin_addr.s_addr = INADDR_ANY;
     this->address.sin_port = htons(this->port);
+    if (this->address.sin_port == 0)
+        throw std::runtime_error("Invalid port number");
     // bind socket to address
     if (bind(this->socket, (struct sockaddr *)&this->address, sizeof(this->address)) < 0)
         throw std::runtime_error("Socket binding failed");
@@ -25,13 +27,13 @@ Server::Server(const char* name, const char* port, const char* password)
     if (listen(this->socket, MAX_CLIENTS) < 0)
         throw std::runtime_error("Socket listening failed");
     // set fds to -1
+    // for (int i = 0; i < MAX_CLIENTS + 1; i++)
     for (int i = 0; i < MAX_CLIENTS + 1; i++)
         this->fds[i].fd = -1;
     // set fds[0] to server socket
     this->fds[0].fd = this->socket;
     this->fds[0].events = POLLIN;
     std::cout << "Server created" << std::endl;
-    
 }
 
 
@@ -64,12 +66,17 @@ void                    Server::run()
 {
     struct sockaddr_in      client_address;
     socklen_t               client_address_len = sizeof(client_address);
-    while (1)
+    while (1) // TODO: set this to a bool variable and change it to false when we want to stop the server !
     {
         int client_socket;
         int numReady = poll(this->fds, MAX_CLIENTS + 1, -1);
         if (numReady < 0)
             throw std::runtime_error("Polling failed");
+        
+         // TODO:
+         // should following if statement should be inside the for loop !!!!!
+         // notice: all new connections are handled here
+         // because they all go to fds[0]
         if (this->fds[0].revents & POLLIN)
         {
             try
@@ -78,6 +85,10 @@ void                    Server::run()
                     throw std::runtime_error("Accepting failed");
                 std::cout << "New connection from " << inet_ntoa(client_address.sin_addr) << ":" << ntohs(client_address.sin_port) << std::endl;
                 // add client to fds
+
+                // Do we also should add the client to the clients vector?
+                // maybe we should add an information, that the client is not yet registered
+
                 for (int i = 1; i < MAX_CLIENTS + 1; i++)
                 {
                     if (this->fds[i].fd == -1)
@@ -92,8 +103,6 @@ void                    Server::run()
             {
                 std::cerr << e.what() << '\n';
             }
-            
-
         }
         // for (int i = 1; i < this->fds.size() + 1; i++)
         for (int i = 1; i < MAX_CLIENTS + 1; i++)
@@ -139,6 +148,7 @@ void                    Server::run()
                         std::cout << "    trailing: " << msg.getTrailing() << std::endl << std::endl;
                     }
                 }
+
             }
         }
     }
