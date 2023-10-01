@@ -6,11 +6,11 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/29 20:41:55 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 15:24:57 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Message.hpp"
+#include "../includes/Message.hpp"
 
 Message::Message(/* args */)
 {

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/30 15:32:24 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 13:47:19 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,34 @@
 #include <arpa/inet.h>
 #include <poll.h>
 #include <cstdio>
+#include <signal.h>
 #include "Channel.hpp"
 #include "Client.hpp"
 #include "Message.hpp"
 #include "defines.hpp"
 
+
 class Server
 {
 private:
-    std::string             name; // servername/hostname
-    int                     port;
-    int                     socket;
-    struct sockaddr_in      address;
-    std::vector<Channel>    channels; // maybe a map with name as key?
-    std::map<int, Client>   clients; // <socket, Client> // maybe better <nickname, Client> and another <socket, nickname> ?
-    std::string             password;
-    struct pollfd           fds[MAX_CLIENTS + 1];
-    
+    bool                            running;
+    std::string                     name; // servername/hostname
+    int                             port;
+    std::string                     password;
+    int                             socket;
+    struct sockaddr_in              address;
+    std::vector<struct pollfd>      fds;
+    std::map<std::string, Channel>  channels; // <name, Channel>
+    std::map<int, Client>           clients; // <socket, Client>
+    std::map<std::string, int>      nick_to_sock; // <nickname, socket>
+
 public:
     Server(/* args */);
     Server(const char* name, const char* port, const char* password);
     ~Server();
 
     // Setters
-    void                    setPort(unsigned int port);
+    void                    setRunning(bool running);
     
     // Getters
     int                     getSocket() const;
@@ -57,7 +61,8 @@ public:
     void                    run();
     void                    stop();
     void                    addNewClient(struct sockaddr_in address, socklen_t addrlen);
-    void                    removeClient(int fds_index);
+    void                    removeClient(int socket);
+    void                    receiveMessage(int socket);
 };
 
 #endif

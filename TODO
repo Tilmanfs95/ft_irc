@@ -1,4 +1,4 @@
-- wie oder überhaupt MAX_CLIENTS handeln ? Sollte je nachdem noch in Server.run() angepasst werden
-- Signal-handler, um sockets zu schließen bei ctrl+c
-- partial Data receiving... (guck ins subject example)
-
+- Signal-handler, um sockets zu schließen bei ctrl+c    -> done
+- partial Data receiving... (guck ins subject example)  -> done but not really tested
+- PING clients
+- checken ob Poll() mit 0, -1 oder was auch immer verwendet wird.. (timeout)

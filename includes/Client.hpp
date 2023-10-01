@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/30 15:24:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 11:41:15 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ public:
     Client(int socket);
     ~Client();
     void        processInput(const std::string &msg);
+    std::string getNickname() const;
 };
 
 // helper functions

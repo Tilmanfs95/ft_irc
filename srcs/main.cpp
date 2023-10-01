@@ -6,19 +6,27 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/29 20:28:46 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 15:24:52 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include <signal.h>
+#include "../includes/Server.hpp"
+#include <unistd.h>
+
+Server *server;
+
+void signalHandler(int) {
+    server->setRunning(false);
+}
 
 int main(int argc, char **argv) {
+    signal(SIGINT, signalHandler);
     try
     {
         if (argc != 3)
             throw std::runtime_error("Usage: " + std::string(argv[0]) + " <port> <password>");
         Server server(SERVER_NAME , argv[1], argv[2]);
+        ::server = &server;
         server.run();
     }
     catch(const std::exception& e)
@@ -26,6 +34,5 @@ int main(int argc, char **argv) {
         std::cerr << e.what() << '\n';
         exit(EXIT_FAILURE);
     }
-
     return 0;
 }

@@ -6,11 +6,11 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/30 15:29:56 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 15:24:17 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Client.hpp"
+#include "../includes/Client.hpp"
 
 Client::Client()
 {
@@ -45,4 +45,9 @@ void        Client::processInput(const std::string &msg)
         // print message for debugging
         printMessage(msg);
     }
+}
+
+std::string Client::getNickname() const
+{
+    return this->nickname;
 }
