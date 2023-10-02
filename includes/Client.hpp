@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 11:41:15 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 00:02:57 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 #include <iostream>
 #include <vector>
+#include <queue>
 #include "Message.hpp"
+#include "Server.hpp"
 #include "defines.hpp"
 
 // Questions:
@@ -28,6 +30,7 @@
 //      NICK <Nickname>                         (mandatory)
 //      USER <username> <mode> * <real_name>    (mandatory) (if real_name contains spaces, it must be prefixed with ':')
 
+class Server;
 
 class Client
 {
@@ -48,14 +51,16 @@ private:
     std::string username;
     std::string realname;
     std::string hostname;
-    // messagebuffer for incoming messages
-    std::string messagebuffer;
+    std::string in_buffer;
+    std::queue<Message> out_messages;
+;
 public:
     Client();
     Client(int socket);
     ~Client();
     void        processInput(const std::string &msg);
     std::string getNickname() const;
+    Message     getOutMessage();
 };
 
 // helper functions

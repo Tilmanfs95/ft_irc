@@ -6,7 +6,7 @@ import sys
 # Tool to test the irc server with many clients at the same time
 
 server_address = ('irc.esgehtumheilbronn.de', 6667)
-client_amount = 20
+client_amount = 1
 
 
 exit_flag = False
@@ -17,6 +17,7 @@ def connect_client(client_id):
         client_socket.connect(server_address)
         client_socket.send(f"NICK nick{client_id}\r\n".encode())
         client_socket.send(f"USER username{client_id} 0 * :realname{client_id}\r\n".encode())
+        client_socket.send("JOIN #test\r\n".encode())
         # response = client_socket.recv(1024)
         # print(f"Client {client_id} received: {response.decode()}")
         while not exit_flag:

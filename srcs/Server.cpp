@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 15:25:36 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 00:01:32 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ Server::Server(const char* name, const char* port, const char* password)
     if (bind(this->socket, (struct sockaddr *)&this->address, sizeof(this->address)) < 0)
         throw std::runtime_error("Socket binding failed");
     // listen for connections
-    if (listen(this->socket, address.sin_port) < 0) // really
+    if (listen(this->socket, SOMAXCONN) < 0)
         throw std::runtime_error("Socket listening failed");
     pollfd pfd = {this->socket, POLLIN, 0};
     this->fds.push_back(pfd);
@@ -74,6 +74,16 @@ unsigned int            Server::getPort() const
     return (this->port);
 }
 
+std::string             Server::getPassword() const
+{
+    return (this->password);
+}
+
+std::string             Server::getName() const
+{
+    return (this->name);
+}
+
 // Methods
 
 void                    Server::run()
@@ -82,9 +92,9 @@ void                    Server::run()
     socklen_t               c_addrlen = sizeof(c_address);
     while (running)
     {
-        if (poll(this->fds.data(), this->fds.size(), 0) < 0 && running == true) // or use -1 for infinite timeout ?
+        if (poll(this->fds.data(), this->fds.size(), 0) < 0 && running == true) // ore use another timeout?
             throw std::runtime_error("Polling failed");
-        for (size_t i = 0; i < this->fds.size(); i++) // + 1 because of server socket ?
+        for (size_t i = 0; i < this->fds.size(); i++)
         {   
             if (this->fds[i].revents & POLLIN)
             {
@@ -92,8 +102,32 @@ void                    Server::run()
                     addNewClient(c_address, c_addrlen);
                 else
                     receiveMessage(this->fds[i].fd);
-
             }
+            else if (this->fds[i].revents & POLLOUT)
+            {   
+                try
+                {
+                    std::string msg = this->clients[this->fds[i].fd].getOutMessage().toString();
+                    while (msg != "")
+                    {
+                        std::cout << "Sending message: " << msg << std::endl;
+                        ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.size(), 0);
+                        if (sent < 0)
+                            std::cout << "Error sending message" << std::endl;
+                        else
+                            msg.erase(0, sent);
+                    }
+                }
+                catch(const std::exception& e)
+                {
+                    // std::cerr << e.what() << '\n';
+                }
+            }
+            // else if (this->fds[i].revents & POLLERR)
+            // {
+            //     std::cout << "Error on socket " << this->fds[i].fd << std::endl;
+            //     // what to do here?
+            // }
         }
     }
     stop();
@@ -114,7 +148,7 @@ void                    Server::addNewClient(struct sockaddr_in address, socklen
         int c_socket;
         if ((c_socket = accept(this->socket, (struct sockaddr *)&address, &addrlen)) < 0)
             throw std::runtime_error("Failed to accept connection");
-        pollfd pfd = {c_socket, POLLIN, 0};
+        pollfd pfd = {c_socket, POLLIN | POLLOUT, 0}; 
         this->fds.push_back(pfd);
         this->clients.insert(std::pair<int, Client>(c_socket, Client(c_socket)));
         std::cout << "New connection from " << "\033[1;32m" << inet_ntoa(address.sin_addr) << "\033[0m" << ":" << "\033[1;32m" << ntohs(address.sin_port) << "\033[0m" << std::endl;

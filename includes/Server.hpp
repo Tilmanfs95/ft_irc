@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 13:47:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 18:39:29 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #include "Message.hpp"
 #include "defines.hpp"
 
+class Client;
 
 class Server
 {
@@ -56,6 +57,8 @@ public:
     // Getters
     int                     getSocket() const;
     unsigned int            getPort() const;
+    std::string             getPassword() const;
+    std::string             getName() const;
 
     // Methods
     void                    run();
@@ -64,5 +67,7 @@ public:
     void                    removeClient(int socket);
     void                    receiveMessage(int socket);
 };
+
+extern Server *server; // NOT SURE IF WE ARE ALLOWED TO DO THIS
 
 #endif

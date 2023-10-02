@@ -6,14 +6,14 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 15:24:52 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/01 18:41:55 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 #include <unistd.h>
 
-Server *server;
+Server *server; // NOT SURE IF THIS IS ALLOWED
 
 void signalHandler(int) {
     server->setRunning(false);
