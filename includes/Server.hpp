@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 18:39:29 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:00:18 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,15 @@ private:
     std::map<int, Client>           clients; // <socket, Client>
     std::map<std::string, int>      nick_to_sock; // <nickname, socket>
 
+	void                    disconnect();
+
 public:
     Server(/* args */);
     Server(const char* name, const char* port, const char* password);
     ~Server();
 
     // Setters
-    void                    setRunning(bool running);
+    // void                    setRunning(bool running);
     
     // Getters
     int                     getSocket() const;
@@ -62,7 +64,8 @@ public:
 
     // Methods
     void                    run();
-    void                    stop();
+    void					stop();
+	
     void                    addNewClient(struct sockaddr_in address, socklen_t addrlen);
     void                    removeClient(int socket);
     void                    receiveMessage(int socket);

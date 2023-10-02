@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 18:41:55 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:01:20 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 Server *server; // NOT SURE IF THIS IS ALLOWED
 
 void signalHandler(int) {
-    server->setRunning(false);
+    server->stop();
 }
 
 int main(int argc, char **argv) {

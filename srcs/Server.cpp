@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 00:01:32 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:49:31 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,6 @@ Server::~Server()
 
 // Setters
 
-void                    Server::setRunning(bool running)
-{
-    this->running = running;
-}
 
 // Getters
 
@@ -110,12 +106,16 @@ void                    Server::run()
                     std::string msg = this->clients[this->fds[i].fd].getOutMessage().toString();
                     while (msg != "")
                     {
-                        std::cout << "Sending message: " << msg << std::endl;
-                        ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.size(), 0);
+						ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.length() > OUT_BUFFER_SIZE ? OUT_BUFFER_SIZE : msg.length(), 0);
                         if (sent < 0)
-                            std::cout << "Error sending message" << std::endl;
+							std::cout << "\033[1;31mError sending message\033[0m" << std::endl;
+						else if (sent == 0)
+							std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
                         else
-                            msg.erase(0, sent);
+						{
+							std::cout << "\033[0;33mSent to socket " << this->fds[i].fd << ":\033[0m " << msg.substr(0, sent);
+							msg.erase(0, sent);
+						}
                     }
                 }
                 catch(const std::exception& e)
@@ -130,12 +130,16 @@ void                    Server::run()
             // }
         }
     }
-    stop();
+    disconnect();
 }
 
 void                    Server::stop()
 {
-    // disconnect all clients
+    this->running = false;
+}
+
+void                    Server::disconnect()
+{
     for (size_t i = 0; i < this->fds.size(); i++)
         close(this->fds[i].fd);
     std::cout << "\n\033[1;32mServer stopped successfully\033[0m\n" << std::endl;
@@ -151,7 +155,7 @@ void                    Server::addNewClient(struct sockaddr_in address, socklen
         pollfd pfd = {c_socket, POLLIN | POLLOUT, 0}; 
         this->fds.push_back(pfd);
         this->clients.insert(std::pair<int, Client>(c_socket, Client(c_socket)));
-        std::cout << "New connection from " << "\033[1;32m" << inet_ntoa(address.sin_addr) << "\033[0m" << ":" << "\033[1;32m" << ntohs(address.sin_port) << "\033[0m" << std::endl;
+		std::cout << "\033[1;32mSocket " << c_socket << ": New connection from " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << "\033[0m" << std::endl;
     }
     catch(const std::exception& e)
     {

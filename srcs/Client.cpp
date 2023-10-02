@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 23:58:24 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:35:32 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ void        Client::processInput(const std::string &msg)
         Message msg = Message::fromString(msg_str);
 
         // print message for debugging
+		// std::cout << "Socket " << this->socket << ": ";
+		// in purple
+		std::cout << "\033[35mSocket " << this->socket << ":\033[0m ";
         printMessage(msg);
         if (msg.getCommand() == "CAP") // do not process CAP messages
             continue;

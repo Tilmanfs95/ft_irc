@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/01 16:33:07 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:10:35 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ std::string Message::toString() const {
     if (!this->trailing.empty()) {
         message += ":" + this->trailing;
     }
+	// Add the END_OF_MESSAGE character
+	message += END_OF_MESSAGE;
     
     return message;
 }

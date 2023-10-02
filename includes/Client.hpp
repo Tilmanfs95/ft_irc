@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 00:02:57 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:08:33 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,11 @@ public:
     Client();
     Client(int socket);
     ~Client();
+	// process the incoming string from the client
     void        processInput(const std::string &msg);
     std::string getNickname() const;
+	// gets the next message to send to the client from the out_messages queue
+	// throws an exception if the queue is empty
     Message     getOutMessage();
 };
 

@@ -2,3 +2,4 @@
 - partial Data receiving... (guck ins subject example)  -> done but not really tested
 - PING clients
 - checken ob Poll() mit 0, -1 oder was auch immer verwendet wird.. (timeout)
+- add ENDOFLINE to sending messages
