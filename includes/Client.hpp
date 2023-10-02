@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 10:08:33 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 15:01:52 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <queue>
 #include "Message.hpp"
 #include "Server.hpp"
+#include "msg_handler.hpp"
 #include "defines.hpp"
 
 // Questions:
@@ -55,14 +56,33 @@ private:
     std::queue<Message> out_messages;
 ;
 public:
+	// constructors and destructor
     Client();
     Client(int socket);
     ~Client();
+	
+	// setters
+	void		setVerified(bool verified);
+	// void		setNickname(const std::string &nickname);
+	// void		setUsername(const std::string &username);
+	// void		setRealname(const std::string &realname);
+	// void		setHostname(const std::string &hostname);
+	// // getters
+	int			getSocket() const;
+	bool		getVerified() const;
+	bool		getRegistered() const;
+	std::string	getNickname() const;
+	// std::string	getUsername() const;
+	// std::string	getRealname() const;
+	// std::string	getHostname() const;
+	std::string getUserIdent() const;
+	
+	// methods:
 	// process the incoming string from the client
     void        processInput(const std::string &msg);
-    std::string getNickname() const;
 	// gets the next message to send to the client from the out_messages queue
 	// throws an exception if the queue is empty
+	void		addOutMessage(const Message &msg);
     Message     getOutMessage();
 };
 

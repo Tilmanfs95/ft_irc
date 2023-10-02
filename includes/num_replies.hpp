@@ -1,17 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   defines.hpp                                        :+:      :+:    :+:   */
+/*   num_replies.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/30 14:57:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 15:15:21 by tfriedri         ###   ########.fr       */
+/*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
+/*   Updated: 2023/10/02 14:27:09 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef NUM_REPLIES_HPP
+# define NUM_REPLIES_HPP
+# include "Client.hpp"
 
-#define SERVER_NAME "ft_irc"
-#define BUFFER_SIZE 1024
-#define OUT_BUFFER_SIZE 512
-#define END_OF_MESSAGE "\r\n" // some clients doesn't send "\r\n" but only "\n"
+# define RPL_WELCOME(client) (":" SERVER_NAME " 001 " + client.getNickname() + " :Welcome to the Internet Relay Network " + client.getUserIdent() + "\r\n")
+
+
+#endif

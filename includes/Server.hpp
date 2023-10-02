@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 10:00:18 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/02 14:59:16 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ public:
     void                    addNewClient(struct sockaddr_in address, socklen_t addrlen);
     void                    removeClient(int socket);
     void                    receiveMessage(int socket);
+	// void                    handleMessage(Message &msg, Client &usr);
 };
 
 extern Server *server; // NOT SURE IF WE ARE ALLOWED TO DO THIS

@@ -6,7 +6,7 @@
 #    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/10/01 15:23:47 by tfriedri         ###   ########.fr        #
+#    Updated: 2023/10/02 15:02:14 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS			=	srcs/main.cpp	\
 					srcs/Client.cpp	\
 					srcs/Message.cpp	\
 					srcs/utils.cpp	\
+					srcs/msg_handler.cpp	\
 
 OBJS			=	$(SRCS:.cpp=.o)
 
