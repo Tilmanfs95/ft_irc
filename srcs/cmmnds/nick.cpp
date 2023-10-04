@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 21:22:28 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 21:49:40 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void    nick(Message &msg, User &usr)
             usr.setNickname(msg.getParams()[0]);
             if (usr.getUsername().empty() == false && usr.getRealname().empty() == false) // needed to also check realname?
             {
-                server->registerUser(msg.getParams()[0], usr.getSocket());
+                server->registerUser(usr.getSocket());
             }
         }
         else
@@ -66,7 +66,7 @@ void    nick(Message &msg, User &usr)
                 usr.setNickname(msg.getParams()[0]);
                 if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
                 {
-                    server->registerUser(msg.getParams()[0], usr.getSocket());
+                    server->registerUser(usr.getSocket());
                 }
             }
         }

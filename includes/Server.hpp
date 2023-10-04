@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 21:37:01 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 21:48:57 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ public:
 	// adds a new unregistered user to the users map
     void                    addNewUser(struct sockaddr_in address, socklen_t addrlen);
     // add user to nick_to_sock map and send welcome messages
-    void                    registerUser(const std::string &nickname, int socket);
+    void                    registerUser(int socket);
     // removes user from users map and if registered from nick_to_sock map -------- TODO: remove user from channels
     void                    removeUser(int socket);
     // reads from socket and start users processInput()-method

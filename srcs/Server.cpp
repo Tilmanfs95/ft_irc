@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 21:39:41 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 21:48:41 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,9 +164,9 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
     }
 }
 
-void                    Server::registerUser(const std::string &nickname, int socket)
+void                    Server::registerUser(int socket)
 {
-    this->nick_to_sock.insert(std::pair<std::string, int>(nickname, socket));
+    this->nick_to_sock.insert(std::pair<std::string, int>(this->users[socket].getNickname(), socket));
     this->users[socket].setRegistered(true);
     
     std::cout << "User registered! TODO: send welcome stuff to user ! ( in Server::registerUser() )" << std::endl;
