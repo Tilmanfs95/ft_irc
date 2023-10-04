@@ -6,12 +6,12 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 15:19:24 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 21:39:41 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
-#include "../includes/Client.hpp"
+#include "../includes/User.hpp"
 #include "../includes/Message.hpp"
 
 
@@ -75,10 +75,10 @@ std::string             Server::getPassword() const
     return (this->password);
 }
 
-std::string             Server::getName() const
-{
-    return (this->name);
-}
+// std::string             Server::getName() const
+// {
+//     return (this->name);
+// }
 
 // Methods
 
@@ -95,7 +95,7 @@ void                    Server::run()
             if (this->fds[i].revents & POLLIN)
             {
                 if (i == 0)
-                    addNewClient(c_address, c_addrlen);
+                    addNewUser(c_address, c_addrlen);
                 else
                     receiveMessage(this->fds[i].fd);
             }
@@ -103,7 +103,7 @@ void                    Server::run()
             {   
                 try
                 {
-                    std::string msg = this->clients[this->fds[i].fd].getOutMessage().toString();
+                    std::string msg = this->users[this->fds[i].fd].getOutMessage().toString();
                     while (msg != "")
                     {
 						ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.length() > OUT_BUFFER_SIZE ? OUT_BUFFER_SIZE : msg.length(), 0);
@@ -145,7 +145,7 @@ void                    Server::disconnect()
     std::cout << "\n\033[1;32mServer stopped successfully\033[0m\n" << std::endl;
 }
 
-void                    Server::addNewClient(struct sockaddr_in address, socklen_t addrlen)
+void                    Server::addNewUser(struct sockaddr_in address, socklen_t addrlen)
 {
     try
     {
@@ -154,7 +154,8 @@ void                    Server::addNewClient(struct sockaddr_in address, socklen
             throw std::runtime_error("Failed to accept connection");
         pollfd pfd = {c_socket, POLLIN | POLLOUT, 0}; 
         this->fds.push_back(pfd);
-        this->clients.insert(std::pair<int, Client>(c_socket, Client(c_socket)));
+        // std::string ip = inet_ntoa(address.sin_addr);
+        this->users.insert(std::pair<int, User>(c_socket, User(c_socket, inet_ntoa(address.sin_addr))));
 		std::cout << "\033[1;32mSocket " << c_socket << ": New connection from " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << "\033[0m" << std::endl;
     }
     catch(const std::exception& e)
@@ -163,11 +164,21 @@ void                    Server::addNewClient(struct sockaddr_in address, socklen
     }
 }
 
-void                    Server::removeClient(int socket)
+void                    Server::registerUser(const std::string &nickname, int socket)
 {
-    // TODO: remove client from channels
+    this->nick_to_sock.insert(std::pair<std::string, int>(nickname, socket));
+    this->users[socket].setRegistered(true);
     
-    // remove client from fds vector
+    std::cout << "User registered! TODO: send welcome stuff to user ! ( in Server::registerUser() )" << std::endl;
+    
+    // send welcome stuff to user
+    
+    //...
+}
+
+void                    Server::removeUser(int socket)
+{
+    // remove user from fds vector
     for (size_t i = 1; i < this->fds.size(); i++)
     {
         if (this->fds[i].fd == socket)
@@ -176,20 +187,26 @@ void                    Server::removeClient(int socket)
             break;
         }
     }
-    // remove client from clients map
-    this->clients.erase(socket);
-    // remove client from nick_to_sock map
-    for (std::map<std::string, int>::iterator it = this->nick_to_sock.begin(); it != this->nick_to_sock.end(); it++)
+    if (this->users[socket].getRegistered() == true)
     {
-        if (it->second == socket)
+        // TODO: remove user from channels
+        //...
+        //...
+        // remove user from nick_to_sock map
+        for (std::map<std::string, int>::iterator it = this->nick_to_sock.begin(); it != this->nick_to_sock.end(); it++)
         {
-            this->nick_to_sock.erase(it);
-            break;
+            if (it->second == socket)
+            {
+                this->nick_to_sock.erase(it);
+                break;
+            }
         }
     }
-    // close client socket
+    // remove user from users map
+    this->users.erase(socket);
+    // close user socket
     close(socket);
-    std::cout << "Client disconnected and removed" << std::endl;
+    std::cout << "User disconnected and removed" << std::endl;
 }
 
 void                    Server::receiveMessage(int socket)
@@ -202,8 +219,17 @@ void                    Server::receiveMessage(int socket)
         std::cerr << "Error reading from socket" << std::endl;
     }
     else if (valread == 0)
-        removeClient(socket);
+        removeUser(socket);
     else
-        this->clients[socket].processInput(std::string(buffer));
+        this->users[socket].processInput(std::string(buffer));
         
+}
+
+bool                    Server::checkUserExists(const std::string &nickname)
+{
+    if (this->nick_to_sock.find(nickname) == this->nick_to_sock.end())
+        return false;
+    // if (this->nick_to_sock[nickname] == 0)
+    //     return false;
+    return true;
 }

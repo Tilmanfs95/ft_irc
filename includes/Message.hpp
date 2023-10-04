@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:42:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 14:17:22 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 14:17:48 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 #include "defines.hpp"
 
 class Message

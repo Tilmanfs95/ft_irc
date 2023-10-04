@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 15:11:33 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 14:47:02 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ Message  Message::fromString(const std::string &msg) {
     }
     // Command
     iss >> token;
+    // turn command to uppercase
+    std::transform(token.begin(), token.end(), token.begin(), ::toupper);
     message.setCommand(token);
     while (iss >> token) {
         if (token[0] == ':') {

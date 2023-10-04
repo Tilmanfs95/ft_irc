@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 14:59:16 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 21:37:01 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@
 #include <cstdio>
 #include <signal.h>
 #include "Channel.hpp"
-#include "Client.hpp"
+#include "User.hpp"
 #include "Message.hpp"
 #include "defines.hpp"
 
-class Client;
+class User;
 
 class Server
 {
@@ -43,33 +43,41 @@ private:
     struct sockaddr_in              address;
     std::vector<struct pollfd>      fds;
     std::map<std::string, Channel>  channels; // <name, Channel>
-    std::map<int, Client>           clients; // <socket, Client>
-    std::map<std::string, int>      nick_to_sock; // <nickname, socket>
+    std::map<int, User>             users; // <socket, User>
+    std::map<std::string, int>      nick_to_sock; // <nickname, socket> // only registered users
 
-	void                    disconnect();
-
+    // private methods
+    void                    disconnect();
+    
 public:
     Server(/* args */);
     Server(const char* name, const char* port, const char* password);
     ~Server();
 
-    // Setters
-    // void                    setRunning(bool running);
     
     // Getters
     int                     getSocket() const;
     unsigned int            getPort() const;
     std::string             getPassword() const;
-    std::string             getName() const;
+    // std::string             getName() const; // not needed because we can use the SERVER_NAME
 
     // Methods
+
+    // starts the server loop
     void                    run();
+    // sets the running bool to false
     void					stop();
-	
-    void                    addNewClient(struct sockaddr_in address, socklen_t addrlen);
-    void                    removeClient(int socket);
+	// adds a new unregistered user to the users map
+    void                    addNewUser(struct sockaddr_in address, socklen_t addrlen);
+    // add user to nick_to_sock map and send welcome messages
+    void                    registerUser(const std::string &nickname, int socket);
+    // removes user from users map and if registered from nick_to_sock map -------- TODO: remove user from channels
+    void                    removeUser(int socket);
+    // reads from socket and start users processInput()-method
     void                    receiveMessage(int socket);
-	// void                    handleMessage(Message &msg, Client &usr);
+    // return a bool if a nickname is already registered
+    bool                    checkUserExists(const std::string &nickname);
+	// void                    handleMessage(Message &msg, User &usr);
 };
 
 extern Server *server; // NOT SURE IF WE ARE ALLOWED TO DO THIS

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/09/29 14:02:52 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/03 00:01:18 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,19 @@ private:
     // channel password:
     // -case sensitive
     std::string password;
-    // client list:
-    std::vector<std::string> clients;
+    // user list:
+    std::vector<std::string> users;
     // operator list:
     std::vector<std::string> operators;
     // invite list:
     std::vector<std::string> invites;
-    // client limit:
+    // user limit:
     unsigned int limit;
     // topic restrict:
     // -if true, only operators can change the topic
     bool topic_restrict;
     // invite only:
-    // -if true, only invited clients can join
+    // -if true, only invited users can join
     bool invite_only;
     
 public:

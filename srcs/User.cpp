@@ -1,85 +1,106 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.cpp                                         :+:      :+:    :+:   */
+/*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 15:13:44 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 21:17:15 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Client.hpp"
+#include "../includes/User.hpp"
 
-Client::Client()
+User::User()
 {
 }
 
-Client::Client(int socket)
+User::User(int socket) : socket(socket)
 {
-    this->socket = socket;
     this->verified = false;
     this->registered = false;
     this->mode = 0;
     this->nickname = "";
     this->username = "";
     this->realname = "";
-    this->hostname = "";
+    this->host_ip = "";
 }
 
-Client::~Client()
+User::User(int socket, std::string host_ip) : socket(socket), host_ip(host_ip)
+{
+    this->verified = false;
+    this->registered = false;
+    this->mode = 0;
+    this->nickname = "";
+    this->username = "";
+    this->realname = "";
+}
+
+User::~User()
 {
 }
 
 
 // Setters
 
-// std::string Client::setNickname(const std::string &nickname)
-// {
-// 	if (nickname.length() > 9)
-// 		throw std::invalid_argument("Nickname too long");
-// 	this->nickname = nickname;
-// 	return this->nickname;
-// }
+void    User::setRegistered(bool registered)
+{
+    this->registered = registered;
+}
+
+void    User::setNickname(const std::string &nickname)
+{
+	this->nickname = nickname;
+}
 
 
 // Getters
 
-int		Client::getSocket() const
+int		User::getSocket() const
 {
-	return this->socket;
+    return this->socket;
 }
 
-bool	Client::getVerified() const
+bool	User::getVerified() const
 {
-	return this->verified;
+    return this->verified;
 }
 
-bool	Client::getRegistered() const
+bool	User::getRegistered() const
 {
-	return this->registered;
+    return this->registered;
 }
 
-std::string Client::getNickname() const
+std::string User::getNickname() const
 {
     return this->nickname;
 }
 
-std::string Client::getUserIdent() const
+std::string User::getUsername() const
 {
-	return this->username + "@" + this->hostname;
+    return this->username;
+}
+
+std::string User::getRealname() const
+{
+    return this->realname;
+}
+
+std::string User::getUserIdent() const
+{
+    return this->nickname + "!~" + this->username + "@" + this->host_ip;
 }
 
 
 // Setters
 
-void	Client::setVerified(bool verified)
+void	User::setVerified(bool verified)
 {
-	this->verified = verified;
+    this->verified = verified;
 }
 
-void        Client::processInput(const std::string &msg)
+void        User::processInput(const std::string &msg)
 {
     // std::cout << "Socket " << this->socket << ": " << msg << std::endl;
     this->in_buffer.append(msg);
@@ -90,18 +111,18 @@ void        Client::processInput(const std::string &msg)
         this->in_buffer.erase(0, this->in_buffer.find(END_OF_MESSAGE) + strlen(END_OF_MESSAGE));
         Message msg = Message::fromString(msg_str);
 
-		std::cout << "\033[35mSocket " << this->socket << ":\033[0m ";
+        std::cout << "\033[35mSocket " << this->socket << ":\033[0m ";
         printMessage(msg);
-		handleMessage(msg, *this);
+        handleMessage(msg, *this);
     }
 }
 
-void		Client::addOutMessage(const Message &msg)
+void		User::addOutMessage(const Message &msg)
 {
-	this->out_messages.push(msg);
+    this->out_messages.push(msg);
 }
 
-Message     Client::getOutMessage()
+Message     User::getOutMessage()
 {
     if (this->out_messages.empty())
         throw std::runtime_error("No message to send");

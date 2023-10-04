@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 15:01:52 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 20:43:38 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-# define CLIENT_HPP
+#ifndef USER_HPP
+# define USER_HPP
 
 #include <iostream>
 #include <vector>
@@ -22,7 +22,6 @@
 #include "defines.hpp"
 
 // Questions:
-// -Do we need the password? I don't think so.
 // -Do we need a reclaim-time for the nickname? (for network problems)
 
 // User registration:
@@ -33,7 +32,7 @@
 
 class Server;
 
-class Client
+class User
 {
     // Important:
     // -The client must send a PASS command before sending the NICK and USER commands.
@@ -51,38 +50,45 @@ private:
     std::string nickname;
     std::string username;
     std::string realname;
-    std::string hostname;
+    std::string host_ip;
     std::string in_buffer;
     std::queue<Message> out_messages;
+    //
+    // implement this!
+    // (so we do not need to iterate all users of all channels if the user quits, changes his nickname...)
+    std::vector<std::string> channels; 
+    //
 ;
 public:
-	// constructors and destructor
-    Client();
-    Client(int socket);
-    ~Client();
-	
-	// setters
-	void		setVerified(bool verified);
-	// void		setNickname(const std::string &nickname);
-	// void		setUsername(const std::string &username);
-	// void		setRealname(const std::string &realname);
-	// void		setHostname(const std::string &hostname);
-	// // getters
-	int			getSocket() const;
-	bool		getVerified() const;
-	bool		getRegistered() const;
-	std::string	getNickname() const;
-	// std::string	getUsername() const;
-	// std::string	getRealname() const;
-	// std::string	getHostname() const;
-	std::string getUserIdent() const;
-	
-	// methods:
-	// process the incoming string from the client
+    // constructors and destructor
+    User();
+    User(int socket);
+    User(int socket, std::string host_ip);
+    ~User();
+    
+    // setters
+    void        setRegistered(bool registered);
+    void		setVerified(bool verified);
+    void		setNickname(const std::string &nickname);
+    // void		setUsername(const std::string &username);
+    // void		setRealname(const std::string &realname);
+    // void		setHostname(const std::string &hostname);
+    // // getters
+    int			getSocket() const;
+    bool		getVerified() const;
+    bool		getRegistered() const;
+    std::string	getNickname() const;
+    std::string	getUsername() const;
+    std::string	getRealname() const;
+    // std::string	getHostname() const;
+    std::string getUserIdent() const; // <nickname>!~<username>@<host_ip>
+    
+    // methods:
+    // process the incoming string from the client
     void        processInput(const std::string &msg);
-	// gets the next message to send to the client from the out_messages queue
-	// throws an exception if the queue is empty
-	void		addOutMessage(const Message &msg);
+    // gets the next message to send to the client from the out_messages queue
+    // throws an exception if the queue is empty
+    void		addOutMessage(const Message &msg);
     Message     getOutMessage();
 };
 
