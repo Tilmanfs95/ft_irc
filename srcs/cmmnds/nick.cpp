@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 00:37:20 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 11:01:43 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,19 @@ bool    check_nick_chars(std::string nick)
 
 void    nick(Message &msg, User &usr)
 {
+    std::string nick;
     if (msg.getParams().size() == 0)
         usr.addOutMessage(Message::fromString(ERR_NONICKNAMEGIVEN(usr)));
-    if (check_nick_chars(msg.getParams()[0]) == false)
-        usr.addOutMessage(Message::fromString(ERR_ERRONEUSNICKNAME(usr, msg.getParams()[0])));
-    else if (server->checkUserExists(msg.getParams()[0]) == true)
-        usr.addOutMessage(Message::fromString(ERR_NICKNAMEINUSE(usr, msg.getParams()[0])));
+    nick = msg.getParams()[0];
+    if (check_nick_chars(nick) == false)
+        usr.addOutMessage(Message::fromString(ERR_ERRONEUSNICKNAME(usr, nick)));
+    else if (server->nickUnused(nick) == false)
+        usr.addOutMessage(Message::fromString(ERR_NICKNAMEINUSE(usr, nick)));
     else
     {
         if (usr.getNickname().empty())
         {
-            usr.setNickname(msg.getParams()[0]);
+            usr.setNickname(nick);
             if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
                 server->registerUser(usr.getSocket());
         }
@@ -55,13 +57,13 @@ void    nick(Message &msg, User &usr)
                 // send nick change message to all users in all channels the user is in:
                 //...
                 // send nick change message the user itself:
-                usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + msg.getParams()[0] + "\r\n"));
+                usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
                 // first send the messages and then change the nickname so that the sender of the message is still the old nickname
-                usr.setNickname(msg.getParams()[0]);
+                usr.setNickname(nick);
             }
             else
             {
-                usr.setNickname(msg.getParams()[0]);
+                usr.setNickname(nick);
                 if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
                     server->registerUser(usr.getSocket());
             }

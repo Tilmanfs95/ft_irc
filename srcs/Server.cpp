@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 01:08:29 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 10:58:00 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,11 +262,16 @@ void                    Server::handleMessage(Message &msg, User &usr)
 	}
 }
 
-bool                    Server::checkUserExists(const std::string &nickname)
+bool                    Server::nickUnused(const std::string &nickname)
 {
-    if (this->nick_to_sock.find(nickname) == this->nick_to_sock.end())
-        return false;
-    // if (this->nick_to_sock[nickname] == 0)
-    //     return false;
+    std::string newnick = nickname;
+    std::transform(newnick.begin(), newnick.end(), newnick.begin(), ::toupper);
+    for (size_t i = 0; i < this->fds.size(); i++)
+    {
+        std::string present = this->users[this->fds[i].fd].getNickname();
+        std::transform(present.begin(), present.end(), present.begin(), ::toupper);
+        if (present == newnick)
+            return false;
+    }
     return true;
 }
