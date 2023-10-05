@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 14:47:02 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/04 22:48:18 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,10 @@ Message  Message::fromString(const std::string &msg) {
     // turn command to uppercase
     std::transform(token.begin(), token.end(), token.begin(), ::toupper);
     message.setCommand(token);
-    while (iss >> token) {
-        if (token[0] == ':') {
+    while (iss >> token)
+    {
+        if (token[0] == ':')
+        {
             // Trailing part
             std::string rest = token.substr(1); // removes ':'
             while (iss >> token) {
@@ -109,7 +111,9 @@ Message  Message::fromString(const std::string &msg) {
             }
             message.setTrailing(rest);
             break;
-        } else {
+        } 
+        else
+        {
             // Parameters
             message.addParam(token);
         }

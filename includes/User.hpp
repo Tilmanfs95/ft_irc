@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 20:43:38 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 00:52:16 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <queue>
 #include "Message.hpp"
 #include "Server.hpp"
-#include "msg_handler.hpp"
+#include "commands.hpp"
 #include "defines.hpp"
 
 // Questions:
@@ -51,7 +51,7 @@ private:
     std::string username;
     std::string realname;
     std::string host_ip;
-    std::string in_buffer;
+    // std::string in_buffer;
     std::queue<Message> out_messages;
     //
     // implement this!
@@ -60,6 +60,8 @@ private:
     //
 ;
 public:
+    std::string in_buffer;
+
     // constructors and destructor
     User();
     User(int socket);
@@ -69,10 +71,10 @@ public:
     // setters
     void        setRegistered(bool registered);
     void		setVerified(bool verified);
+    void        setMode(int mode);
     void		setNickname(const std::string &nickname);
-    // void		setUsername(const std::string &username);
-    // void		setRealname(const std::string &realname);
-    // void		setHostname(const std::string &hostname);
+    void		setUsername(const std::string &username);
+    void		setRealname(const std::string &realname);
     // // getters
     int			getSocket() const;
     bool		getVerified() const;
@@ -85,7 +87,7 @@ public:
     
     // methods:
     // process the incoming string from the client
-    void        processInput(const std::string &msg);
+    // void        processInput(const std::string &msg);
     // gets the next message to send to the client from the out_messages queue
     // throws an exception if the queue is empty
     void		addOutMessage(const Message &msg);

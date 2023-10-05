@@ -6,11 +6,11 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:18:07 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 20:42:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 00:37:12 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/msg_handler.hpp"
+#include "../../includes/commands.hpp"
 
 // ERR_ALREADYREGISTRED
 // ERR_NEEDMOREPARAMS

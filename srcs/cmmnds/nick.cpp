@@ -6,11 +6,11 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 21:49:40 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 00:37:20 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/msg_handler.hpp"
+#include "../../includes/commands.hpp"
 
 // ERR_NONICKNAMEGIVEN
 // ERR_ERRONEUSNICKNAME
@@ -45,10 +45,8 @@ void    nick(Message &msg, User &usr)
         if (usr.getNickname().empty())
         {
             usr.setNickname(msg.getParams()[0]);
-            if (usr.getUsername().empty() == false && usr.getRealname().empty() == false) // needed to also check realname?
-            {
+            if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
                 server->registerUser(usr.getSocket());
-            }
         }
         else
         {
@@ -65,9 +63,7 @@ void    nick(Message &msg, User &usr)
             {
                 usr.setNickname(msg.getParams()[0]);
                 if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
-                {
                     server->registerUser(usr.getSocket());
-                }
             }
         }
     }

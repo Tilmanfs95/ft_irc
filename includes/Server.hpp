@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 21:48:57 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 00:35:52 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ public:
     void                    removeUser(int socket);
     // reads from socket and start users processInput()-method
     void                    receiveMessage(int socket);
+    // handles a message from a user
+    void                    handleMessage(Message &msg, User &usr);
     // return a bool if a nickname is already registered
     bool                    checkUserExists(const std::string &nickname);
 	// void                    handleMessage(Message &msg, User &usr);

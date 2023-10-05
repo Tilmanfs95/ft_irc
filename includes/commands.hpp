@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msg_handler.hpp                                    :+:      :+:    :+:   */
+/*   commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 15:51:39 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 00:41:56 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSG_HANDLER_HPP
-# define MSG_HANDLER_HPP
+#ifndef COMMANDS_HPP
+# define COMMANDS_HPP
 
 # include "Server.hpp"
 # include "Message.hpp"
@@ -20,12 +20,10 @@
 
 class User;
 
-// message handler
-void	handleMessage(Message &msg, User &usr);
-
 // PASS
 void    pass(Message &msg, User &usr);
 void    nick(Message &msg, User &usr);
+void    user(Message &msg, User &usr);
 
 
 

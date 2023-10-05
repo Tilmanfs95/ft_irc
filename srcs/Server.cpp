@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 21:48:41 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 01:08:29 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,13 +166,10 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
 
 void                    Server::registerUser(int socket)
 {
-    this->nick_to_sock.insert(std::pair<std::string, int>(this->users[socket].getNickname(), socket));
-    this->users[socket].setRegistered(true);
-    
-    std::cout << "User registered! TODO: send welcome stuff to user ! ( in Server::registerUser() )" << std::endl;
-    
-    // send welcome stuff to user
-    
+    User &usr = this->users[socket];
+    this->nick_to_sock.insert(std::pair<std::string, int>(usr.getNickname(), socket));
+    usr.setRegistered(true);
+    usr.addOutMessage(Message::fromString(RPL_WELCOME(usr)));
     //...
 }
 
@@ -212,17 +209,57 @@ void                    Server::removeUser(int socket)
 void                    Server::receiveMessage(int socket)
 {
     char buffer[BUFFER_SIZE] = {0};
-    ssize_t valread = recv(socket, buffer, sizeof(buffer) - 1, 0);
+    ssize_t valread = recv(socket, buffer, BUFFER_SIZE - 1, 0);
     if (valread < 0)
     {
         // how to handle this situation if we could not read from socket?
         std::cerr << "Error reading from socket" << std::endl;
     }
-    else if (valread == 0)
+    else if (valread == 0) // client disconnected
         removeUser(socket);
     else
-        this->users[socket].processInput(std::string(buffer));
+    {
+        User &usr = this->users[socket];
+        usr.in_buffer.append(std::string(buffer));
+        while (usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
+        {
+            std::string msg_str = usr.in_buffer.substr(0, usr.in_buffer.find(END_OF_MESSAGE));
+            usr.in_buffer.erase(0, usr.in_buffer.find(END_OF_MESSAGE) + strlen(END_OF_MESSAGE));
+            Message msg = Message::fromString(msg_str);
+            handleMessage(msg, usr);
+        }
         
+    }
+        
+}
+
+void                    Server::handleMessage(Message &msg, User &usr)
+{
+    if (msg.getCommand() == "CAP") // ignore CAP messages
+		return ;
+	if (usr.getVerified() == false) // only allow PASS command
+	{
+		if (msg.getCommand() == "PASS")
+			pass(msg, usr);
+		else
+			removeUser(usr.getSocket());
+	}
+	else
+	{
+		if (msg.getCommand() == "NICK")
+			nick(msg, usr);
+		else if (msg.getCommand() == "USER")
+			user(msg, usr);
+		// else if (msg.getCommand() == "QUIT")	// do we need this?
+		// 	removeUser(usr.getSocket()); 
+		else if (usr.getRegistered() == false)
+			return ;
+		// else if (msg.getCommand() == "JOIN")
+		// 	join(msg, usr);
+		// ...
+		// ..
+		// .
+	}
 }
 
 bool                    Server::checkUserExists(const std::string &nickname)
