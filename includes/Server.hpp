@@ -6,12 +6,16 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 10:57:44 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/07 00:05:22 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
+
+#include "Channel.hpp"
+#include "User.hpp"
+#include "Message.hpp"
 
 #include <iostream>
 #include <vector>
@@ -25,12 +29,10 @@
 #include <poll.h>
 #include <cstdio>
 #include <signal.h>
-#include "Channel.hpp"
-#include "User.hpp"
-#include "Message.hpp"
 #include "defines.hpp"
 
 class User;
+class Channel;
 
 class Server
 {
@@ -42,14 +44,18 @@ private:
     int                             socket;
     struct sockaddr_in              address;
     std::vector<struct pollfd>      fds;
-    std::map<std::string, Channel>  channels; // <name, Channel>
-    std::map<int, User>             users; // <socket, User>
-    std::map<std::string, int>      nick_to_sock; // <nickname, socket> // only registered users
+    // std::map<std::string, Channel>  channels; // <name, Channel>
+    // std::map<int, User>             users; // <socket, User>
+    // std::map<std::string, int>      nick_to_sock; // <nickname, socket> // only registered users
 
     // private methods
     void                    disconnect();
     
 public:
+    std::map<int, User>             users; 
+    std::map<std::string, Channel>  channels; // <name, Channel>
+    std::map<std::string, int>      nick_to_sock; 
+
     Server(/* args */);
     Server(const char* name, const char* port, const char* password);
     ~Server();
@@ -79,7 +85,8 @@ public:
     void                    handleMessage(Message &msg, User &usr);
     // returns true if the nickname is already in use
     bool                    nickUnused(const std::string &nickname);
-	// void                    handleMessage(Message &msg, User &usr);
+	// usr joins/create a channel! throws an exception if the channel name is invalid
+    void                    addChannel(std::string name, std::string key);
 };
 
 extern Server *server; // NOT SURE IF WE ARE ALLOWED TO DO THIS

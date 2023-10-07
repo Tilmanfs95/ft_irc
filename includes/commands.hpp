@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 00:41:56 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/05 15:16:18 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ class User;
 void    pass(Message &msg, User &usr);
 void    nick(Message &msg, User &usr);
 void    user(Message &msg, User &usr);
+void	quit(Message &msg, User &usr);
+void	join(Message &msg, User &usr);
 
 
 

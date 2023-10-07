@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 00:52:37 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/07 00:45:04 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ User::User(int socket) : socket(socket)
     this->username = "";
     this->realname = "";
     this->host_ip = "";
+    this->channels = std::vector<std::string>();
+    this->out_messages = std::queue<Message>();
+    this->in_buffer = std::string();
 }
 
 User::User(int socket, std::string host_ip) : socket(socket), host_ip(host_ip)
@@ -35,6 +38,9 @@ User::User(int socket, std::string host_ip) : socket(socket), host_ip(host_ip)
     this->nickname = "";
     this->username = "";
     this->realname = "";
+    this->channels = std::vector<std::string>();
+    this->out_messages = std::queue<Message>();
+    this->in_buffer = std::string();
 }
 
 User::~User()
@@ -74,6 +80,11 @@ void    User::setRealname(const std::string &realname)
     this->realname = realname;
 }
 
+void    User::addChannel(const std::string &channel)
+{
+    this->channels.push_back(channel);
+}
+
 
 // Getters
 
@@ -107,9 +118,15 @@ std::string User::getRealname() const
     return this->realname;
 }
 
+std::string User::getHostIp() const
+{
+    return this->host_ip;
+}
+
 std::string User::getUserIdent() const
 {
     return this->nickname + "!" + this->username + "@" + this->host_ip;
+    //return this->username + "@" + this->host_ip;
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 00:52:16 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/07 00:45:10 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,16 @@ private:
     std::string username;
     std::string realname;
     std::string host_ip;
-    // std::string in_buffer;
+    // std::string in_buffer; // now public
     std::queue<Message> out_messages;
     //
     // implement this!
     // (so we do not need to iterate all users of all channels if the user quits, changes his nickname...)
-    std::vector<std::string> channels; 
+    // std::vector<std::string> channels; 
     //
 ;
 public:
+    std::vector<std::string> channels; 
     std::string in_buffer;
 
     // constructors and destructor
@@ -75,6 +76,7 @@ public:
     void		setNickname(const std::string &nickname);
     void		setUsername(const std::string &username);
     void		setRealname(const std::string &realname);
+    void        addChannel(const std::string &channel);
     // // getters
     int			getSocket() const;
     bool		getVerified() const;
@@ -83,6 +85,7 @@ public:
     std::string	getUsername() const;
     std::string	getRealname() const;
     // std::string	getHostname() const;
+    std::string getHostIp() const;
     std::string getUserIdent() const; // <nickname>!~<username>@<host_ip>
     
     // methods:

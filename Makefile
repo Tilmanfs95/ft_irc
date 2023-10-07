@@ -6,7 +6,7 @@
 #    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/10/05 00:33:06 by tfriedri         ###   ########.fr        #
+#    Updated: 2023/10/05 15:16:02 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,8 @@ SRCS			=	srcs/main.cpp	\
 					srcs/cmmnds/pass.cpp	\
 					srcs/cmmnds/nick.cpp	\
 					srcs/cmmnds/user.cpp	\
+					srcs/cmmnds/quit.cpp	\
+					srcs/cmmnds/join.cpp	\
 
 OBJS			=	$(SRCS:.cpp=.o)
 

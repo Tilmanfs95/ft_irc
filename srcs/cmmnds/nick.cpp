@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 11:01:43 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/07 00:49:54 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,23 @@ void    nick(Message &msg, User &usr)
         {
             if (usr.getRegistered() == true)
             {
+                // change the nickname in all channels the user is in:
+                //...
                 // send nick change message to all users in all channels the user is in:
                 //...
                 // send nick change message the user itself:
+                for (std::vector<std::string>::iterator it = usr.channels.begin(); it != usr.channels.end(); it++)
+                {
+                    Channel &channel = server->channels[*it];
+                    if (std::find(channel.users.begin(), channel.users.end(), usr.getNickname()) != channel.users.end())
+                    {
+                        channel.users.erase(std::find(channel.users.begin(), channel.users.end(), usr.getNickname()));
+                        channel.users.push_back(nick);
+                        // send message to channel
+                        channel.sendMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
+                    }
+                }
+                
                 usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
                 // first send the messages and then change the nickname so that the sender of the message is still the old nickname
                 usr.setNickname(nick);

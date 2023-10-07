@@ -6,13 +6,11 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 10:58:00 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/07 00:05:18 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
-#include "../includes/User.hpp"
-#include "../includes/Message.hpp"
 
 
 Server::Server(/* args */)
@@ -235,27 +233,30 @@ void                    Server::receiveMessage(int socket)
 
 void                    Server::handleMessage(Message &msg, User &usr)
 {
-    if (msg.getCommand() == "CAP") // ignore CAP messages
+    std::string cmmnd = msg.getCommand();
+    if (cmmnd == "CAP") // ignore CAP messages
 		return ;
-	if (usr.getVerified() == false) // only allow PASS command
+    else if (cmmnd == "QUIT")
+        quit(msg, usr);
+	else if (usr.getVerified() == false) // only allow PASS command
 	{
-		if (msg.getCommand() == "PASS")
+		if (cmmnd == "PASS")
 			pass(msg, usr);
 		else
 			removeUser(usr.getSocket());
 	}
 	else
 	{
-		if (msg.getCommand() == "NICK")
+		if (cmmnd == "NICK")
 			nick(msg, usr);
-		else if (msg.getCommand() == "USER")
+		else if (cmmnd == "USER")
 			user(msg, usr);
 		// else if (msg.getCommand() == "QUIT")	// do we need this?
 		// 	removeUser(usr.getSocket()); 
 		else if (usr.getRegistered() == false)
 			return ;
-		// else if (msg.getCommand() == "JOIN")
-		// 	join(msg, usr);
+		else if (msg.getCommand() == "JOIN")
+			join(msg, usr);
 		// ...
 		// ..
 		// .
@@ -275,3 +276,34 @@ bool                    Server::nickUnused(const std::string &nickname)
     }
     return true;
 }
+
+void                    Server::addChannel(std::string name, std::string key)
+{
+    try
+    {
+        this->channels.insert(std::pair<std::string, Channel>(name, Channel(name, key)));
+        
+    }
+    catch(const std::exception& e)
+    {
+        throw e;
+    }
+    
+    
+}
+
+// void                    Server::joinChannel(const std::string &channel_name, const std::string key, User &usr)
+// {
+//     // check if channel name is valid 
+//     // ...
+//     // check if channel exists
+//     std::map<std::string, Channel>::iterator it = channels.find("name");
+//     if (it != channels.end())
+//     {
+//         // channel exists
+//     }
+//     else
+//     {
+//         // create new channel
+//     }
+// }
