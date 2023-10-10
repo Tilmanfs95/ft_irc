@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/07 00:36:03 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/09 23:59:36 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ private:
     std::string topic;
     // operator list:
     std::vector<std::string> operators;
-
     // invite list:
     std::vector<std::string> invites;
     // user limit:
@@ -50,7 +49,7 @@ private:
     
 public:
     // user list:
-    std::vector<std::string> users;
+    std::vector<std::string> users; // list of all nicknames (incl. operators)
     
     Channel(/* args */);
     Channel(std::string name, std::string key);
@@ -59,6 +58,8 @@ public:
     std::string getName() const;
     // add a user to the channel or throw an exception
     void        addUser(User &usr, const std::string key);
+    // remove a user from the channel
+    void        removeUser(User &usr, std::string partMessage);
     
     void        setAsOperator(std::string nickname);
     void        removeAsOperator(std::string nickname);

@@ -8,3 +8,6 @@
 - nick command fertig machen (wenn channels implementiert sind)
 - globalen server-pointer ausbauen wenn möglich
 - alle libraries auf c++ alternativen überprüfen (z.b. <unistd.h> in main.cpp)
+
+
+- nach join noch die liste mit den ganzen usern aus der gruppe zurücksenden und das sonstige gruppeninfozeugs

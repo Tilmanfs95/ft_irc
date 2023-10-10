@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/07 00:49:54 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 01:41:01 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,43 +44,36 @@ void    nick(Message &msg, User &usr)
         usr.addOutMessage(Message::fromString(ERR_NICKNAMEINUSE(usr, nick)));
     else
     {
-        if (usr.getNickname().empty())
+        if (usr.getRegistered() == true)
+        {
+            std::cout << usr.getNickname() << " changed nickname to " << nick << std::endl;
+            
+            for (std::vector<std::string>::iterator it = usr.channels.begin(); it != usr.channels.end(); it++)
+            {
+                if (std::find(server->channels[*it].users.begin(), server->channels[*it].users.end(), usr.getNickname()) != server->channels[*it].users.end())
+                {
+                    // here we send the message too often to the user itself !! NEEDS FIXING !!
+                    // maybe we should check inside the sendMessage function if the user is in the channel
+                    // ..
+                    // ..
+                    server->channels[*it].sendMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
+                    server->channels[*it].users.erase(std::find(server->channels[*it].users.begin(), server->channels[*it].users.end(), usr.getNickname()));
+                    server->channels[*it].users.push_back(nick);
+                    // send message to channel
+                    // server->channels[*it].sendMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
+                }
+            }
+            // change the nickname in the server->nick_to_sock map
+            server->nick_to_sock.insert(std::pair<std::string, int>(nick, usr.getSocket()));
+            server->nick_to_sock.erase(usr.getNickname());
+            // first send the messages and then change the nickname so that the sender of the message is still the old nickname
+            usr.setNickname(nick);
+        }
+        else
         {
             usr.setNickname(nick);
             if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
                 server->registerUser(usr.getSocket());
-        }
-        else
-        {
-            if (usr.getRegistered() == true)
-            {
-                // change the nickname in all channels the user is in:
-                //...
-                // send nick change message to all users in all channels the user is in:
-                //...
-                // send nick change message the user itself:
-                for (std::vector<std::string>::iterator it = usr.channels.begin(); it != usr.channels.end(); it++)
-                {
-                    Channel &channel = server->channels[*it];
-                    if (std::find(channel.users.begin(), channel.users.end(), usr.getNickname()) != channel.users.end())
-                    {
-                        channel.users.erase(std::find(channel.users.begin(), channel.users.end(), usr.getNickname()));
-                        channel.users.push_back(nick);
-                        // send message to channel
-                        channel.sendMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
-                    }
-                }
-                
-                usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " NICK :" + nick + "\r\n"));
-                // first send the messages and then change the nickname so that the sender of the message is still the old nickname
-                usr.setNickname(nick);
-            }
-            else
-            {
-                usr.setNickname(nick);
-                if (usr.getUsername().empty() == false && usr.getRealname().empty() == false)
-                    server->registerUser(usr.getSocket());
-            }
-        }
+        } 
     }
 }

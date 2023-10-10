@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/06 23:54:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/09 21:32:18 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	join(Message &msg, User &usr)
 			{
 				server->channels[channel].addUser(usr, key);
 				// send RPL_TOPIC
+				// and RPL_NAMREPLY
 				//...
 			}
 			catch(const std::exception& e)
@@ -82,19 +83,19 @@ void	join(Message &msg, User &usr)
 		}
 		else
 		{
-			try
-			{
-				server->addChannel(channel, key);
+			// try
+			// {
+				// normally nothing of the following should throw an exception because we create a new channel
+				// server->addChannel(channel, key);
+				server->channels.insert(std::pair<std::string, Channel>(channel, Channel(channel, key)));
 				server->channels[channel].addUser(usr, key);
 				server->channels[channel].setAsOperator(usr.getNickname());
-				//
-			}
-			catch(const std::exception& e)
-			{
-				std::cerr << e.what() << '\n'; //
-				// Do we need to send an error message here?
-				continue ;
-			}
+			// }
+			// catch(const std::exception& e)
+			// {
+			// 	std::cerr << e.what() << '\n'; //
+			// 	continue ;
+			// }
 		}
 		
 	}

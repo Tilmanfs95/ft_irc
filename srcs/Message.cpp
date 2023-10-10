@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 22:48:18 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 01:52:58 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,18 @@ Message  Message::fromString(const std::string &msg) {
         }
     }
     // check if it's a valid message
-    // NOT SURE IF THIS IS NECESSARY
     // if (message.getCommand().empty()) {
     //     throw std::runtime_error("Invalid IRC message: " + msg);
     // }
     return message;
+}
+
+
+// DEBUG
+void    Message::print() const {
+    std::cout << "prefix: " << this->getPrefix() << "\tcommand: " << this->getCommand();
+    std::cout << "\tparams: ";
+    for (size_t i = 0; i < this->getParams().size(); i++)
+        std::cout << this->getParams()[i] << " ";
+    std::cout << "\ttrailing: " << this->getTrailing() << std::endl;
 }

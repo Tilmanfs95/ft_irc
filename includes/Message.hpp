@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:42:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/04 14:17:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/09 22:57:02 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,9 @@ public:
     // Methods
     static Message  fromString(const std::string &msg);
     std::string     toString() const;
+
+    // DEBUG
+    void            print() const;
 };
 
 #endif

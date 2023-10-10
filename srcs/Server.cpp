@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/07 00:05:18 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 01:56:57 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,10 @@ void                    Server::run()
 							std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
                         else
 						{
-							std::cout << "\033[0;33mSent to socket " << this->fds[i].fd << ":\033[0m " << msg.substr(0, sent);
+                            if (this->users[this->fds[i].fd].getRegistered() == true)
+                                std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
+                            else
+                                std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
 							msg.erase(0, sent);
 						}
                     }
@@ -154,7 +157,7 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
         this->fds.push_back(pfd);
         // std::string ip = inet_ntoa(address.sin_addr);
         this->users.insert(std::pair<int, User>(c_socket, User(c_socket, inet_ntoa(address.sin_addr))));
-		std::cout << "\033[1;32mSocket " << c_socket << ": New connection from " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << "\033[0m" << std::endl;
+		std::cout << "\033[1;32mSocket " << c_socket << ":\033[0m New connection from " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << std::endl;
     }
     catch(const std::exception& e)
     {
@@ -168,11 +171,17 @@ void                    Server::registerUser(int socket)
     this->nick_to_sock.insert(std::pair<std::string, int>(usr.getNickname(), socket));
     usr.setRegistered(true);
     usr.addOutMessage(Message::fromString(RPL_WELCOME(usr)));
-    //...
+    std::cout << "\033[1;32mSocket " << socket << ":\033[0m Registered as " << usr.getNickname() << std::endl;
 }
 
 void                    Server::removeUser(int socket)
 {
+    // Print disconnect message | DEBUG
+    if (this->users.find(socket) != this->users.end() && this->users[socket].getNickname() != "")
+        std::cout << this->users[socket].getNickname() << " disconnected" << std::endl;
+    else
+        std::cout << "Socket " << socket << " disconnected" << std::endl;
+    
     // remove user from fds vector
     for (size_t i = 1; i < this->fds.size(); i++)
     {
@@ -184,9 +193,18 @@ void                    Server::removeUser(int socket)
     }
     if (this->users[socket].getRegistered() == true)
     {
-        // TODO: remove user from channels
-        //...
-        //...
+        // remove user from all channels
+        for (size_t i = 0; i < this->users[socket].channels.size(); i++)
+        {
+            std::string channel_name = this->users[socket].channels[i];
+            this->channels[channel_name].removeUser(this->users[socket], "");
+            // check if channel is empty
+            if (this->channels[channel_name].users.size() == 0)
+            {
+                this->channels.erase(channel_name);
+                std::cout << "Channel " << channel_name << " removed because it was empty" << std::endl;
+            }
+        }
         // remove user from nick_to_sock map
         for (std::map<std::string, int>::iterator it = this->nick_to_sock.begin(); it != this->nick_to_sock.end(); it++)
         {
@@ -201,7 +219,6 @@ void                    Server::removeUser(int socket)
     this->users.erase(socket);
     // close user socket
     close(socket);
-    std::cout << "User disconnected and removed" << std::endl;
 }
 
 void                    Server::receiveMessage(int socket)
@@ -219,16 +236,19 @@ void                    Server::receiveMessage(int socket)
     {
         User &usr = this->users[socket];
         usr.in_buffer.append(std::string(buffer));
-        while (usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
+        while (this->users.find(socket) != this->users.end() && usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
         {
             std::string msg_str = usr.in_buffer.substr(0, usr.in_buffer.find(END_OF_MESSAGE));
             usr.in_buffer.erase(0, usr.in_buffer.find(END_OF_MESSAGE) + strlen(END_OF_MESSAGE));
             Message msg = Message::fromString(msg_str);
+            // msg.print();
+            if (usr.getRegistered() == true)
+                std::cout << "\033[0;33mFrom\t" << usr.getNickname() << ":\033[0m\t" << msg_str << std::endl;
+            else
+                std::cout << "\033[0;33mFrom\tsocket" << socket << ":\033[0m\t" << msg_str << std::endl;
             handleMessage(msg, usr);
         }
-        
     }
-        
 }
 
 void                    Server::handleMessage(Message &msg, User &usr)
@@ -276,34 +296,3 @@ bool                    Server::nickUnused(const std::string &nickname)
     }
     return true;
 }
-
-void                    Server::addChannel(std::string name, std::string key)
-{
-    try
-    {
-        this->channels.insert(std::pair<std::string, Channel>(name, Channel(name, key)));
-        
-    }
-    catch(const std::exception& e)
-    {
-        throw e;
-    }
-    
-    
-}
-
-// void                    Server::joinChannel(const std::string &channel_name, const std::string key, User &usr)
-// {
-//     // check if channel name is valid 
-//     // ...
-//     // check if channel exists
-//     std::map<std::string, Channel>::iterator it = channels.find("name");
-//     if (it != channels.end())
-//     {
-//         // channel exists
-//     }
-//     else
-//     {
-//         // create new channel
-//     }
-// }

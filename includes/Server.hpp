@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/07 00:05:22 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 00:10:02 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ public:
     void                    addNewUser(struct sockaddr_in address, socklen_t addrlen);
     // add user to nick_to_sock map and send welcome messages
     void                    registerUser(int socket);
-    // removes user from users map and if registered from nick_to_sock map -------- TODO: remove user from channels
+    // removes user from everyting and closes the socket
     void                    removeUser(int socket);
     // reads from socket and start users processInput()-method
     void                    receiveMessage(int socket);
@@ -86,7 +86,7 @@ public:
     // returns true if the nickname is already in use
     bool                    nickUnused(const std::string &nickname);
 	// usr joins/create a channel! throws an exception if the channel name is invalid
-    void                    addChannel(std::string name, std::string key);
+    // void                    addChannel(std::string name, std::string key);
 };
 
 extern Server *server; // NOT SURE IF WE ARE ALLOWED TO DO THIS

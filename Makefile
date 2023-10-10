@@ -6,7 +6,7 @@
 #    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/10/05 15:16:02 by tfriedri         ###   ########.fr        #
+#    Updated: 2023/10/09 21:57:26 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRCS			=	srcs/main.cpp	\
 OBJS			=	$(SRCS:.cpp=.o)
 
 $(NAME):			$(OBJS)
-					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
+					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME) -g -fsanitize=address
 
 all:				$(NAME)
 
