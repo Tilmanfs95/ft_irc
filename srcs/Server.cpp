@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 01:56:57 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:49:08 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,6 @@ Server::~Server()
 {
 }
 
-// Setters
-
-
-// Getters
-
 int                     Server::getSocket() const
 {
     return (this->socket);
@@ -72,13 +67,6 @@ std::string             Server::getPassword() const
 {
     return (this->password);
 }
-
-// std::string             Server::getName() const
-// {
-//     return (this->name);
-// }
-
-// Methods
 
 void                    Server::run()
 {
@@ -203,6 +191,7 @@ void                    Server::removeUser(int socket)
             {
                 this->channels.erase(channel_name);
                 std::cout << "Channel " << channel_name << " removed because it was empty" << std::endl;
+                i--; // because the channel was removed, the next channel is now at the same index
             }
         }
         // remove user from nick_to_sock map

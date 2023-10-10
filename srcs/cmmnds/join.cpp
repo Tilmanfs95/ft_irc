@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/09 21:32:18 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:48:36 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,79 +24,57 @@
 // ERR_UNAVAILRESOURCE -- what is this ?!
 // RPL_TOPIC
 
+
+void	leaveAllChannels(User &usr)
+{
+	std::string channel;
+	for (size_t i = 0; i < usr.channels.size(); i++)
+	{
+		channel = usr.channels[i];
+		server->channels[channel].removeUser(usr, "");
+		usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + channel));
+		// check if channel is empty
+		if (server->channels[channel].users.size() == 0)
+		{
+		    server->channels.erase(channel);
+		    std::cout << "Channel " << channel << " removed because it was empty" << std::endl;
+			i--; // because the channel was removed, the next channel is now at the same index
+		}
+	}
+}
+
 void	join(Message &msg, User &usr)
 {
 	if (msg.getParams().size() == 0)
 	{
-		//send ERR_NEEDMOREPARAMS
-		//...
+		usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand())));
 		return ;
 	}
-	if (msg.getParams().size() == 1 && msg.getCommand()[0] == '0')
+	if (msg.getParams().size() == 1 && msg.getParams()[0] == "0")
 	{
-		//leave all channels !
-		//handle like part command for each channel
-		//...
+		leaveAllChannels(usr);
 		return ;
 	}
-	std::istringstream iss(msg.getTrailing());
 	std::string	channel;
 	std::string	key;
-	for (size_t i = 0; i < msg.getParams().size(); i++)
+	std::istringstream channels(msg.getParams()[0]);
+	std::istringstream keys(msg.getParams().size() > 1 ? msg.getParams()[1] : "");
+	while (std::getline(channels, channel, ','))
 	{
-		channel = msg.getParams()[i];
-		std::getline(iss, key, ',');
+		if (std::getline(keys, key, ',') == false)
+			key = "";
 		if (channel[0] != '#' && channel[0] != '&')
-		{
-			//send ERR_BADCHANMASK
-			//...
-			continue ;
-		}
-		if (server->channels.find(channel) != server->channels.end())
-		{
-			try
-			{
-				server->channels[channel].addUser(usr, key);
-				// send RPL_TOPIC
-				// and RPL_NAMREPLY
-				//...
-			}
-			catch(const std::exception& e)
-			{
-				// std::cerr << e.what() << '\n'; //
-				if (std::string(e.what()).compare("Channel key is incorrect") == 0)
-				{
-					//send ERR_BADCHANNELKEY
-				}
-				// else if (e.what().compare("Channel is full") == 0)
-				else if (std::string(e.what()).compare("Channel is full") == 0)
-				{
-					//send ERR_CHANNELISFULL
-				}
-				// else if (e.what().compare("Channel is invite only") == 0)
-				else if (std::string(e.what()).compare("Channel is invite only") == 0)
-				{
-					//send ERR_INVITEONLYCHAN
-				}
-			}
-			continue ;
-		}
+			usr.addOutMessage(Message::fromString(ERR_BADCHANMASK(usr, channel)));
+		else if (channel.size() > 50 || channel.find_first_of("\a\b\f\n\r\t\v") != std::string::npos)
+			usr.addOutMessage(Message::fromString(ERR_ERRONEUSCHANNELNAME(usr, channel)));
+		else if (key.size() > 50 || key.find_first_of("\a\b\f\n\r\t\v") != std::string::npos)
+			usr.addOutMessage(Message::fromString(ERR_ERRONEUSCHANNELKEY(usr, channel)));
+		else if (server->channels.find(channel) != server->channels.end())
+			server->channels[channel].addUser(usr, key, false);
 		else
 		{
-			// try
-			// {
-				// normally nothing of the following should throw an exception because we create a new channel
-				// server->addChannel(channel, key);
-				server->channels.insert(std::pair<std::string, Channel>(channel, Channel(channel, key)));
-				server->channels[channel].addUser(usr, key);
-				server->channels[channel].setAsOperator(usr.getNickname());
-			// }
-			// catch(const std::exception& e)
-			// {
-			// 	std::cerr << e.what() << '\n'; //
-			// 	continue ;
-			// }
+			server->channels.insert(std::pair<std::string, Channel>(channel, Channel(channel, key)));
+			server->channels[channel].addUser(usr, key, true);
 		}
-		
 	}
 }

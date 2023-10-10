@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/09 23:59:36 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:11:08 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Server.hpp"
 #include "Message.hpp"
 #include "User.hpp"
+#include "defines.hpp"
 
 class User;
 
@@ -45,7 +46,6 @@ private:
     // modes:
     bool    i; // invite only
     bool    t; // topic restrict
-    bool    k; // key
     
 public:
     // user list:
@@ -56,13 +56,16 @@ public:
     ~Channel();
 
     std::string getName() const;
-    // add a user to the channel or throw an exception
-    void        addUser(User &usr, const std::string key);
+    // add a user to the channel
+    // (also send a message to the user and all other users of the channel)
+    void        addUser(User &usr, const std::string key, bool isOperator);
     // remove a user from the channel
+    // (does not send a message to the user itself but to all other users of the channel)
+    // you need to check if the channel is empty afterwards and delete it if it is
     void        removeUser(User &usr, std::string partMessage);
     
-    void        setAsOperator(std::string nickname);
-    void        removeAsOperator(std::string nickname);
+    // void        setAsOperator(std::string nickname);
+    // void        removeAsOperator(std::string nickname);
 
     // function to send a message to all users of the channel
     void        sendMessage(const Message &msg);
