@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 20:46:03 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 15:18:22 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ bool    check_nick_chars(std::string nick)
         return false;
     for (size_t i = 0; i < nick.size(); i++)
     {
+		if (i == 0 && (nick[i] == '#' || nick[i] == '&')) // also check for other channel prefixes that we don't support ??
+			return false;
         if (nick[i] == ',' || nick[i] == '*' || nick[i] == '?' || nick[i] == '!' || nick[i] == '@')
             return false;
     }

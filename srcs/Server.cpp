@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 12:13:36 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 15:54:45 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,14 +259,19 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			nick(msg, usr);
 		else if (cmmnd == "USER")
 			user(msg, usr);
-		// else if (msg.getCommand() == "QUIT")	// do we need this?
-		// 	removeUser(usr.getSocket()); 
 		else if (usr.getRegistered() == false)
 			return ;
 		else if (msg.getCommand() == "JOIN")
 			join(msg, usr);
+		else if (msg.getCommand() == "PRIVMSG")
+			privmsg(msg, usr);
+		else if (msg.getCommand() == "NOTICE")
+			notice(msg, usr);
+		
 		// ...
 		// ..
 		// .
+		else
+			usr.addOutMessage(Message::fromString(ERR_UNKNOWNCOMMAND(usr, msg.getCommand())));
 	}
 }

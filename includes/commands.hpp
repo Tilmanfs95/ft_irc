@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 12:14:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 15:48:05 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void    user(Message &msg, User &usr);
 void	quit(Message &msg, User &usr);
 void	join(Message &msg, User &usr);
 void	ping(Message &msg, User &usr);
+void	privmsg(Message &msg, User &usr);
+void	notice(Message &msg, User &usr);
 
 
 
