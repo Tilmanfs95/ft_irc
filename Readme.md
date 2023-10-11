@@ -2,6 +2,7 @@
 
 ## Links:
 
+	- https://modern.ircdocs.horse/#nick-message
     - https://www.rfc-editor.org/rfc/rfc2812.html
     - https://cdn.intra.42.fr/pdf/pdf/97375/en.subject.pdf
 

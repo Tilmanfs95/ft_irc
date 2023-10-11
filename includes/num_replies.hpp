@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 21:51:44 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 13:34:50 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 # define ERR_INVITEONLYCHAN(user, channel) (":" SERVER_NAME " 473 " + user.getNickname() + " " + channel + " :Cannot join channel (+i)")
 # define ERR_BADCHANMASK(user, channel) (":" SERVER_NAME " 476 " + user.getNickname() + " " + channel + " :Bad Channel Mask")
 
+// # define ERR_NOORIGIN(user) (":" SERVER_NAME " 409 " + user.getNickname() + " :No origin specified")
+// # define ERR_NOSUCHSERVER(user, server) (":" SERVER_NAME " 402 " + user.getNickname() + " " + server + " :No such server")
 
 // custom replies
 # define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel name")

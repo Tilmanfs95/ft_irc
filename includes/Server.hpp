@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 00:23:10 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 13:25:48 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ public:
     // A map that contains all nicknames/registerd users
     // The map key is the nickname in uppercase (for case insensitive comparison)
     // <nickname in uppercase, socket>
-    std::map<std::string, int>      nick_to_sock; 
+    std::map<std::string, int>      nick_to_sock;
 
     Server(/* args */);
     // name = servername/hostname

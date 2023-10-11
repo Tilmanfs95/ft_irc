@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 00:25:17 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 12:13:36 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 		return ;
     else if (cmmnd == "QUIT")
         quit(msg, usr);
+	else if (cmmnd == "PING")
+		ping(msg, usr);
 	else if (usr.getVerified() == false) // only allow PASS command
 	{
 		if (cmmnd == "PASS")
