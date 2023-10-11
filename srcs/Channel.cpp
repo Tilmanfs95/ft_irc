@@ -21,6 +21,7 @@ Channel::Channel(std::string name, std::string key): name(name), key(key)
 
 Channel::~Channel()
 {
+	std::cout << "Channel " << this->name << " closed" << std::endl;
 }
 
 std::string		Channel::getName() const
@@ -44,6 +45,7 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 		usr.addOutMessage(Message::fromString(ERR_INVITEONLYCHAN(usr, this->name)));
 	else
 	{
+
 		// add user to channel
 		this->users.push_back(usr.getNickname());
 		// if user is operator, add user to operators list
@@ -54,6 +56,7 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 		// send JOIN message to all users in channel
 		sendMessage(Message::fromString(":" + usr.getUserIdent() + " JOIN " + this->name));
 		// send RPL_TOPIC or RPL_NOTOPIC to the joining user
+		usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " JOIN " + this->name));
 		if (this->topic.empty())
 			usr.addOutMessage(Message::fromString(RPL_NOTOPIC(usr, this->name)));
 		else
@@ -85,11 +88,14 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 	if (std::find(this->users.begin(), this->users.end(), usr.getNickname()) == this->users.end())
 		return ;
 	// remove user from channel
-	this->users.erase(std::find(this->users.begin(), this->users.end(), usr.getNickname()));
+	if (std::find(this->users.begin(), this->users.end(), usr.getNickname()) != this->users.end())
+		this->users.erase(std::find(this->users.begin(), this->users.end(), usr.getNickname()));
 	// remove user from operators list
-	this->operators.erase(std::find(this->operators.begin(), this->operators.end(), usr.getNickname()));
+	if (std::find(this->operators.begin(), this->operators.end(), usr.getNickname()) != this->operators.end())
+		this->operators.erase(std::find(this->operators.begin(), this->operators.end(), usr.getNickname()));
 	// remove channel from the users list of joined channels
-	usr.channels.erase(std::find(usr.channels.begin(), usr.channels.end(), this->name));
+	if (std::find(usr.channels.begin(), usr.channels.end(), this->name) != usr.channels.end())
+		usr.channels.erase(std::find(usr.channels.begin(), usr.channels.end(), this->name));
 	// send PART message to all users in channel
 	if (partMessage.empty())
 		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
@@ -99,29 +105,13 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 	std::cout << "Removed " << usr.getNickname() << " from " << this->name << std::endl;
 }
 
-// void			Channel::setAsOperator(std::string nickname)
-// {
-// 	if (std::find(this->users.begin(), this->users.end(), nickname) == this->users.end())
-// 		throw std::invalid_argument("User is not in channel");
-// 	if (std::find(this->operators.begin(), this->operators.end(), nickname) != this->operators.end())
-// 		throw std::invalid_argument("User is already operator");
-// 	this->operators.push_back(nickname);
-// }
-
-// void			Channel::removeAsOperator(std::string nickname)
-// {
-// 	if (std::find(this->users.begin(), this->users.end(), nickname) == this->users.end())
-// 		throw std::invalid_argument("User is not in channel");
-// 	if (std::find(this->operators.begin(), this->operators.end(), nickname) == this->operators.end())
-// 		throw std::invalid_argument("User is not operator");
-// 	this->operators.erase(std::find(this->operators.begin(), this->operators.end(), nickname));
-// }
-
 void			Channel::sendMessage(const Message &msg)
 {
 	for (size_t i = 0; i < this->users.size(); i++)
 	{
-		int socket = server->nick_to_sock[this->users[i]];
+		std::string user_upper = this->users[i];
+		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
+		int socket = server->nick_to_sock[user_upper];
 		server->users[socket].addOutMessage(msg);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 17:49:08 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 00:25:17 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,12 @@ Server::Server(const char* name, const char* port, const char* password)
     this->fds.push_back(pfd);
     // set running to true
     this->running = true;
-    std::cout << "Server created" << std::endl;
+    // std::cout << "Server created" << std::endl;
+    std::cout << "\033[1;32mServer " << this->name << " created on port " << this->port << "\033[0m" << std::endl;
 }
 
 Server::~Server()
 {
-}
-
-int                     Server::getSocket() const
-{
-    return (this->socket);
-}
-
-unsigned int            Server::getPort() const
-{
-    return (this->port);
 }
 
 std::string             Server::getPassword() const
@@ -156,7 +147,9 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
 void                    Server::registerUser(int socket)
 {
     User &usr = this->users[socket];
-    this->nick_to_sock.insert(std::pair<std::string, int>(usr.getNickname(), socket));
+    std::string nickname_upper = usr.getNickname();
+    std::transform(nickname_upper.begin(), nickname_upper.end(), nickname_upper.begin(), ::toupper);
+    this->nick_to_sock.insert(std::pair<std::string, int>(nickname_upper, socket));
     usr.setRegistered(true);
     usr.addOutMessage(Message::fromString(RPL_WELCOME(usr)));
     std::cout << "\033[1;32mSocket " << socket << ":\033[0m Registered as " << usr.getNickname() << std::endl;
@@ -184,13 +177,14 @@ void                    Server::removeUser(int socket)
         // remove user from all channels
         for (size_t i = 0; i < this->users[socket].channels.size(); i++)
         {
-            std::string channel_name = this->users[socket].channels[i];
-            this->channels[channel_name].removeUser(this->users[socket], "");
+            std::string channel_upper = this->users[socket].channels[i];
+            std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+            this->channels[channel_upper].removeUser(this->users[socket], "");
             // check if channel is empty
-            if (this->channels[channel_name].users.size() == 0)
+            if (this->channels[channel_upper].users.size() == 0)
             {
-                this->channels.erase(channel_name);
-                std::cout << "Channel " << channel_name << " removed because it was empty" << std::endl;
+                this->channels.erase(channel_upper);
+                std::cout << "Channel " << channel_upper << " removed because it was empty" << std::endl;
                 i--; // because the channel was removed, the next channel is now at the same index
             }
         }
@@ -242,6 +236,9 @@ void                    Server::receiveMessage(int socket)
 
 void                    Server::handleMessage(Message &msg, User &usr)
 {
+    // Important:
+    // -The client must send a PASS command before sending the NICK and USER commands.
+    // -The client must send a NICK and USER command before any others.
     std::string cmmnd = msg.getCommand();
     if (cmmnd == "CAP") // ignore CAP messages
 		return ;
@@ -270,18 +267,4 @@ void                    Server::handleMessage(Message &msg, User &usr)
 		// ..
 		// .
 	}
-}
-
-bool                    Server::nickUnused(const std::string &nickname)
-{
-    std::string newnick = nickname;
-    std::transform(newnick.begin(), newnick.end(), newnick.begin(), ::toupper);
-    for (size_t i = 0; i < this->fds.size(); i++)
-    {
-        std::string present = this->users[this->fds[i].fd].getNickname();
-        std::transform(present.begin(), present.end(), present.begin(), ::toupper);
-        if (present == newnick)
-            return false;
-    }
-    return true;
 }

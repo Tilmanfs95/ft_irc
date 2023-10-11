@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 00:10:02 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 00:23:10 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,51 +44,52 @@ private:
     int                             socket;
     struct sockaddr_in              address;
     std::vector<struct pollfd>      fds;
-    // std::map<std::string, Channel>  channels; // <name, Channel>
-    // std::map<int, User>             users; // <socket, User>
-    // std::map<std::string, int>      nick_to_sock; // <nickname, socket> // only registered users
-
-    // private methods
+    
+    // closes all sockets
+    // runs after the server loop is stopped
     void                    disconnect();
+    // handles a message from a user
+    void                    handleMessage(Message &msg, User &usr);
     
 public:
-    std::map<int, User>             users; 
-    std::map<std::string, Channel>  channels; // <name, Channel>
+    // A map that contains all users that are connected to the server
+    // <socket, User>
+    std::map<int, User>             users;
+    // A map that contains all channels that are active
+    // The map key is the channel name in uppercase (for case insensitive comparison)
+    // <channelname in uppercase, Channel>
+    std::map<std::string, Channel>  channels;
+    // A map that contains all nicknames/registerd users
+    // The map key is the nickname in uppercase (for case insensitive comparison)
+    // <nickname in uppercase, socket>
     std::map<std::string, int>      nick_to_sock; 
 
     Server(/* args */);
+    // name = servername/hostname
+    // port = portnumber
+    // password = server password
     Server(const char* name, const char* port, const char* password);
     ~Server();
 
-    
-    // Getters
-    int                     getSocket() const;
-    unsigned int            getPort() const;
     std::string             getPassword() const;
-    // std::string             getName() const; // not needed because we can use the SERVER_NAME
-
-    // Methods
 
     // starts the server loop
     void                    run();
-    // sets the running bool to false
+    // sets the running bool to false to stop the server loop
+    // called from the signal handler
     void					stop();
 	// adds a new unregistered user to the users map
     void                    addNewUser(struct sockaddr_in address, socklen_t addrlen);
     // add user to nick_to_sock map and send welcome messages
+    // should only be called after the user has registered (NICK and USER successfully received)
     void                    registerUser(int socket);
-    // removes user from everyting and closes the socket
+    // removes user and closes socket
+    // calls the channels removeUser() method for every channel the user is in
     void                    removeUser(int socket);
-    // reads from socket and start users processInput()-method
+    // reads from socket and starts the handleMessage() for every complete message
     void                    receiveMessage(int socket);
-    // handles a message from a user
-    void                    handleMessage(Message &msg, User &usr);
-    // returns true if the nickname is already in use
-    bool                    nickUnused(const std::string &nickname);
-	// usr joins/create a channel! throws an exception if the channel name is invalid
-    // void                    addChannel(std::string name, std::string key);
 };
 
-extern Server *server; // NOT SURE IF WE ARE ALLOWED TO DO THIS
+extern Server *server;
 
 #endif

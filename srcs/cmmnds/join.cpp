@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 17:48:36 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 23:57:32 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,25 +56,28 @@ void	join(Message &msg, User &usr)
 		return ;
 	}
 	std::string	channel;
+	std::string	channel_upper; // channelname in uppercase for case insensitive comparison
 	std::string	key;
 	std::istringstream channels(msg.getParams()[0]);
 	std::istringstream keys(msg.getParams().size() > 1 ? msg.getParams()[1] : "");
 	while (std::getline(channels, channel, ','))
 	{
+		channel_upper = channel;
+		std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
 		if (std::getline(keys, key, ',') == false)
 			key = "";
 		if (channel[0] != '#' && channel[0] != '&')
 			usr.addOutMessage(Message::fromString(ERR_BADCHANMASK(usr, channel)));
-		else if (channel.size() > 50 || channel.find_first_of("\a\b\f\n\r\t\v") != std::string::npos)
+		else if (channel.size() > 50 || channel.find_first_of(" :\a\b\f\n\r\t\v") != std::string::npos)
 			usr.addOutMessage(Message::fromString(ERR_ERRONEUSCHANNELNAME(usr, channel)));
-		else if (key.size() > 50 || key.find_first_of("\a\b\f\n\r\t\v") != std::string::npos)
+		else if (key.size() > 50 || key.find_first_of(" :\a\b\f\n\r\t\v") != std::string::npos) 
 			usr.addOutMessage(Message::fromString(ERR_ERRONEUSCHANNELKEY(usr, channel)));
-		else if (server->channels.find(channel) != server->channels.end())
-			server->channels[channel].addUser(usr, key, false);
-		else
+		else if (server->channels.find(channel_upper) != server->channels.end())
+			server->channels[channel_upper].addUser(usr, key, false);
+		else 
 		{
-			server->channels.insert(std::pair<std::string, Channel>(channel, Channel(channel, key)));
-			server->channels[channel].addUser(usr, key, true);
+			server->channels.insert(std::pair<std::string, Channel>(channel_upper, Channel(channel, key)));
+			server->channels[channel_upper].addUser(usr, key, true);
 		}
 	}
 }

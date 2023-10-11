@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/07 00:45:10 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 00:51:43 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,12 @@ class Server;
 
 class User
 {
-    // Important:
-    // -The client must send a PASS command before sending the NICK and USER commands.
-    // -The client must send a NICK and USER command before any others.
 private:
+    // socket file descriptor
     int         socket;
     // password accepted? (PASS command)
     bool        verified; 
-    // registered? (NICK and USER command)
+    // registered? (NICK and USER command received successfully)
     bool        registered;
     // mode:
     // 0 = normal user
@@ -50,26 +48,29 @@ private:
     std::string nickname;
     std::string username;
     std::string realname;
+    // This should be the hostname of the client
+    // In our case, we use the IP address of the client
+    // maybe we can make an DNS lookup to get the hostname ?
     std::string host_ip;
-    // std::string in_buffer; // now public
+    // Messages that need to be sent to the client
     std::queue<Message> out_messages;
-    //
-    // implement this!
-    // (so we do not need to iterate all users of all channels if the user quits, changes his nickname...)
-    // std::vector<std::string> channels; 
-    //
-;
 public:
-    std::vector<std::string> channels; 
+    // channelnames of the channels the user is in
+    // Important:
+    // - NOT in uppercase !
+    std::vector<std::string> channels;
+    // buffer for incoming messages
+    // received messages are stored here until they are complete and can be processed
     std::string in_buffer;
 
     // constructors and destructor
+
     User();
-    User(int socket);
     User(int socket, std::string host_ip);
     ~User();
     
     // setters
+    
     void        setRegistered(bool registered);
     void		setVerified(bool verified);
     void        setMode(int mode);
@@ -77,23 +78,27 @@ public:
     void		setUsername(const std::string &username);
     void		setRealname(const std::string &realname);
     void        addChannel(const std::string &channel);
-    // // getters
+    
+    // getters
+    
     int			getSocket() const;
     bool		getVerified() const;
     bool		getRegistered() const;
     std::string	getNickname() const;
     std::string	getUsername() const;
     std::string	getRealname() const;
-    // std::string	getHostname() const;
+    // returns the hostname of the client
+    // (in our case, the IP address)
     std::string getHostIp() const;
-    std::string getUserIdent() const; // <nickname>!~<username>@<host_ip>
+    // <nickname>!<username>@<host_ip>
+    std::string getUserIdent() const;
     
-    // methods:
-    // process the incoming string from the client
-    // void        processInput(const std::string &msg);
-    // gets the next message to send to the client from the out_messages queue
-    // throws an exception if the queue is empty
+    // Methods
+    
+    // Adds a message to the out_messages queue
     void		addOutMessage(const Message &msg);
+    // Returns the first message from the out_messages queue
+    // and removes it
     Message     getOutMessage();
 };
 

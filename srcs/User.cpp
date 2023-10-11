@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/07 00:45:04 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 00:50:31 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,6 @@
 
 User::User()
 {
-}
-
-User::User(int socket) : socket(socket)
-{
-    this->verified = false;
-    this->registered = false;
-    this->mode = 0;
-    this->nickname = "";
-    this->username = "";
-    this->realname = "";
-    this->host_ip = "";
-    this->channels = std::vector<std::string>();
-    this->out_messages = std::queue<Message>();
-    this->in_buffer = std::string();
 }
 
 User::User(int socket, std::string host_ip) : socket(socket), host_ip(host_ip)
@@ -126,11 +112,9 @@ std::string User::getHostIp() const
 std::string User::getUserIdent() const
 {
     return this->nickname + "!" + this->username + "@" + this->host_ip;
-    //return this->username + "@" + this->host_ip;
 }
 
 
-// Methods
 
 void		User::addOutMessage(const Message &msg)
 {

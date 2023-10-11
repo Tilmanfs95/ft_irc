@@ -6,14 +6,14 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/02 10:01:20 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/10 23:58:31 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 #include <unistd.h>
 
-Server *server; // NOT SURE IF THIS IS ALLOWED
+Server *server;
 
 void signalHandler(int) {
     server->stop();

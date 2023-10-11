@@ -6,7 +6,7 @@
 #    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/10/09 21:57:26 by tfriedri         ###   ########.fr        #
+#    Updated: 2023/10/11 00:52:53 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,6 @@ SRCS			=	srcs/main.cpp	\
 					srcs/Channel.cpp	\
 					srcs/User.cpp	\
 					srcs/Message.cpp	\
-					srcs/utils.cpp	\
 					srcs/cmmnds/pass.cpp	\
 					srcs/cmmnds/nick.cpp	\
 					srcs/cmmnds/user.cpp	\
