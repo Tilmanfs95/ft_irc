@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:48:32 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 16:34:25 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 21:50:00 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	notice(Message &msg, User &usr)
 		return ;
 	else
 	{
-		if (msg.getTrailing().size() == 0)
+		// if (msg.getTrailing().size() == 0)
+		if (msg.getParams().size() > 1)
 			msg.setTrailing(msg.getParams()[1]);
 		std::string trgt;
 		std::string trgt_upper;
@@ -33,7 +34,7 @@ void	notice(Message &msg, User &usr)
 			if (trgt[0] == '#' || trgt[0] == '&')
 			{
 				if (server->channels.find(trgt_upper) != server->channels.end())
-					server->channels[trgt_upper].sendMessage(Message::fromString(":" + usr.getUserIdent() + " PRIVMSG " + trgt + " :" + msg.getTrailing()));
+					server->channels[trgt_upper].sendMessage(Message::fromString(":" + usr.getUserIdent() + " PRIVMSG " + trgt + " :" + msg.getTrailing()), usr.getNickname());
 			}
 			else
 			{

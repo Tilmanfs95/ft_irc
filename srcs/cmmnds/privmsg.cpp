@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:00:49 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 16:35:52 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 21:49:46 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ void	privmsg(Message &msg, User &usr)
 {
 	if (msg.getParams().size() == 0)
 		usr.addOutMessage(Message::fromString(ERR_NORECIPIENT(usr, msg.getCommand())));
-	else if (msg.getTrailing().size() == 0 && msg.getParams().size() < 2)
+	else if (msg.getTrailing().empty() && msg.getParams().size() < 2)
 		usr.addOutMessage(Message::fromString(ERR_NOTEXTTOSEND(usr)));
 	else
 	{
-		if (msg.getTrailing().size() == 0)
+		// if (msg.getTrailing().size() == 0)
+		if (msg.getParams().size() > 1)
 			msg.setTrailing(msg.getParams()[1]);
 		std::string trgt;
 		std::string trgt_upper;
@@ -45,7 +46,7 @@ void	privmsg(Message &msg, User &usr)
 			if (trgt[0] == '#' || trgt[0] == '&')
 			{
 				if (server->channels.find(trgt_upper) != server->channels.end())
-					server->channels[trgt_upper].sendMessage(Message::fromString(":" + usr.getUserIdent() + " PRIVMSG " + trgt + " :" + msg.getTrailing()));
+					server->channels[trgt_upper].sendMessage(Message::fromString(":" + usr.getUserIdent() + " PRIVMSG " + trgt + " :" + msg.getTrailing()), usr.getNickname());
 				else
 					usr.addOutMessage(Message::fromString(ERR_NOSUCHNICK(usr, trgt)));
 			}

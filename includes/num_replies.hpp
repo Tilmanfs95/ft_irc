@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 15:55:18 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 17:35:56 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@
 # define ERR_NORECIPIENT(user, command) (":" SERVER_NAME " 411 " + user.getNickname() + " :No recipient given (" + command + ")")
 # define ERR_NOTEXTTOSEND(user) (":" SERVER_NAME " 412 " + user.getNickname() + " :No text to send")
 # define ERR_NOSUCHNICK(user, target) (":" SERVER_NAME " 401 " + user.getNickname() + " " + target + " :No such nick/channel")
+
+# define ERR_NOSUCHCHANNEL(user, channel) (":" SERVER_NAME " 403 " + user.getNickname() + " " + channel + " :No such channel")
+
+# define ERR_NOTONCHANNEL(user, channel) (":" SERVER_NAME " 442 " + user.getNickname() + " " + channel + " :You're not on that channel")
 
 // custom replies
 # define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel name")

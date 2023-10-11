@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 15:54:45 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:06:40 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			privmsg(msg, usr);
 		else if (msg.getCommand() == "NOTICE")
 			notice(msg, usr);
-		
+		else if (msg.getCommand() == "PART")
+			part(msg, usr);
 		// ...
 		// ..
 		// .

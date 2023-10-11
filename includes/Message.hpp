@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:42:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/09 22:57:02 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 18:59:34 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Message
     
     // example of a full message string from client to server:
     //      <command><params>
-    //      PRIVMSG #channel :Hello there!
+    //      PRIVMSG #channel H:ello there!
     //      PRIVMSG Nick :Hello there!
     //      PRIVMSG #channel1,#channel2,#channel3,user1,user2 :Hello everyone!
     //      JOIN #Channel1,#Channel2,#Channel3

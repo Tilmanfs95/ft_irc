@@ -56,7 +56,6 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 		// send JOIN message to all users in channel
 		sendMessage(Message::fromString(":" + usr.getUserIdent() + " JOIN " + this->name));
 		// send RPL_TOPIC or RPL_NOTOPIC to the joining user
-		usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " JOIN " + this->name));
 		if (this->topic.empty())
 			usr.addOutMessage(Message::fromString(RPL_NOTOPIC(usr, this->name)));
 		else
@@ -105,13 +104,28 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 	std::cout << "Removed " << usr.getNickname() << " from " << this->name << std::endl;
 }
 
-void			Channel::sendMessage(const Message &msg)
+void			Channel::sendMessage(const Message &msg, const std::string &sender)
 {
+	std::cout << "Sender is " << sender << std::endl;
+	std::string	sender_upper = sender;
+	std::transform(sender_upper.begin(), sender_upper.end(), sender_upper.begin(), ::toupper);
 	for (size_t i = 0; i < this->users.size(); i++)
 	{
 		std::string user_upper = this->users[i];
 		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
 		int socket = server->nick_to_sock[user_upper];
-		server->users[socket].addOutMessage(msg);
+		if (user_upper != sender_upper)
+			server->users[socket].addOutMessage(msg);
+		else
+			std::cout << "Not sending message to " << this->users[i] << " because it is the sender" << std::endl;
 	}
 }
+// {
+// 	for (size_t i = 0; i < this->users.size(); i++)
+// 	{
+// 		std::string user_upper = this->users[i];
+// 		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
+// 		int socket = server->nick_to_sock[user_upper];
+// 		server->users[socket].addOutMessage(msg);
+// 	}
+// }

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 23:57:32 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 17:30:38 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	leaveAllChannels(User &usr)
 	{
 		channel = usr.channels[i];
 		server->channels[channel].removeUser(usr, "");
-		usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + channel));
+		// usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + channel)); // already sent in removeUser()
 		// check if channel is empty
 		if (server->channels[channel].users.size() == 0)
 		{

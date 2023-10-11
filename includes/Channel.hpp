@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 23:58:06 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/11 22:11:50 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,9 @@ public:
     // (does not send a message to the user itself but to all other users of the channel)
     // you need to check if the channel is empty afterwards and delete it if it is
     void        removeUser(User &usr, std::string partMessage);
-    // sends a message to all users of the channel
-    void        sendMessage(const Message &msg);
+    // sends a message to all users of the channel (except the sender)
+	// if sender is not specified, the message is sent to all users
+    void        sendMessage(const Message &msg, const std::string &sender = std::string());
 };
 
 #endif
