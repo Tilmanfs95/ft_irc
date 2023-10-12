@@ -83,6 +83,11 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 
 void			Channel::removeUser(User &usr, std::string partMessage)
 {
+	// send PART message to all users in channel
+	if (partMessage.empty())
+		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
+	else
+		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name + " :" + partMessage));
 	// check if user is in channel
 	if (std::find(this->users.begin(), this->users.end(), usr.getNickname()) == this->users.end())
 		return ;
@@ -95,18 +100,12 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 	// remove channel from the users list of joined channels
 	if (std::find(usr.channels.begin(), usr.channels.end(), this->name) != usr.channels.end())
 		usr.channels.erase(std::find(usr.channels.begin(), usr.channels.end(), this->name));
-	// send PART message to all users in channel
-	if (partMessage.empty())
-		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
-	else
-		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name + " :" + partMessage));
 	//
 	std::cout << "Removed " << usr.getNickname() << " from " << this->name << std::endl;
 }
 
 void			Channel::sendMessage(const Message &msg, const std::string &sender)
 {
-	std::cout << "Sender is " << sender << std::endl;
 	std::string	sender_upper = sender;
 	std::transform(sender_upper.begin(), sender_upper.end(), sender_upper.begin(), ::toupper);
 	for (size_t i = 0; i < this->users.size(); i++)
@@ -116,16 +115,5 @@ void			Channel::sendMessage(const Message &msg, const std::string &sender)
 		int socket = server->nick_to_sock[user_upper];
 		if (user_upper != sender_upper)
 			server->users[socket].addOutMessage(msg);
-		else
-			std::cout << "Not sending message to " << this->users[i] << " because it is the sender" << std::endl;
 	}
 }
-// {
-// 	for (size_t i = 0; i < this->users.size(); i++)
-// 	{
-// 		std::string user_upper = this->users[i];
-// 		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
-// 		int socket = server->nick_to_sock[user_upper];
-// 		server->users[socket].addOutMessage(msg);
-// 	}
-// }
