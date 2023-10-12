@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
+#include <fcntl.h>
 
 
 Server::Server(/* args */)
@@ -20,33 +21,38 @@ Server::Server(/* args */)
 Server::Server(const char* name, const char* port, const char* password)
     : name(name), port(atoi(port)), password(password)
 {
+    // Validate port
     if (this->port < 1024 || this->port > 65535)
         throw std::invalid_argument("Invalid port number");
-    // Create socket
-    if ((this->socket = ::socket(AF_INET, SOCK_STREAM, 0)) < 0)
+
+    // Create socket and set options
+    this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
+    if (this->socket < 0)
         throw std::runtime_error("Socket creation failed");
-    // set socket options
+
     int opt = 1;
-    if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) < 0)
+    if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
         throw std::runtime_error("Socket options setting failed");
-    // set server address
+
+    // Set server address
     memset(&this->address, 0, sizeof(this->address));
     this->address.sin_family = AF_INET;
     this->address.sin_addr.s_addr = INADDR_ANY;
     this->address.sin_port = htons(this->port);
-    if (this->address.sin_port == 0)
-        throw std::runtime_error("Invalid port number");
-    // bind socket to address
+
+    // Bind and listen
     if (bind(this->socket, (struct sockaddr *)&this->address, sizeof(this->address)) < 0)
         throw std::runtime_error("Socket binding failed");
-    // listen for connections
     if (listen(this->socket, SOMAXCONN) < 0)
         throw std::runtime_error("Socket listening failed");
+
+    // Add the server socket to poll fds
     pollfd pfd = {this->socket, POLLIN, 0};
     this->fds.push_back(pfd);
-    // set running to true
+
+    // Flag server as running
     this->running = true;
-    // std::cout << "Server created" << std::endl;
+
     std::cout << "\033[1;32mServer " << this->name << " created on port " << this->port << "\033[0m" << std::endl;
 }
 
@@ -65,7 +71,7 @@ void                    Server::run()
     socklen_t               c_addrlen = sizeof(c_address);
     while (running)
     {
-        if (poll(this->fds.data(), this->fds.size(), 0) < 0 && running == true) // ore use another timeout?
+        if (poll(this->fds.data(), this->fds.size(), 1) < 0 && running == true) // ore use another timeout?
             throw std::runtime_error("Polling failed");
         for (size_t i = 0; i < this->fds.size(); i++)
         {   
@@ -132,6 +138,7 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
         int c_socket;
         if ((c_socket = accept(this->socket, (struct sockaddr *)&address, &addrlen)) < 0)
             throw std::runtime_error("Failed to accept connection");
+        fcntl(c_socket, F_SETFL, O_NONBLOCK);
         pollfd pfd = {c_socket, POLLIN | POLLOUT, 0}; 
         this->fds.push_back(pfd);
         // std::string ip = inet_ntoa(address.sin_addr);

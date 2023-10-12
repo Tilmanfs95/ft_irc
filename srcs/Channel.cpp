@@ -108,7 +108,7 @@ void			Channel::sendMessage(const Message &msg, const std::string &sender)
 {
 	std::cout << "Sender is " << sender << std::endl;
 	std::string	sender_upper = sender;
-	std::transform(sender_upper.begin(), sender_upper.end(), sender_upper.begin(), ::toupper);
+	// std::transform(sender_upper.begin(), sender_upper.end(), sender_upper.begin(), ::toupper);
 	for (size_t i = 0; i < this->users.size(); i++)
 	{
 		std::string user_upper = this->users[i];

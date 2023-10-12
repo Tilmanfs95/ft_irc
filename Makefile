@@ -33,7 +33,7 @@ SRCS			=	srcs/main.cpp	\
 OBJS			=	$(SRCS:.cpp=.o)
 
 $(NAME):			$(OBJS)
-					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME) -g -fsanitize=address
+					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
 all:				$(NAME)
 
