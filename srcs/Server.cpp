@@ -31,8 +31,15 @@ Server::Server(const char* name, const char* port, const char* password)
         throw std::runtime_error("Socket creation failed");
 
     int opt = 1;
-    if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-        throw std::runtime_error("Socket options setting failed");
+
+    #ifdef __APPLE__
+        if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+            throw std::runtime_error("Socket options setting failed");
+    #else
+        if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) < 0)
+            throw std::runtime_error("Socket options setting failed");
+    #endif
+    
 
     // Set server address
     memset(&this->address, 0, sizeof(this->address));
@@ -138,7 +145,9 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
         int c_socket;
         if ((c_socket = accept(this->socket, (struct sockaddr *)&address, &addrlen)) < 0)
             throw std::runtime_error("Failed to accept connection");
-        fcntl(c_socket, F_SETFL, O_NONBLOCK);
+        #ifdef __APPLE__
+            fcntl(c_socket, F_SETFL, O_NONBLOCK);
+        #endif
         pollfd pfd = {c_socket, POLLIN | POLLOUT, 0}; 
         this->fds.push_back(pfd);
         // std::string ip = inet_ntoa(address.sin_addr);
