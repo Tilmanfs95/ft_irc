@@ -66,7 +66,7 @@ public:
     void        removeUser(User &usr, std::string partMessage);
     // sends a message to all users of the channel (except the sender)
 	// if sender is not specified, the message is sent to all users
-    void        sendMessage(const Message &msg, const std::string &sender = std::string());
+    void        sendMessage(const Message &msg, const std::string &sender = "");
 };
 
 #endif
