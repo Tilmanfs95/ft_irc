@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 17:30:38 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/15 20:04:43 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,13 @@
 void	leaveAllChannels(User &usr)
 {
 	std::string channel;
-	for (size_t i = 0; i < usr.channels.size(); i++)
+	while (usr.channels.size() > 0)
 	{
-		channel = usr.channels[i];
+		channel = usr.channels[0];
+		std::transform(channel.begin(), channel.end(), channel.begin(), ::toupper);
 		server->channels[channel].removeUser(usr, "");
-		// usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + channel)); // already sent in removeUser()
-		// check if channel is empty
 		if (server->channels[channel].users.size() == 0)
-		{
 		    server->channels.erase(channel);
-		    std::cout << "Channel " << channel << " removed because it was empty" << std::endl;
-			i--; // because the channel was removed, the next channel is now at the same index
-		}
 	}
 }
 
