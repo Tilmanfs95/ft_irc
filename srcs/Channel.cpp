@@ -91,7 +91,7 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 	// std::cout << std::endl;
 }
 
-void			Channel::removeUser(User &usr, std::string partMessage)
+void			Channel::removeUser(User &usr, std::string partMessage, bool sendMessages)
 {
 	// check if user is in channel
 	if (std::find(this->users.begin(), this->users.end(), usr.getNickname()) == this->users.end())
@@ -112,10 +112,13 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 	if (std::find(usr.channels.begin(), usr.channels.end(), this->name) != usr.channels.end())
 		usr.channels.erase(std::find(usr.channels.begin(), usr.channels.end(), this->name));
 	// send PART message to all users in channel
-	if (partMessage.empty())
-		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
-	else
-		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name + " :" + partMessage));
+	if (sendMessages == true)
+	{
+		if (partMessage.empty())
+			sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
+		else
+			sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name + " :" + partMessage));
+	}
 	std::cout << "Removed " << usr.getNickname() << " from " << this->name << std::endl;
 }
 

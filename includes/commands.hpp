@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 16:58:26 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 20:14:17 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	privmsg(Message &msg, User &usr);
 void	notice(Message &msg, User &usr);
 void	part(Message &msg, User &usr);
 void	topic(Message &msg, User &usr);
-
+void	kick(Message &msg, User &usr);
 
 
 #endif
