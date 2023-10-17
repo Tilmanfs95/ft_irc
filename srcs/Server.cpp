@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 16:58:16 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 20:14:06 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,6 +287,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			part(msg, usr);
 		else if (msg.getCommand() == "TOPIC")
 			topic(msg, usr);
+		else if (msg.getCommand() == "KICK")
+			kick(msg, usr);
 		// ...
 		// ..
 		// .

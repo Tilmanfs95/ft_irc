@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 18:40:21 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 21:36:42 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ public:
     // remove a user from the channel
     // (does not send a message to the user itself but to all other users of the channel)
     // you need to check if the channel is empty afterwards and delete it if it is
-    void        removeUser(User &usr, std::string partMessage);
+    void        removeUser(User &usr, std::string partMessage, bool sendMessages = true);
 	// checks if the user is in the channel
 	// the argument is the nickname of the user (case sensitive !)
 	bool        isUser(const std::string &nickname) const;
