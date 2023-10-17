@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 17:10:59 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 18:40:21 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ public:
 	// checks if the user is an operator of the channel
 	// the argument is the nickname of the user (case sensitive !)
 	bool        isOperator(const std::string &nickname) const;
-	
     // sends a message to all users of the channel (except the sender)
 	// if sender is not specified, the message is sent to all users
     void        sendMessage(const Message &msg, const std::string &sender = "");

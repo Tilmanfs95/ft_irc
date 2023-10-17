@@ -93,11 +93,6 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 
 void			Channel::removeUser(User &usr, std::string partMessage)
 {
-	// send PART message to all users in channel
-	if (partMessage.empty())
-		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
-	else
-		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name + " :" + partMessage));
 	// check if user is in channel
 	if (std::find(this->users.begin(), this->users.end(), usr.getNickname()) == this->users.end())
 		return ;
@@ -107,10 +102,20 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 	// remove user from operators list
 	if (std::find(this->operators.begin(), this->operators.end(), usr.getNickname()) != this->operators.end())
 		this->operators.erase(std::find(this->operators.begin(), this->operators.end(), usr.getNickname()));
+	// if channel is not empty but user was the last operator, make the next user operator
+	if (!this->users.empty() && this->operators.empty())
+	{
+		this->operators.push_back(this->users[0]);
+		sendMessage(Message::fromString(":" + usr.getUserIdent() + " MODE " + this->name + " +o " + this->users[0]));
+	}
 	// remove channel from the users list of joined channels
 	if (std::find(usr.channels.begin(), usr.channels.end(), this->name) != usr.channels.end())
 		usr.channels.erase(std::find(usr.channels.begin(), usr.channels.end(), this->name));
-	//
+	// send PART message to all users in channel
+	if (partMessage.empty())
+		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name));
+	else
+		sendMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + this->name + " :" + partMessage));
 	std::cout << "Removed " << usr.getNickname() << " from " << this->name << std::endl;
 }
 
