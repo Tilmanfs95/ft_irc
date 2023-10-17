@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 17:35:56 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 16:55:02 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@
 # define ERR_NOSUCHCHANNEL(user, channel) (":" SERVER_NAME " 403 " + user.getNickname() + " " + channel + " :No such channel")
 
 # define ERR_NOTONCHANNEL(user, channel) (":" SERVER_NAME " 442 " + user.getNickname() + " " + channel + " :You're not on that channel")
+# define RPL_NOTOPIC(user, channel) (":" SERVER_NAME " 331 " + user.getNickname() + " " + channel + " :No topic is set")
+# define RPL_TOPIC(user, channel, topic) (":" SERVER_NAME " 332 " + user.getNickname() + " " + channel + " :" + topic)
+# define ERR_CHANOPRIVSNEEDED(user, channel) (":" SERVER_NAME " 482 " + user.getNickname() + " " + channel + " :You're not channel operator")
 
 // custom replies
 # define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel name")

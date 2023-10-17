@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/10 01:52:58 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 17:36:04 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ std::vector<std::string> Message::getParams() const {
     return this->params;
 }
 
+bool	Message::hasTrailing() const {
+	return this->trailing_exists;
+}
+
 std::string Message::getTrailing() const {
     return this->trailing;
 }
@@ -100,11 +104,13 @@ Message  Message::fromString(const std::string &msg) {
     // turn command to uppercase
     std::transform(token.begin(), token.end(), token.begin(), ::toupper);
     message.setCommand(token);
+	message.trailing_exists = false;
     while (iss >> token)
     {
         if (token[0] == ':')
         {
             // Trailing part
+			message.trailing_exists = true;
             std::string rest = token.substr(1); // removes ':'
             while (iss >> token) {
                 rest += " " + token;

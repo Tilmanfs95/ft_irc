@@ -29,6 +29,16 @@ std::string		Channel::getName() const
 	return (this->name);
 }
 
+std::string		Channel::getTopic() const
+{
+	return (this->topic);
+}
+
+void			Channel::setTopic(const std::string &topic)
+{
+	this->topic = topic;
+}
+
 void			Channel::addUser(User &usr, std::string key, bool isOperator)
 {
 	// check if user is already in channel
@@ -102,6 +112,20 @@ void			Channel::removeUser(User &usr, std::string partMessage)
 		usr.channels.erase(std::find(usr.channels.begin(), usr.channels.end(), this->name));
 	//
 	std::cout << "Removed " << usr.getNickname() << " from " << this->name << std::endl;
+}
+
+bool			Channel::isUser(const std::string &nickname) const
+{
+	if (std::find(this->users.begin(), this->users.end(), nickname) != this->users.end())
+		return (true);
+	return (false);
+}
+
+bool			Channel::isOperator(const std::string &nickname) const
+{
+	if (std::find(this->operators.begin(), this->operators.end(), nickname) != this->operators.end())
+		return (true);
+	return (false);
 }
 
 void			Channel::sendMessage(const Message &msg, const std::string &sender)

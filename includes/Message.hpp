@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:42:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 18:59:34 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/17 17:47:54 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,14 @@ private:
     // :<Nick>!<User>@<Host> 
     // -information about the sender
     std::string prefix;
-    // -command (required)
+    // the command (mandatory)
     std::string command;
-    // -params (optional)
+    // a vector of parameters (optional)
     std::vector<std::string> params;
-    // -trailing (optional) (starts with ':')
+	// true if the message has a trailing (starts with ':')
+	// important because an empty trailing is not the same as no trailing
+	bool		trailing_exists;
+    // the trailing (optional)
     std::string trailing;
 
     // private methods
@@ -61,13 +64,23 @@ public:
     void    setTrailing(const std::string &trailing);
     
     // Getters
+	
+	// returns the prefix as a string
     std::string     getPrefix() const;
+	// returns the command as a string
     std::string     getCommand() const;
+	// returns the params as a vector of strings
     std::vector<std::string>    getParams() const;
+	// returns true if the message has a trailing
+	bool						hasTrailing() const;
+	// returns the trailing
     std::string     getTrailing() const;
 
     // Methods
+
+	// creates a Message object from a string
     static Message  fromString(const std::string &msg);
+	// returns the message as a string
     std::string     toString() const;
 
     // DEBUG
