@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 13:43:00 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 14:15:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 17:09:31 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	names(Message &msg, User &usr)
 						users += " ";
 				}
 				usr.addOutMessage(Message::fromString(RPL_NAMREPLY(usr, channel, users)));
-				// send RPL_ENDOFNAMES to the joining user
 				usr.addOutMessage(Message::fromString(RPL_ENDOFNAMES(usr, channel)));
 			}
 		}

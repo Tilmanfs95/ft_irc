@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 16:40:49 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 17:13:35 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,9 +193,9 @@ void                    Server::registerUser(int socket)
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0░")));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░")));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "")));
-	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0┏┓┏┓┏┓┳┓┏┓┳┓┏┳┓\u00A0\u00A0┏┓\u00A0\u00A0┏┳┓┏┓┳┓┳┏┓┳┓┳┓┳")));
-	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0┣┫┃┓┣\u00A0┣┫┣\u00A0┣┫\u00A0┃\u00A0\u00A0\u00A0┣╋\u00A0\u00A0\u00A0┃\u00A0┣\u00A0┣┫┃┣\u00A0┃┃┣┫┃")));
-	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0┛┗┗┛┗┛┻┛┗┛┛┗\u00A0┻\u00A0\u00A0\u00A0┗┻\u00A0\u00A0\u00A0┻\u00A0┻\u00A0┛┗┻┗┛┻┛┛┗┻")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0┏┓┏┓┏┓┳┓┏┓┳┓┏┳┓\u00A0\u00A0┏┓\u00A0\u00A0┏┳┓┏┓┳┓┳┏┓┳┓┳┓┳")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0┣┫┃┓┣\u00A0┣┫┣\u00A0┣┫\u00A0┃\u00A0\u00A0\u00A0┣╋\u00A0\u00A0\u00A0┃\u00A0┣\u00A0┣┫┃┣\u00A0┃┃┣┫┃")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0┛┗┗┛┗┛┻┛┗┛┛┗\u00A0┻\u00A0\u00A0\u00A0┗┻\u00A0\u00A0\u00A0┻\u00A0┻\u00A0┛┗┻┗┛┻┛┛┗┻")));
 	usr.addOutMessage(Message::fromString(RPL_ENDOFMOTD(usr)));
 	//
     std::cout << "\033[1;32mSocket " << socket << ":\033[0m Registered as " << usr.getNickname() << std::endl;
