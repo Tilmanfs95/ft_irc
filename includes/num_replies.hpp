@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 20:17:23 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 15:38:42 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 
 
 # define RPL_WELCOME(user) (":" SERVER_NAME " 001 " + user.getNickname() + " :Welcome to the Internet Relay Network " + user.getUserIdent())
+# define RPL_YOURHOST(user) (":" SERVER_NAME " 002 " + user.getNickname() + " :Your host is " + SERVER_NAME + ", running version 1.0")
+// check and correct the usermodes for RPL_MYINFO !!!
+// # define RPL_MYINFO(user) (":" SERVER_NAME " 004 " + user.getNickname() + " " + SERVER_NAME + " 1.0 " + "ao" + " " + "itkol")
+// # define RPL_ISSUPPORT(user, params) (":" SERVER_NAME " 005 " + user.getNickname() + " " + params)
+# define RPL_MOTDSTART(user) (":" SERVER_NAME " 375 " + user.getNickname() + " :- " + SERVER_NAME + " Message of the day - ")
+# define RPL_MOTD(user, line) (":" SERVER_NAME " 372 " + user.getNickname() + " :- " + line)
+# define RPL_ENDOFMOTD(user) (":" SERVER_NAME " 376 " + user.getNickname() + " :End of MOTD command")
 
 
 # define ERR_UNKNOWNCOMMAND(user, command) (":" SERVER_NAME " 421 " + (user.getNickname().empty() ? "*" : user.getNickname()) + " " + command + " :Unknown command")
@@ -50,6 +57,8 @@
 # define ERR_CHANOPRIVSNEEDED(user, channel) (":" SERVER_NAME " 482 " + user.getNickname() + " " + channel + " :You're not channel operator")
 
 # define ERR_USERNOTINCHANNEL(user, target, channel) (":" SERVER_NAME " 441 " + user.getNickname() + " " + target + " " + channel + " :They aren't on that channel")
+
+
 
 
 // custom replies

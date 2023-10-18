@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 17:05:12 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/12 01:39:27 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 14:26:39 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ void 	part(Message &msg, User &usr)
 				// check if user is in channel
 				if (std::find(server->channels[trgt_upper].users.begin(), server->channels[trgt_upper].users.end(), usr.getNickname()) != server->channels[trgt_upper].users.end())
 				{
+					// send PART message to the user
+					usr.addOutMessage(Message::fromString(":" + usr.getUserIdent() + " PART " + trgt + " :" + msg.getTrailing()));
+					// send PART message to the channel
 					server->channels[trgt_upper].removeUser(usr, msg.getTrailing());
 					// check if channel is empty
 					if (server->channels[trgt_upper].users.size() == 0)

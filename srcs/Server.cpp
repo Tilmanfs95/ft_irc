@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 20:14:06 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:40:49 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,37 @@ void                    Server::registerUser(int socket)
     std::transform(nickname_upper.begin(), nickname_upper.end(), nickname_upper.begin(), ::toupper);
     this->nick_to_sock.insert(std::pair<std::string, int>(nickname_upper, socket));
     usr.setRegistered(true);
+	// send welcome messages
     usr.addOutMessage(Message::fromString(RPL_WELCOME(usr)));
+	usr.addOutMessage(Message::fromString(RPL_YOURHOST(usr)));
+	usr.addOutMessage(Message::fromString(RPL_MOTDSTART(usr)));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, ""))); 
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0@@@@\u00A0\u00A0@@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@\u00A0\u00A0\u00A0\u00A0@@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0@@@@@@@@@@@@@@@@@@@\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0@@@@@@@@@@@@@@@@@@@\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "")));             
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0█████▒▄▄▄█████▓\u00A0\u00A0\u00A0\u00A0██▓\u00A0██▀███\u00A0\u00A0\u00A0▄████▄")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0▓██\u00A0\u00A0\u00A0▒\u00A0▓\u00A0\u00A0██▒\u00A0▓▒\u00A0\u00A0\u00A0▓██▒▓██\u00A0▒\u00A0██▒▒██▀\u00A0▀█")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0▒████\u00A0░\u00A0▒\u00A0▓██░\u00A0▒░\u00A0\u00A0\u00A0▒██▒▓██\u00A0░▄█\u00A0▒▒▓█\u00A0\u00A0\u00A0\u00A0▄")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0░▓█▒\u00A0\u00A0░\u00A0░\u00A0▓██▓\u00A0░\u00A0\u00A0\u00A0\u00A0░██░▒██▀▀█▄\u00A0\u00A0▒▓▓▄\u00A0▄██▒")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0░▒█░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0▒██▒\u00A0░\u00A0\u00A0\u00A0\u00A0░██░░██▓\u00A0▒██▒▒\u00A0▓███▀\u00A0░")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0▒\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0▒\u00A0░░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░▓\u00A0\u00A0░\u00A0▒▓\u00A0░▒▓░░\u00A0░▒\u00A0▒\u00A0\u00A0░")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0▒\u00A0░\u00A0\u00A0░▒\u00A0░\u00A0▒░\u00A0\u00A0░\u00A0\u00A0▒")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0░\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0▒\u00A0░\u00A0\u00A0░░\u00A0\u00A0\u00A0░\u00A0░")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0\u00A0\u00A0\u00A0\u00A0░\u00A0░")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0░")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0┏┓┏┓┏┓┳┓┏┓┳┓┏┳┓\u00A0\u00A0┏┓\u00A0\u00A0┏┳┓┏┓┳┓┳┏┓┳┓┳┓┳")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0┣┫┃┓┣\u00A0┣┫┣\u00A0┣┫\u00A0┃\u00A0\u00A0\u00A0┣╋\u00A0\u00A0\u00A0┃\u00A0┣\u00A0┣┫┃┣\u00A0┃┃┣┫┃")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0┛┗┗┛┗┛┻┛┗┛┛┗\u00A0┻\u00A0\u00A0\u00A0┗┻\u00A0\u00A0\u00A0┻\u00A0┻\u00A0┛┗┻┗┛┻┛┛┗┻")));
+	usr.addOutMessage(Message::fromString(RPL_ENDOFMOTD(usr)));
+	//
     std::cout << "\033[1;32mSocket " << socket << ":\033[0m Registered as " << usr.getNickname() << std::endl;
 }
 
@@ -289,6 +319,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			topic(msg, usr);
 		else if (msg.getCommand() == "KICK")
 			kick(msg, usr);
+		else if (msg.getCommand() == "NAMES")
+			names(msg, usr);
 		// ...
 		// ..
 		// .

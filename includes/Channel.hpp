@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 21:36:42 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 13:59:33 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ private:
     std::string key;
     // channel topic:  (empty string if no topic is set)
     std::string topic;
-    // operator list:
-    std::vector<std::string> operators;
     // invite list:
     std::vector<std::string> invites;
     // user limit:
@@ -48,6 +46,8 @@ private:
 public:
     // user list:
     std::vector<std::string> users; // list of all nicknames (incl. operators)
+	// operator list:
+    std::vector<std::string> operators;
     // modes:
     bool    i; // invite only
     bool    t; // topic restricted

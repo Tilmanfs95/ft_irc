@@ -65,24 +65,10 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 		usr.addChannel(this->name);
 		// send JOIN message to all users in channel
 		sendMessage(Message::fromString(":" + usr.getUserIdent() + " JOIN " + this->name));
-		// send RPL_TOPIC or RPL_NOTOPIC to the joining user
-		if (this->topic.empty())
-			usr.addOutMessage(Message::fromString(RPL_NOTOPIC(usr, this->name)));
-		else
-			usr.addOutMessage(Message::fromString(RPL_TOPIC(usr, this->name, this->topic)));
-		// send RPL_NAMREPLY to the joining user
-		std::string users = "";
-		for (size_t i = 0; i < this->users.size(); i++)
-		{
-			if (std::find(this->operators.begin(), this->operators.end(), this->users[i]) != this->operators.end())
-				users += "@";
-			users += this->users[i];
-			if (i < this->users.size() - 1)
-				users += " ";
-		}
-		usr.addOutMessage(Message::fromString(RPL_NAMREPLY(usr, this->name, users)));
-		// send RPL_ENDOFNAMES to the joining user
-		usr.addOutMessage(Message::fromString(RPL_ENDOFNAMES(usr, this->name)));
+		// send all channel messages to the user
+		usr.in_buffer += "TOPIC " + this->name + END_OF_MESSAGE;
+		usr.in_buffer += "NAMES " + this->name + END_OF_MESSAGE;
+		// usr.in_buffer += "MODE " + this->name + END_OF_MESSAGE;
 	}
 	// print users channel list
 	// std::cout << usr.getNickname() << " is in channels: ";

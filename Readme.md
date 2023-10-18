@@ -37,3 +37,4 @@
     - [ ] implement ALL THE STUFF FROM THE SUBJECT
     - [ ] maybe make it possible to start without a password? (not sure if conform with the subject)
     - [ ] Bonus ?
+	- [ ] send a correct RPL_ISSUPPORT after user registered
