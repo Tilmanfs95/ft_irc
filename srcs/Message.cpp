@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 17:36:04 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 22:08:21 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ void    Message::setParams(const std::vector<std::string> &params) {
 
 void    Message::addParam(const std::string &param) {
     this->params.push_back(param);
+}
+
+void	Message::delParam(size_t index)
+{
+	if (index >= this->params.size())
+		return ;
+	this->params.erase(this->params.begin() + index);
 }
 
 void    Message::setTrailing(const std::string &trailing) {

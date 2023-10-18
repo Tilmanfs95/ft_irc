@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 13:59:33 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 20:32:48 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ public:
     // modes:
     bool    i; // invite only
     bool    t; // topic restricted
+	bool    k; // key required
+	bool    l; // user limit set
     
     Channel(/* args */);
     Channel(std::string name, std::string key);
@@ -60,9 +62,12 @@ public:
     std::string getName() const;
 	// gets the topic of the channel
 	std::string getTopic() const;
-
 	// sets the topic of the channel
 	void        setTopic(const std::string &topic);
+	// gets the key of the channel
+	std::string getKey() const;
+	// sets the key of the channel
+	void        setKey(const std::string &key);
 	
 	
     // adds a user to the channel

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 15:38:42 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 23:09:31 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,14 @@
 
 # define ERR_USERNOTINCHANNEL(user, target, channel) (":" SERVER_NAME " 441 " + user.getNickname() + " " + target + " " + channel + " :They aren't on that channel")
 
+# define ERR_UNKNOWNMODE(user, mode, channel) (":" SERVER_NAME " 472 " + user.getNickname() + " " + mode + " :is unknown mode char to me for " + channel)
+// # define ERR_KEYSET(user, channel) (":" SERVER_NAME " 467 " + user.getNickname() + " " + channel + " :Channel key already set")
+# define RPL_CHANNELMODEIS(user, channel, modes) (":" SERVER_NAME " 324 " + user.getNickname() + " " + channel + " " + modes)
 
-
-
-// custom replies
+// custom replies 
+// 
+// BITTE NOCH ENTFERNEN !!! BZW UMBAUEN !!!
+//
 # define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel name")
 # define ERR_ERRONEUSCHANNELKEY(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel key")
 

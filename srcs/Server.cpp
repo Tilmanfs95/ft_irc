@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 17:13:35 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 20:08:56 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,6 +321,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			kick(msg, usr);
 		else if (msg.getCommand() == "NAMES")
 			names(msg, usr);
+		else if (msg.getCommand() == "MODE")
+			mode(msg, usr);
 		// ...
 		// ..
 		// .

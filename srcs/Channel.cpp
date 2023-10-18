@@ -39,6 +39,16 @@ void			Channel::setTopic(const std::string &topic)
 	this->topic = topic;
 }
 
+std::string		Channel::getKey() const
+{
+	return (this->key);
+}
+
+void			Channel::setKey(const std::string &key)
+{
+	this->key = key;
+}
+
 void			Channel::addUser(User &usr, std::string key, bool isOperator)
 {
 	// check if user is already in channel

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:42:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 17:47:54 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/18 22:07:50 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,18 @@ public:
     ~Message();
     
     // Setters
+
+	// sets the prefix
     void    setPrefix(const std::string &prefix);
+	// sets the command
     void    setCommand(const std::string &command);
+	// sets the params vector
     void    setParams(const std::vector<std::string> &params);
+	// adds a parameter at the end of the params vector
     void    addParam(const std::string &param);
+	// deletes a parameter at the given index
+	void	delParam(size_t index);
+	// sets the trailing
     void    setTrailing(const std::string &trailing);
     
     // Getters
