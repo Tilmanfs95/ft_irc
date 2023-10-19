@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 16:28:59 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:58:21 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,28 +127,29 @@ void		modeO(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[
 // -l				remove user limit from channel
 void		modeL(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[])
 {
+	int limit;
+	std::stringstream ss;
+	std::string	buff;
+	
 	if (sign == '+')
 	{
 		if (msg.getParams().size() < 3)
 			usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +l --- Missing argument")));
 		else
 		{
-			try
-			{
-				std::string	buff = msg.getParams()[2];
-				msg.delParam(2);
-				int limit = std::stoi(buff);
-				if (limit < 0)
-					throw std::exception();
-				chan.setLimit(std::stoi(buff));
-				chan.l = true;
-				rpls[0] += 'l';
-				rpls[2] += " " + std::to_string(limit);
-			}
-			catch(const std::exception& e)
+			buff = msg.getParams()[2];
+			msg.delParam(2);
+			limit = std::atoi(buff.c_str());
+			if (limit <= 0)
 			{
 				usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +l --- Invalid limit")));
+				return ;	
 			}
+			chan.setLimit(limit);
+			chan.l = true;
+			rpls[0] += 'l';
+			ss << limit;
+			rpls[2] += " " + ss.str();
 		}
 	}
 	else if (sign == '-')
