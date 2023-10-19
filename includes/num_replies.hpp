@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 12:44:57 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:24:41 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define RPL_YOURHOST(user) (":" SERVER_NAME " 002 " + user.getNickname() + " :Your host is " + SERVER_NAME + ", running version 1.0")
 // check and correct the usermodes for RPL_MYINFO !!!
 // # define RPL_MYINFO(user) (":" SERVER_NAME " 004 " + user.getNickname() + " " + SERVER_NAME + " 1.0 " + "ao" + " " + "itkol")
-// # define RPL_ISSUPPORT(user, params) (":" SERVER_NAME " 005 " + user.getNickname() + " " + params)
+# define RPL_ISSUPPORT(user, params) (":" SERVER_NAME " 005 " + user.getNickname() + " " + params)
 # define RPL_MOTDSTART(user) (":" SERVER_NAME " 375 " + user.getNickname() + " :- " + SERVER_NAME + " Message of the day - ")
 # define RPL_MOTD(user, line) (":" SERVER_NAME " 372 " + user.getNickname() + " :- " + line)
 # define RPL_ENDOFMOTD(user) (":" SERVER_NAME " 376 " + user.getNickname() + " :End of MOTD command")
@@ -61,6 +61,11 @@
 # define ERR_UNKNOWNMODE(user, mode, channel) (":" SERVER_NAME " 472 " + user.getNickname() + " " + mode + " :is unknown mode char to me for " + channel)
 // # define ERR_KEYSET(user, channel) (":" SERVER_NAME " 467 " + user.getNickname() + " " + channel + " :Channel key already set")
 # define RPL_CHANNELMODEIS(user, channel, modes) (":" SERVER_NAME " 324 " + user.getNickname() + " " + channel + " " + modes)
+
+# define RPL_INVITELIST(user, channel, mask) (":" SERVER_NAME " 346 " + user.getNickname() + " " + channel + " " + mask)
+
+
+
 
 // custom replies 
 // 

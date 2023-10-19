@@ -6,25 +6,19 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 12:39:54 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:31:57 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
 
-// ERR_NEEDMOREPARAMS              	-done
-// ERR_CHANOPRIVSNEEDED				-done
-// ERR_USERNOTINCHANNEL     		-done    
-// ERR_UNKNOWNMODE								"<char> :is unknown mode char to me for <channel>" ???
-
+// ERR_NEEDMOREPARAMS     
+// ERR_CHANOPRIVSNEEDED		
+// ERR_USERNOTINCHANNEL     
+// ERR_UNKNOWNMODE				
 // RPL_CHANNELMODEIS							             				          
-// RPL_INVITELIST                  
-// RPL_ENDOFINVITELIST
-
-
 // ERR_NOSUCHCHANNEL
 // ERR_NOTONCHANNEL
-
 
 // +i				set channel to invite-only
 // -i				remove invite-only status from channel
@@ -36,16 +30,11 @@
 // -o <nick>		remove channel operator privileges
 // +l <limit>		set user limit to channel
 // -l				remove user limit from channel
-
 		   
 void		mode(Message &msg, User &usr)
 {
 	if (msg.getParams().size() < 1)
 		usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand())));
-	else if (msg.getParams().size() == 1)
-	{
-		// RPL_CHANNELMODEIS (if channel exists)
-	}
 	else
 	{
 		std::string	channel = msg.getParams()[0];
@@ -58,8 +47,11 @@ void		mode(Message &msg, User &usr)
 			return ;
 		}
 		Channel &chan = server->channels[channel_upper];
+		// check if there is no mode argument
+		if (msg.getParams().size() == 1)
+			usr.addOutMessage(Message::fromString(RPL_CHANNELMODEIS(usr, channel, chan.getModes(usr))));
 		// check if user is in channel
-		if (find(chan.users.begin(), chan.users.end(), usr.getNickname()) == chan.users.end())
+		else if (find(chan.users.begin(), chan.users.end(), usr.getNickname()) == chan.users.end())
 			usr.addOutMessage(Message::fromString(ERR_NOTONCHANNEL(usr, channel)));
 		// check if user is channel operator
 		else if (find(chan.operators.begin(), chan.operators.end(), usr.getNickname()) == chan.operators.end())
@@ -110,7 +102,8 @@ void		mode(Message &msg, User &usr)
 				else if (mode == 'k' && sign == '+') // NEEDS AN ARGUMENT
 				{
 					if (msg.getParams().size() < 3)
-						usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +k")));
+						// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +k")));
+						usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +k --- Missing argument")));
 					else
 					{
 						chan.k = true;
@@ -131,7 +124,8 @@ void		mode(Message &msg, User &usr)
 				else if (mode == 'o' && sign == '+') // NEEDS AN ARGUMENT
 				{
 					if (msg.getParams().size() < 3)
-						usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
+						// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
+						usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +o --- Missing argument")));
 					else
 					{
 						std::string nick;
@@ -161,7 +155,8 @@ void		mode(Message &msg, User &usr)
 				else if (mode == 'o' && sign == '-') // NEEDS AN ARGUMENT
 				{
 					if (msg.getParams().size() < 3)
-						usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
+						// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
+						usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +o --- Missing argument")));
 					else
 					{
 												std::string nick;
@@ -193,7 +188,8 @@ void		mode(Message &msg, User &usr)
 				else if (mode == 'l' && sign == '+') // NEEDS AN ARGUMENT
 				{
 					if (msg.getParams().size() < 3)
-						usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +l")));
+						// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +l")));
+						usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +l --- Missing argument")));
 					else
 					{
 						try
@@ -211,7 +207,7 @@ void		mode(Message &msg, User &usr)
 						}
 						catch(const std::exception& e)
 						{
-							usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +k --- Invalid limit")));
+							usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +l --- Invalid limit")));
 						}
 					}
 				}
@@ -224,7 +220,7 @@ void		mode(Message &msg, User &usr)
 				else
 					usr.addOutMessage(Message::fromString(ERR_UNKNOWNMODE(usr, mode, channel)));
 			}
-			// send RPL_CHANNELMODEIS to all users in channel
+			// send changes as RPL_CHANNELMODEIS to all users in channel
 			if (!reply_plus.empty())
 				reply = "+" + reply_plus;
 			if (!reply_minus.empty())
@@ -233,12 +229,6 @@ void		mode(Message &msg, User &usr)
 				reply = reply + " " +reply_params;
 			if (!reply.empty())
 				chan.sendMessage(Message::fromString(RPL_CHANNELMODEIS(usr, channel, reply)));
-			//
-			// This message is working for all clients (processing its content) in the channel
-			// but WeeChat is not showing it... why ? in ircnet it shows the message...
-			//
-			// only for the first time !! maybe weechat dont want to show the initial mode message
-			//
 		}
 	}
 }
