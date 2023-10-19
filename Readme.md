@@ -38,3 +38,4 @@
     - [ ] maybe make it possible to start without a password? (not sure if conform with the subject)
     - [ ] Bonus ?
 	- [ ] send a correct RPL_ISSUPPORT after user registered
+	- [ ] Do not restrict topic changes to channel operators only at channel creation time ??

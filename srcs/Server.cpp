@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 17:13:35 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:18:58 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ void                    Server::registerUser(int socket)
 	// send welcome messages
     usr.addOutMessage(Message::fromString(RPL_WELCOME(usr)));
 	usr.addOutMessage(Message::fromString(RPL_YOURHOST(usr)));
+	usr.addOutMessage(Message::fromString(RPL_ISSUPPORT(usr, "CHANTYPES=#& CHANMODES=,o,kl,it PREFIX=(o)@ NETWORK=" + this->name)));
 	usr.addOutMessage(Message::fromString(RPL_MOTDSTART(usr)));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, ""))); 
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0@@@@\u00A0\u00A0@@@@@@@")));
@@ -321,6 +322,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			kick(msg, usr);
 		else if (msg.getCommand() == "NAMES")
 			names(msg, usr);
+		else if (msg.getCommand() == "MODE")
+			mode(msg, usr);
 		// ...
 		// ..
 		// .

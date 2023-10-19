@@ -12,7 +12,12 @@ Channel::Channel(std::string name, std::string key): name(name), key(key)
 	this->invites = std::vector<std::string>();
 	this->limit = 0;
 	this->i = false;
-	this->t = true;
+	this->t = false;
+	if (key.empty())
+		this->k = false;
+	else
+		this->k = true;
+	this->l = false;
 	if (key.empty())
 		std::cout << "Created channel " << name << " with no key" << std::endl;
 	else
@@ -39,6 +44,49 @@ void			Channel::setTopic(const std::string &topic)
 	this->topic = topic;
 }
 
+std::string		Channel::getKey() const
+{
+	return (this->key);
+}
+
+void			Channel::setKey(const std::string &key)
+{
+	this->key = key;
+}
+
+unsigned int	Channel::getLimit() const
+{
+	return (this->limit);
+}
+
+void			Channel::setLimit(unsigned int limit)
+{
+	this->limit = limit;
+}
+
+std::string	Channel::getModes(User &requester) const
+{
+	std::string modes = "+";
+	std::string params;
+	if (this->i)
+		modes += "i";
+	if (this->t)
+		modes += "t";
+	if (this->k)
+	{
+		modes += "k";
+		params += " " + this->key;
+	}
+	if (this->l)
+	{
+		modes += "l";
+		params += " " + std::to_string(this->limit);
+	}
+	if (std::find(this->users.begin(), this->users.end(), requester.getNickname()) != this->users.end())
+		return (modes + params);	
+	return (modes);
+}
+
 void			Channel::addUser(User &usr, std::string key, bool isOperator)
 {
 	// check if user is already in channel
@@ -48,14 +96,13 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 	if (this->key != key)
 		usr.addOutMessage(Message::fromString(ERR_BADCHANNELKEY(usr, this->name)));
 	// check if channel is full
-	else if (this->limit > 0 && this->users.size() >= this->limit)
+	else if (this->l && this->users.size() >= this->limit)
 		usr.addOutMessage(Message::fromString(ERR_CHANNELISFULL(usr, this->name)));
 	// check if channel is invite only and user is invited
 	else if (this->i && std::find(this->invites.begin(), this->invites.end(), usr.getNickname()) == this->invites.end())
 		usr.addOutMessage(Message::fromString(ERR_INVITEONLYCHAN(usr, this->name)));
 	else
 	{
-
 		// add user to channel
 		this->users.push_back(usr.getNickname());
 		// if user is operator, add user to operators list
