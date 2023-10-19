@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 23:35:32 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 12:39:54 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,18 @@
 
 // ERR_NOSUCHCHANNEL
 // ERR_NOTONCHANNEL
+
+
+// +i				set channel to invite-only
+// -i				remove invite-only status from channel
+// +t				topics are settable by channel operator only
+// -t				topics may be set by anyone
+// +k <key>			set channel key (password)
+// -k				remove channel key (password)
+// +o <nick>		give channel operator privileges
+// -o <nick>		remove channel operator privileges
+// +l <limit>		set user limit to channel
+// -l				remove user limit from channel
 
 		   
 void		mode(Message &msg, User &usr)
@@ -125,7 +137,6 @@ void		mode(Message &msg, User &usr)
 						std::string nick;
 						std::string	nick_upper = msg.getParams()[2];
 						std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
-						// if (find(server->nick_to_sock.begin(), server->nick_to_sock.end(), nick_upper) == server->nick_to_sock.end())
 						if (server->nick_to_sock.find(nick_upper) == server->nick_to_sock.end())
 						{
 							usr.addOutMessage(Message::fromString(ERR_USERNOTINCHANNEL(usr, msg.getParams()[2], channel)));
@@ -147,20 +158,69 @@ void		mode(Message &msg, User &usr)
 						}
 					}
 				}
-				// else if (mode == 'o' && sign == '-')
-				// {
-				// 	//
-				// }
+				else if (mode == 'o' && sign == '-') // NEEDS AN ARGUMENT
+				{
+					if (msg.getParams().size() < 3)
+						usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
+					else
+					{
+												std::string nick;
+						std::string	nick_upper = msg.getParams()[2];
+						std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
+						if (server->nick_to_sock.find(nick_upper) == server->nick_to_sock.end())
+						{
+							usr.addOutMessage(Message::fromString(ERR_USERNOTINCHANNEL(usr, msg.getParams()[2], channel)));
+							msg.delParam(2);
+							continue ;
+						}
+						nick = server->users[server->nick_to_sock[nick_upper]].getNickname();
+						if (!chan.isOperator(nick))
+						{
+							msg.delParam(2);
+							continue ;	
+						}
+						else
+						{
+							chan.operators.erase(std::remove(chan.operators.begin(), chan.operators.end(), nick), chan.operators.end());
+							reply_minus += mode;
+							reply_params = reply_params + " " + msg.getParams()[2];
+							msg.delParam(2);
+						}
+					}
+				}
 				
 				// l: Set/remove the user limit to channel
-				// else if (mode == 'l' && sign == '+') // NEEDS AN ARGUMENT
-				// {
-				// }
-				// else if (mode == 'l' && sign == '-')
-				// {
-				// }
-				
-				
+				else if (mode == 'l' && sign == '+') // NEEDS AN ARGUMENT
+				{
+					if (msg.getParams().size() < 3)
+						usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +l")));
+					else
+					{
+						try
+						{
+							std::string	buff = msg.getParams()[2];
+							msg.delParam(2);
+							int limit = std::stoi(buff);
+							if (limit < 0)
+								throw std::exception();
+							chan.setLimit(std::stoi(buff));
+							chan.l = true;
+							reply_plus += mode;
+							reply_params = reply_params + " " + std::to_string(limit);
+							
+						}
+						catch(const std::exception& e)
+						{
+							usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, channel, " +k --- Invalid limit")));
+						}
+					}
+				}
+				else if (mode == 'l' && sign == '-')
+				{
+					chan.l = false;
+					reply_minus += mode;
+					chan.setLimit(0);
+				}
 				else
 					usr.addOutMessage(Message::fromString(ERR_UNKNOWNMODE(usr, mode, channel)));
 			}
@@ -171,10 +231,13 @@ void		mode(Message &msg, User &usr)
 				reply = reply + "-" + reply_minus;
 			if (!reply_params.empty())
 				reply = reply + " " +reply_params;
-			chan.sendMessage(Message::fromString(RPL_CHANNELMODEIS(usr, channel, reply)));
+			if (!reply.empty())
+				chan.sendMessage(Message::fromString(RPL_CHANNELMODEIS(usr, channel, reply)));
 			//
 			// This message is working for all clients (processing its content) in the channel
 			// but WeeChat is not showing it... why ? in ircnet it shows the message...
+			//
+			// only for the first time !! maybe weechat dont want to show the initial mode message
 			//
 		}
 	}

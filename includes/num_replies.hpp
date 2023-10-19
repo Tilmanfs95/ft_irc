@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 23:09:31 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 12:44:57 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,10 @@
 //
 # define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel name")
 # define ERR_ERRONEUSCHANNELKEY(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel key")
+
+// other custom errors
+# define ERR_GENERAL(user, error) (":" SERVER_NAME " 700 " + user.getNickname() + " " + error)
+// same for channels
+# define ERR_GENERAL_CHANNEL(user, channel, error) (":" SERVER_NAME " 701 " + user.getNickname() + " " + channel + " " + error)
 
 #endif 

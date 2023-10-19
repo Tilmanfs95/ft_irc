@@ -49,6 +49,16 @@ void			Channel::setKey(const std::string &key)
 	this->key = key;
 }
 
+unsigned int	Channel::getLimit() const
+{
+	return (this->limit);
+}
+
+void			Channel::setLimit(unsigned int limit)
+{
+	this->limit = limit;
+}
+
 void			Channel::addUser(User &usr, std::string key, bool isOperator)
 {
 	// check if user is already in channel

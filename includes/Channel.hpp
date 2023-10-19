@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 20:32:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 12:05:31 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,10 @@ public:
 	std::string getKey() const;
 	// sets the key of the channel
 	void        setKey(const std::string &key);
+	// gets the limit of the channel
+	unsigned int getLimit() const;
+	// sets the limit of the channel
+	void        setLimit(unsigned int limit);
 	
 	
     // adds a user to the channel
