@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 14:54:35 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/19 16:28:59 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,49 +22,146 @@
 
 // +i				set channel to invite-only
 // -i				remove invite-only status from channel
-// +t				topics are settable by channel operator only
-// -t				topics may be set by anyone
-// +k <key>			set channel key (password)
-// -k				remove channel key (password)
-// +o <nick>		give channel operator privileges
-// -o <nick>		remove channel operator privileges
-// +l <limit>		set user limit to channel
-// -l				remove user limit from channel
-
-void		modeI(Channel &chan, char sign, std::string *reply_plus, std::string *reply_minus)
+void		modeI(Channel &chan, char sign, std::string rpls[])
 {
 	if (sign == '+')
 	{
 		chan.i = true;
-		*reply_plus += 'i';
+		rpls[0] += 'i';
 	}
 	else if (sign == '-')
 	{
 		chan.i = false;
-		*reply_minus += 'i';
+		rpls[1] += 'i';
 	}
 }
 
-void		modeT(Channel &chan, char sign, std::string *reply_plus, std::string *reply_minus)
+// +t				topics are settable by channel operator only
+// -t				topics may be set by anyone
+void		modeT(Channel &chan, char sign, std::string rpls[])
 {
 	if (sign == '+')
 	{
 		chan.t = true;
-		*reply_plus += 't';
+		rpls[0] += 't';
 	}
 	else if (sign == '-')
 	{
 		chan.t = false;
-		*reply_minus += 't';
+		rpls[1] += 't';
 	}
 }
 
-void		iterModeParams(Message &msg, User &usr, Channel &chan)
+// +k <key>			set channel key (password)
+// -k				remove channel key (password)
+void		modeK(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[])
 {
-	std::string reply;
-	std::string	reply_plus = "";
-	std::string	reply_minus = "";
-	std::string reply_params = "";
+	if (sign == '+')
+	{
+		if (msg.getParams().size() < 3)
+			usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +k --- Missing argument")));	
+		else
+		{
+			chan.k = true;
+			chan.setKey(msg.getParams()[2]);
+			rpls[0] += 'k';
+			rpls[2] += " " + msg.getParams()[2];
+			msg.delParam(2);
+		}
+	}
+	else if (sign == '-')
+	{
+		chan.k = false;
+		rpls[1] += 'k';
+		chan.setKey("");
+	}
+}
+
+// +o <nick>		give channel operator privileges
+// -o <nick>		remove channel operator privileges
+void		modeO(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[])
+{
+	std::string nick;
+	std::string	nick_upper;
+	if (msg.getParams().size() < 3)
+		usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " " + sign + "o --- Missing argument")));
+	else
+	{
+		nick_upper = msg.getParams()[2];
+		std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
+		if (server->nick_to_sock.find(nick_upper) == server->nick_to_sock.end())
+		{
+			usr.addOutMessage(Message::fromString(ERR_USERNOTINCHANNEL(usr, msg.getParams()[2], chan.getName())));
+			msg.delParam(2);
+			return ;
+		}
+		nick = server->users[server->nick_to_sock[nick_upper]].getNickname();
+		if (sign == '+')
+		{
+			if (chan.isOperator(nick))
+				msg.delParam(2);
+			else
+			{
+				chan.operators.push_back(nick);
+				rpls[0] += 'o';
+				rpls[2] += " " + msg.getParams()[2];
+				msg.delParam(2);
+			}
+		}
+		else if (sign == '-')
+		{
+			if (!chan.isOperator(nick))
+				msg.delParam(2);
+			else
+			{
+				chan.operators.erase(std::remove(chan.operators.begin(), chan.operators.end(), nick), chan.operators.end());
+				rpls[1] += 'o';
+				rpls[2] += " " + msg.getParams()[2];
+				msg.delParam(2);
+			}
+		}
+	}
+}
+
+// +l <limit>		set user limit to channel
+// -l				remove user limit from channel
+void		modeL(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[])
+{
+	if (sign == '+')
+	{
+		if (msg.getParams().size() < 3)
+			usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +l --- Missing argument")));
+		else
+		{
+			try
+			{
+				std::string	buff = msg.getParams()[2];
+				msg.delParam(2);
+				int limit = std::stoi(buff);
+				if (limit < 0)
+					throw std::exception();
+				chan.setLimit(std::stoi(buff));
+				chan.l = true;
+				rpls[0] += 'l';
+				rpls[2] += " " + std::to_string(limit);
+			}
+			catch(const std::exception& e)
+			{
+				usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +l --- Invalid limit")));
+			}
+		}
+	}
+	else if (sign == '-')
+	{
+		chan.l = false;
+		rpls[1] += 'l';
+		chan.setLimit(0);
+	}
+}
+
+// function to loop through mode arguments and set/remove modes
+void		execModeParams(Message &msg, User &usr, Channel &chan, std::string rpls[])
+{
 	char	sign = 0;
 	char	mode;
 	for (size_t i = 0; i < msg.getParams()[1].size(); i++)
@@ -74,149 +171,30 @@ void		iterModeParams(Message &msg, User &usr, Channel &chan)
 			sign = '+';
 		else if (mode == '-')
 			sign = '-';
-			
 		// i: Set/remove Invite-only channel
 		else if (mode == 'i')
-			modeI(chan, sign, &reply_plus, &reply_minus);
+			modeI(chan, sign, rpls);
 		// t: Set/remove the restrictions of the TOPIC command to channel operators
 		else if (mode == 't')
-			modeT(chan, sign, &reply_plus, &reply_minus);
-
+			modeT(chan, sign, rpls);
 		// k: Set/remove the channel key (password) 
-		else if (mode == 'k' && sign == '+') // NEEDS AN ARGUMENT
-		{
-			if (msg.getParams().size() < 3)
-				// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +k")));
-				usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +k --- Missing argument")));
-			else
-			{
-				chan.k = true;
-				chan.setKey(msg.getParams()[2]);
-				reply_plus += mode;
-				reply_params = reply_params + " " + msg.getParams()[2];
-				msg.delParam(2);
-			}
-		}
-		else if (mode == 'k' && sign == '-')
-		{
-			chan.k = false;
-			reply_minus += mode;
-			chan.setKey("");
-		}
-		
+		else if (mode == 'k')
+			modeK(msg, usr, chan, sign, rpls);
 		// o: Give/take channel operator privilege
-		else if (mode == 'o' && sign == '+') // NEEDS AN ARGUMENT
-		{
-			if (msg.getParams().size() < 3)
-				// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
-				usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +o --- Missing argument")));
-			else
-			{
-				std::string nick;
-				std::string	nick_upper = msg.getParams()[2];
-				std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
-				if (server->nick_to_sock.find(nick_upper) == server->nick_to_sock.end())
-				{
-					usr.addOutMessage(Message::fromString(ERR_USERNOTINCHANNEL(usr, msg.getParams()[2], chan.getName())));
-					msg.delParam(2);
-					continue ;
-				}
-				nick = server->users[server->nick_to_sock[nick_upper]].getNickname();
-				if (chan.isOperator(nick))
-				{
-					msg.delParam(2);
-					continue ;	
-				}
-				else
-				{
-					chan.operators.push_back(nick);
-					reply_plus += mode;
-					reply_params = reply_params + " " + msg.getParams()[2];
-					msg.delParam(2);
-				}
-			}
-		}
-		else if (mode == 'o' && sign == '-') // NEEDS AN ARGUMENT
-		{
-			if (msg.getParams().size() < 3)
-				// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +o")));
-				usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +o --- Missing argument")));
-			else
-			{
-										std::string nick;
-				std::string	nick_upper = msg.getParams()[2];
-				std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
-				if (server->nick_to_sock.find(nick_upper) == server->nick_to_sock.end())
-				{
-					usr.addOutMessage(Message::fromString(ERR_USERNOTINCHANNEL(usr, msg.getParams()[2], chan.getName())));
-					msg.delParam(2);
-					continue ;
-				}
-				nick = server->users[server->nick_to_sock[nick_upper]].getNickname();
-				if (!chan.isOperator(nick))
-				{
-					msg.delParam(2);
-					continue ;	
-				}
-				else
-				{
-					chan.operators.erase(std::remove(chan.operators.begin(), chan.operators.end(), nick), chan.operators.end());
-					reply_minus += mode;
-					reply_params = reply_params + " " + msg.getParams()[2];
-					msg.delParam(2);
-				}
-			}
-		}
-		
+		else if (mode == 'o')
+			modeO(msg, usr, chan, sign, rpls);
 		// l: Set/remove the user limit to channel
-		else if (mode == 'l' && sign == '+') // NEEDS AN ARGUMENT
-		{
-			if (msg.getParams().size() < 3)
-				// usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand() + " +l")));
-				usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +l --- Missing argument")));
-			else
-			{
-				try
-				{
-					std::string	buff = msg.getParams()[2];
-					msg.delParam(2);
-					int limit = std::stoi(buff);
-					if (limit < 0)
-						throw std::exception();
-					chan.setLimit(std::stoi(buff));
-					chan.l = true;
-					reply_plus += mode;
-					reply_params = reply_params + " " + std::to_string(limit);
-					
-				}
-				catch(const std::exception& e)
-				{
-					usr.addOutMessage(Message::fromString(ERR_GENERAL_CHANNEL(usr, chan.getName(), " +l --- Invalid limit")));
-				}
-			}
-		}
-		else if (mode == 'l' && sign == '-')
-		{
-			chan.l = false;
-			reply_minus += mode;
-			chan.setLimit(0);
-		}
+		else if (mode == 'l')
+			modeL(msg, usr, chan, sign, rpls);
 		else
 			usr.addOutMessage(Message::fromString(ERR_UNKNOWNMODE(usr, mode, chan.getName())));
 	}
-	// send changes as RPL_CHANNELMODEIS to all users in channel
-	if (!reply_plus.empty())
-		reply = "+" + reply_plus;
-	if (!reply_minus.empty())
-		reply = reply + "-" + reply_minus;
-	if (!reply_params.empty())
-		reply = reply + " " +reply_params;
-	if (!reply.empty())
-		chan.sendMessage(Message::fromString(RPL_CHANNELMODEIS(usr, chan.getName(), reply)));
 }
 		   
 void		mode(Message &msg, User &usr)
 {
+	std::string reply;
+	std::string rpls[3]; // 0 = plus-reply , 1 = minus-reply, 2 = params
 	if (msg.getParams().size() < 1)
 		usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand())));
 	else
@@ -242,6 +220,17 @@ void		mode(Message &msg, User &usr)
 			usr.addOutMessage(Message::fromString(ERR_CHANOPRIVSNEEDED(usr, channel)));
 		// iterate through mode arguments and set/remove modes
 		else
-			iterModeParams(msg, usr, chan);
+		{
+			execModeParams(msg, usr, chan, rpls);
+			// send reply
+			if (!rpls[0].empty())
+				reply = "+" + rpls[0];
+			if (!rpls[1].empty())
+				reply = reply + "-" + rpls[1];
+			if (!rpls[2].empty())
+				reply = reply + " " + rpls[2];
+			if (!reply.empty())
+				chan.sendMessage(Message::fromString(RPL_CHANNELMODEIS(usr, chan.getName(), reply)));
+		}	
 	}
 }
