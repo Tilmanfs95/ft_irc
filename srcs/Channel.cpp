@@ -80,7 +80,9 @@ std::string	Channel::getModes(User &requester) const
 	if (this->l)
 	{
 		modes += "l";
-		params += " " + std::to_string(this->limit);
+		std::stringstream ss;
+		ss << this->limit;
+		params += " " + ss.str();
 	}
 	if (std::find(this->users.begin(), this->users.end(), requester.getNickname()) != this->users.end())
 		return (modes + params);	
