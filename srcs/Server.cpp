@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 14:18:58 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/22 16:03:29 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,6 +324,8 @@ void                    Server::handleMessage(Message &msg, User &usr)
 			names(msg, usr);
 		else if (msg.getCommand() == "MODE")
 			mode(msg, usr);
+        else if (msg.getCommand() == "INVITE")
+            invite(msg, usr);
 		// ...
 		// ..
 		// .

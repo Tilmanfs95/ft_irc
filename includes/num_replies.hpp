@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 14:24:41 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/22 16:24:10 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@
 # define RPL_CHANNELMODEIS(user, channel, modes) (":" SERVER_NAME " 324 " + user.getNickname() + " " + channel + " " + modes)
 
 # define RPL_INVITELIST(user, channel, mask) (":" SERVER_NAME " 346 " + user.getNickname() + " " + channel + " " + mask)
+
+# define ERR_USERONCHANNEL(user, target, channel) (":" SERVER_NAME " 443 " + user.getNickname() + " " + target + " " + channel + " :is already on channel")
 
 
 

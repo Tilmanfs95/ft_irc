@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 20:09:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/22 16:03:05 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	topic(Message &msg, User &usr);
 void	kick(Message &msg, User &usr);
 void	names(Message &msg, User &usr);
 void	mode(Message &msg, User &usr);
+void    invite(Message &msg, User &usr);
 
 
 #endif
