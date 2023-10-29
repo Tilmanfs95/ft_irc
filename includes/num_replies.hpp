@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/22 16:24:10 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/26 10:32:11 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@
 
 # define ERR_USERONCHANNEL(user, target, channel) (":" SERVER_NAME " 443 " + user.getNickname() + " " + target + " " + channel + " :is already on channel")
 
-
+# define RPL_LISTSTART(user) (":" SERVER_NAME " 321 " + user.getNickname() + " Channel :Users  Name")
+# define RPL_LIST(user, channel, users, topic) (":" SERVER_NAME " 322 " + user.getNickname() + " " + channel + " " + users + " :" + topic)
+# define RPL_LISTEND(user) (":" SERVER_NAME " 323 " + user.getNickname() + " :End of LIST")
 
 
 // custom replies 
