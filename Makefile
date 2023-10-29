@@ -6,7 +6,7 @@
 #    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/10/22 16:33:07 by tfriedri         ###   ########.fr        #
+#    Updated: 2023/10/26 11:02:30 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRCS			=	srcs/main.cpp	\
 					srcs/cmmnds/names.cpp	\
 					srcs/cmmnds/mode.cpp	\
 					srcs/cmmnds/invite.cpp	\
+					srcs/cmmnds/list.cpp	\
 
 OBJS			=	$(SRCS:.cpp=.o)
 
