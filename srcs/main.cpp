@@ -6,17 +6,15 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 20:00:25 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 16:54:00 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 #include <unistd.h>
 
-Server *server;
-
 void signalHandler(int) {
-    server->stop();
+    Server::getInstance().stop();
 }
 
 int main(int argc, char **argv) {
@@ -25,9 +23,8 @@ int main(int argc, char **argv) {
     {
         if (argc != 3)
             throw std::runtime_error("Usage: " + std::string(argv[0]) + " <port> <password>");
-        Server server(SERVER_NAME , argv[1], argv[2]);
-        ::server = &server;
-        server.run();
+        Server::setup(SERVER_NAME, argv[1], argv[2]);
+        Server::getInstance().run();
     }
     catch(const std::exception& e)
     {

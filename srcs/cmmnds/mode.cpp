@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/19 14:58:21 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:01:29 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void		modeK(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[
 // -o <nick>		remove channel operator privileges
 void		modeO(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[])
 {
+	Server	*server = &Server::getInstance();
 	std::string nick;
 	std::string	nick_upper;
 	if (msg.getParams().size() < 3)
@@ -194,6 +195,7 @@ void		execModeParams(Message &msg, User &usr, Channel &chan, std::string rpls[])
 		   
 void		mode(Message &msg, User &usr)
 {
+	Server	*server = &Server::getInstance();
 	std::string reply;
 	std::string rpls[3]; // 0 = plus-reply , 1 = minus-reply, 2 = params
 	if (msg.getParams().size() < 1)

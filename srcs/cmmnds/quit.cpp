@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:10:41 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 14:49:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:02:23 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	quit(Message &msg, User &usr)
 {
+	Server	*server = &Server::getInstance();
 	std::string	quit_msg;
 	if (msg.getParams().size() >= 1)
 		quit_msg = msg.getParams()[0];

@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 10:02:16 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/26 10:58:46 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:00:55 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 void    list(Message &msg, User &usr)
 {
+    Server  *server = &Server::getInstance();
     // send RPL_LISTSTART
     usr.addOutMessage(Message::fromString(RPL_LISTSTART(usr)));
     if (msg.getParams().size() == 0)

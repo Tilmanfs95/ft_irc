@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 13:25:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 16:30:32 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ class Server
 {
 private:
     bool                            running;
-    std::string                     name; // servername/hostname
-    int                             port;
-    std::string                     password;
+    static std::string              name;
+    static int                      port;
+    static std::string              password;
     int                             socket;
     struct sockaddr_in              address;
     std::vector<struct pollfd>      fds;
@@ -52,6 +52,10 @@ private:
     void                    handleMessage(Message &msg, User &usr);
     
 public:
+    // singleton
+    static Server                   *instance;
+    static void                     setup(const char* name, const char* port, const char* password);
+    static Server&                  getInstance();
     // A map that contains all users that are connected to the server
     // <socket, User>
     std::map<int, User>             users;
@@ -64,15 +68,9 @@ public:
     // <nickname in uppercase, socket>
     std::map<std::string, int>      nick_to_sock;
 
-    Server(/* args */);
-    // name = servername/hostname
-    // port = portnumber
-    // password = server password
-    Server(const char* name, const char* port, const char* password);
+    Server();
     ~Server();
-
     std::string             getPassword() const;
-
     // starts the server loop
     void                    run();
     // sets the running bool to false to stop the server loop
@@ -89,7 +87,5 @@ public:
     // reads from socket and starts the handleMessage() for every complete message
     void                    receiveMessage(int socket);
 };
-
-extern Server *server;
 
 #endif

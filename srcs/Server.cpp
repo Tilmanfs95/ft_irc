@@ -6,32 +6,28 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/26 11:01:30 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 16:50:37 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 #include <fcntl.h>
 
+// Server                 *Server::instance = NULL;
+std::string     Server::name;
+int             Server::port;
+std::string     Server::password;
 
-Server::Server(/* args */)
-{
-}
-
-Server::Server(const char* name, const char* port, const char* password)
-    : name(name), port(atoi(port)), password(password)
+Server::Server()
 {
     // Validate port
     if (this->port < 1024 || this->port > 65535)
         throw std::invalid_argument("Invalid port number");
-
     // Create socket and set options
     this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
     if (this->socket < 0)
         throw std::runtime_error("Socket creation failed");
-
     int opt = 1;
-
     #ifdef __APPLE__
         if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
             throw std::runtime_error("Socket options setting failed");
@@ -39,27 +35,21 @@ Server::Server(const char* name, const char* port, const char* password)
         if (setsockopt(this->socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) < 0)
             throw std::runtime_error("Socket options setting failed");
     #endif
-    
-
     // Set server address
     memset(&this->address, 0, sizeof(this->address));
     this->address.sin_family = AF_INET;
     this->address.sin_addr.s_addr = INADDR_ANY;
     this->address.sin_port = htons(this->port);
-
     // Bind and listen
     if (bind(this->socket, (struct sockaddr *)&this->address, sizeof(this->address)) < 0)
         throw std::runtime_error("Socket binding failed");
     if (listen(this->socket, SOMAXCONN) < 0)
         throw std::runtime_error("Socket listening failed");
-
     // Add the server socket to poll fds
     pollfd pfd = {this->socket, POLLIN, 0};
     this->fds.push_back(pfd);
-
     // Flag server as running
     this->running = true;
-
     std::cout << "\033[1;32mServer " << this->name << " created on port " << this->port << "\033[0m" << std::endl;
 }
 
@@ -67,6 +57,19 @@ Server::~Server()
 {
 }
 
+void                    Server::setup(const char* name, const char* port, const char* password)
+{
+    Server::name = name;
+    Server::port = atoi(port);
+    Server::password = password;
+}
+
+Server&                 Server::getInstance()
+{
+    static Server instance;
+    return instance;
+}
+    
 std::string             Server::getPassword() const
 {
     return (this->password);
@@ -135,7 +138,7 @@ void                    Server::disconnect()
 {
     for (size_t i = 0; i < this->fds.size(); i++)
         close(this->fds[i].fd);
-    std::cout << "\n\033[1;32mServer stopped successfully\033[0m\n" << std::endl;
+    std::cout << "\n\033[1;32mclosed all sockets\033[0m" << std::endl;
 }
 
 void                    Server::addNewUser(struct sockaddr_in address, socklen_t addrlen)

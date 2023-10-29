@@ -179,8 +179,8 @@ void			Channel::sendMessage(const Message &msg, const std::string &sender)
 	{
 		std::string user_upper = this->users[i];
 		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
-		int socket = server->nick_to_sock[user_upper];
+		int socket = Server::getInstance().nick_to_sock[user_upper];
 		if (user_upper != sender_upper)
-			server->users[socket].addOutMessage(msg);
+			Server::getInstance().users[socket].addOutMessage(msg);
 	}
 }

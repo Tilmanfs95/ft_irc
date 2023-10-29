@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:00:49 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 21:49:46 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:02:19 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 void	privmsg(Message &msg, User &usr)
 {
+	Server	*server = &Server::getInstance();
 	if (msg.getParams().size() == 0)
 		usr.addOutMessage(Message::fromString(ERR_NORECIPIENT(usr, msg.getCommand())));
 	else if (msg.getTrailing().empty() && msg.getParams().size() < 2)
