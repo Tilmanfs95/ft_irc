@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 00:12:48 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/26 10:27:20 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:23:10 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@ class Channel
 {
 private:
     // channel name:
-    // -max 50 chars
-    // -must start with # or &
-    // -must not contain ' ' , ',' , ':' , '^G' or ASCII 7
-    // -must be unique
-    // -not case sensitive
     std::string name;
     // channel key:
     // -case sensitive
@@ -40,46 +35,52 @@ private:
     // user limit:
     unsigned int limit;
 
-    
 public:
-    // user list:
-    std::vector<std::string> users; // list of all nicknames (incl. operators)
+    // user list (incl. operators)
+    std::vector<std::string> users;
 	// operator list:
     std::vector<std::string> operators;
     // invite list:
     std::vector<std::string> invites;
-    // modes:
-    bool    i; // invite only
-    bool    t; // topic restricted
-	bool    k; // key required
-	bool    l; // user limit set
+    // channel modes:
+    bool    i; // invite only (only invited users can join)
+    bool    t; // topic restricted (only operators can change the topic)
+	bool    k; // key required (users need to know the key to join)
+	bool    l; // user limit set (only a certain number of users can join)
     
-    Channel(/* args */);
+	// constructors and destructor
+    Channel();
     Channel(std::string name, std::string key);
     ~Channel();
 
+	// Setters
+	
+	// sets the topic of the channel
+	void        setTopic(const std::string &topic);
+	// sets the key of the channel
+	// important: you also need to set the k mode to true!
+	void        setKey(const std::string &key);
+	// sets the limit of the channel
+	// important: you also need to set the l mode to true!
+	void        setLimit(unsigned int limit);
+	
+	// Getters
+	
     // gets the name of the channel
     std::string getName() const;
 	// gets the topic of the channel
 	std::string getTopic() const;
-	// sets the topic of the channel
-	void        setTopic(const std::string &topic);
 	// gets the key of the channel
 	std::string getKey() const;
-	// sets the key of the channel
-	// important: you also need to set the k mode to true!
-	void        setKey(const std::string &key);
 	// gets the limit of the channel
 	unsigned int getLimit() const;
-	// sets the limit of the channel
-	// important: you also need to set the l mode to true!
-	void        setLimit(unsigned int limit);
+
+	// Methods
+	
 	// gets the channel modes as a string.
 	// depending on the user requesting the modes (if the user is in the channel),
 	// the output includes the channel key and the user limit as parameters
 	std::string getModes(User &requester) const;
-	
-	
     // adds a user to the channel
     // (also sends a message to the user and all other users of the channel)
     void        addUser(User &usr, const std::string key, bool isOperator);

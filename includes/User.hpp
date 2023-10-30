@@ -6,36 +6,30 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 01:59:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/26 10:31:15 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:02:01 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef USER_HPP
 # define USER_HPP
 
-#include <iostream>
-#include <vector>
-#include <queue>
 #include "Message.hpp"
 #include "Server.hpp"
 #include "commands.hpp"
 #include "defines.hpp"
 
-// Questions:
-// -Do we need a reclaim-time for the nickname? (for network problems)
+#include <iostream>
+#include <vector>
+#include <queue>
 
-// User registration:
-//      CAP LS 302                              (optional) // some clients send this or another CAP command
-//      PASS <Password>                         (optional) // password for the server
-//      NICK <Nickname>                         (mandatory)
-//      USER <username> <mode> * <real_name>    (mandatory) (if real_name contains spaces, it must be prefixed with ':')
-
+// forward declaration
 class Server;
+
 
 class User
 {
 private:
-    // socket file descriptor
+    // socket fd
     int         socket;
     // password accepted? (PASS command)
     bool        verified; 
@@ -50,25 +44,23 @@ private:
     std::string realname;
     // This should be the hostname of the client
     // In our case, we use the IP address of the client
-    // maybe we can make an DNS lookup to get the hostname ?
     std::string host_ip;
     // Messages that need to be sent to the client
     std::queue<Message> out_messages;
 public:
     // channelnames of the channels the user is in
     // Important:
-    // - NOT in uppercase !
+    // - case sensitive !
     std::vector<std::string> channels;
     // buffer for incoming messages
     // received messages are stored here until they are complete and can be processed
     std::string in_buffer;
 
     // constructors and destructor
-
-    User();
+	User();
     User(int socket, std::string host_ip);
     ~User();
-    
+
     // setters
     
     void        setRegistered(bool registered);
@@ -77,7 +69,6 @@ public:
     void		setNickname(const std::string &nickname);
     void		setUsername(const std::string &username);
     void		setRealname(const std::string &realname);
-    void        addChannel(const std::string &channel);
     
     // getters
     
@@ -95,14 +86,13 @@ public:
     
     // Methods
     
+	// Adds a channel to the channels vector
+	void        addChannel(const std::string &channel);
     // Adds a message to the out_messages queue
     void		addOutMessage(const Message &msg);
     // Returns the first message from the out_messages queue
     // and removes it
     Message     getOutMessage();
 };
-
-// helper functions
-void printMessage(const Message msg);
 
 #endif

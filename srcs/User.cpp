@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 00:50:31 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:02:27 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,6 @@ void    User::setRealname(const std::string &realname)
     this->realname = realname;
 }
 
-void    User::addChannel(const std::string &channel)
-{
-    this->channels.push_back(channel);
-}
-
 
 // Getters
 
@@ -115,6 +110,12 @@ std::string User::getUserIdent() const
 }
 
 
+// Methods
+
+void    User::addChannel(const std::string &channel)
+{
+    this->channels.push_back(channel);
+}
 
 void		User::addOutMessage(const Message &msg)
 {

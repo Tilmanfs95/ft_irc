@@ -6,12 +6,11 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 16:54:00 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 11:59:50 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
-#include <unistd.h>
 
 void signalHandler(int) {
     Server::getInstance().stop();

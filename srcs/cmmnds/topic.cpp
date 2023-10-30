@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 16:11:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:02:31 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:12:10 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	topic(Message &msg, User &usr)
 	Server	*server = &Server::getInstance();
 	if (msg.getParams().size() == 0)
 		usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand())));
-	else if (msg.hasTrailing() == false && msg.getParams().size() == 1)
+	else if (msg.trailingExists() == false && msg.getParams().size() == 1)
 	{
 		std::string channel = msg.getParams()[0];
 		std::string channel_upper = channel;
