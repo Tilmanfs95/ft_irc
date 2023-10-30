@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:18:07 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 00:37:12 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 14:59:35 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 void    pass(Message &msg, User &usr)
 {
+    Server  *server = &Server::getInstance();
     if (usr.getVerified() == true)
         usr.addOutMessage(Message::fromString(ERR_ALREADYREGISTRED(usr)));
     else if (msg.getParams().size() == 0)

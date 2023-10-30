@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:48:32 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 21:50:00 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:01:53 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 void	notice(Message &msg, User &usr)
 {
+	Server	*server = &Server::getInstance();
 	if (msg.getParams().size() == 0 || (msg.getTrailing().size() == 0 && msg.getParams().size() < 2))
 		return ;
 	else

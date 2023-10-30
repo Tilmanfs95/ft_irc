@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/15 20:04:43 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:00:32 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 void	leaveAllChannels(User &usr)
 {
+	Server	*server = &Server::getInstance();
 	std::string channel;
 	while (usr.channels.size() > 0)
 	{
@@ -40,6 +41,7 @@ void	leaveAllChannels(User &usr)
 
 void	join(Message &msg, User &usr)
 {
+	Server	*server = &Server::getInstance();
 	if (msg.getParams().size() == 0)
 	{
 		usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand())));

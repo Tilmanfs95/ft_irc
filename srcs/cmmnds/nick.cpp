@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 22:35:21 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:01:48 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ bool    check_nick_chars(std::string nick)
 
 void    nick(Message &msg, User &usr)
 {
+    Server  *server = &Server::getInstance();
     std::string nick;
     std::string nick_upper;
     if (msg.getParams().size() == 0)

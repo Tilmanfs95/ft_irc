@@ -1,6 +1,6 @@
 #include "../includes/Channel.hpp"
 
-Channel::Channel(/* args */)
+Channel::Channel()
 {
 }
 
@@ -29,6 +29,27 @@ Channel::~Channel()
 	std::cout << "Channel " << this->name << " closed" << std::endl;
 }
 
+
+// Setters
+
+void			Channel::setTopic(const std::string &topic)
+{
+	this->topic = topic;
+}
+
+void			Channel::setKey(const std::string &key)
+{
+	this->key = key;
+}
+
+void			Channel::setLimit(unsigned int limit)
+{
+	this->limit = limit;
+}
+
+
+// Getters
+
 std::string		Channel::getName() const
 {
 	return (this->name);
@@ -39,19 +60,9 @@ std::string		Channel::getTopic() const
 	return (this->topic);
 }
 
-void			Channel::setTopic(const std::string &topic)
-{
-	this->topic = topic;
-}
-
 std::string		Channel::getKey() const
 {
 	return (this->key);
-}
-
-void			Channel::setKey(const std::string &key)
-{
-	this->key = key;
 }
 
 unsigned int	Channel::getLimit() const
@@ -59,10 +70,8 @@ unsigned int	Channel::getLimit() const
 	return (this->limit);
 }
 
-void			Channel::setLimit(unsigned int limit)
-{
-	this->limit = limit;
-}
+
+// Methods
 
 std::string	Channel::getModes(User &requester) const
 {
@@ -117,13 +126,7 @@ void			Channel::addUser(User &usr, std::string key, bool isOperator)
 		// send all channel messages to the user
 		usr.in_buffer += "TOPIC " + this->name + END_OF_MESSAGE;
 		usr.in_buffer += "NAMES " + this->name + END_OF_MESSAGE;
-		// usr.in_buffer += "MODE " + this->name + END_OF_MESSAGE;
 	}
-	// print users channel list
-	// std::cout << usr.getNickname() << " is in channels: ";
-	// for (size_t i = 0; i < usr.channels.size(); i++)
-	// 	std::cout << usr.channels[i] << " ";
-	// std::cout << std::endl;
 }
 
 void			Channel::removeUser(User &usr, std::string partMessage, bool sendMessages)
@@ -179,8 +182,8 @@ void			Channel::sendMessage(const Message &msg, const std::string &sender)
 	{
 		std::string user_upper = this->users[i];
 		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
-		int socket = server->nick_to_sock[user_upper];
+		int socket = Server::getInstance().nick_to_sock[user_upper];
 		if (user_upper != sender_upper)
-			server->users[socket].addOutMessage(msg);
+			Server::getInstance().users[socket].addOutMessage(msg);
 	}
 }

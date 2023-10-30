@@ -22,6 +22,7 @@
 
 void    invite(Message &msg, User &usr)
 {
+    Server  *server = &Server::getInstance();
     if (msg.getParams().size() < 2)
         usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, msg.getCommand())));
     else

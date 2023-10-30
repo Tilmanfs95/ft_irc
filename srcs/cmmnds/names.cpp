@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 13:43:00 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/18 17:09:31 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:01:39 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	names(Message &msg, User &usr)
 {
+	Server	*server = &Server::getInstance();
 	if (msg.getParams().size() == 0) // not possible in WeeChat...
 	{
 		// set param[0] to a string of all channels on the server (comma separated)

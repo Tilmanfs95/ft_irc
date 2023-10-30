@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 19:03:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/17 21:47:53 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:00:41 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 
 void	kick_user(User &initiator, std::string channel, std::string user, std::string comment)
 {
+	Server	*server = &Server::getInstance();
 	std::string user_upper = user;
 	std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
 	std::string channel_upper = channel;

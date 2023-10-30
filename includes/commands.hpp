@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/26 11:01:46 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:14:49 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@
 # include "User.hpp"
 # include "num_replies.hpp"
 
+// forward declaration
 class User;
 
-// PASS
+// command functions
 void    pass(Message &msg, User &usr);
 void    nick(Message &msg, User &usr);
 void    user(Message &msg, User &usr);

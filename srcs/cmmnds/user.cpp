@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 23:21:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/05 00:37:34 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:02:39 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 void    user(Message &msg, User &usr)
 {
+    Server  *server = &Server::getInstance();
     if (msg.getParams().size() < 3)
         usr.addOutMessage(Message::fromString(ERR_NEEDMOREPARAMS(usr, "USER")));
     else if (usr.getRegistered() == true)
