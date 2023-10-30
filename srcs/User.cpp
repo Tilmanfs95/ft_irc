@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 13:02:27 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 14:07:20 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ User::User()
 
 User::User(int socket, std::string host_ip) : socket(socket), host_ip(host_ip)
 {
-    this->verified = false;
+	if (Server::getInstance().getPassword().empty())
+		this->verified = true;
+	else
+    	this->verified = false;
     this->registered = false;
     this->mode = 0;
     this->nickname = "";

@@ -24,18 +24,10 @@
 ## TODO:
 
     - [ ] test the partial data receiving
-    - [ ] check if the signal handler is complete
+    - [ ] check if the signal handler is complete (only SIGINT is handled)
     - [ ] check if poll() is used correctly (especially the timeout !)
-    - [ ] in Server::receiveMessage() loop until all data is received before processing it
+    - [ ] in Server::receiveMessage() loop until all data is received before processing it ??
     - [ ] check all used libraries for c++ alternatives (e.g. <unistd.h> in main.cpp...)
-    - [ ] send all the info stuff to the client after successful registration
-    - [ ] send the needed info to the client after joining a channel
-    - [ ] need to anwser the "MODE #channel" that comes from client after joining a channel ??
-    - [ ] implement NAMES
-    - [ ] implement LIST
-    - [ ] implement INVITE
     - [ ] implement ALL THE STUFF FROM THE SUBJECT
-    - [ ] maybe make it possible to start without a password? (not sure if conform with the subject)
     - [ ] Bonus ?
-	- [ ] send a correct RPL_ISSUPPORT after user registered
-	- [ ] Do not restrict topic changes to channel operators only at channel creation time ??
+	- [ ] forbid to send messages to channels if not in it ? (most irc-servers allow it?!)

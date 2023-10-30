@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 16:50:37 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/10/30 14:06:27 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,6 @@ void                    Server::addNewUser(struct sockaddr_in address, socklen_t
         #endif
         pollfd pfd = {c_socket, POLLIN | POLLOUT, 0}; 
         this->fds.push_back(pfd);
-        // std::string ip = inet_ntoa(address.sin_addr);
         this->users.insert(std::pair<int, User>(c_socket, User(c_socket, inet_ntoa(address.sin_addr))));
 		std::cout << "\033[1;32mSocket " << c_socket << ":\033[0m New connection from " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << std::endl;
     }
@@ -177,9 +176,9 @@ void                    Server::registerUser(int socket)
 	usr.addOutMessage(Message::fromString(RPL_MOTDSTART(usr)));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, ""))); 
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0@@@@\u00A0\u00A0@@@@@@@")));
-	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@\u00A0\u00A0\u00A0\u00A0@@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0%@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@\u00A0\u00A0\u00A0\u00A0@@@@@@@")));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
-	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
+	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0%@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0@@@@@@")));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0@@@@@@@@@@@@@@@@@@@\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0\u00A0\u00A0\u00A0@@")));
 	usr.addOutMessage(Message::fromString(RPL_MOTD(usr, "\u00A0\u00A0\u00A0@@@@@@@@@@@@@@@@@@@\u00A0\u00A0\u00A0@@@@@@\u00A0\u00A0@@@@@")));
