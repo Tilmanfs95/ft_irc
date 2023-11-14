@@ -13,7 +13,7 @@
 
 NAME			=	ircserv
 
-CPPFLAGS		=	-Wall -Werror -Wextra -std=c++98
+CPPFLAGS		=	-Wall -Werror -Wextra -std=c++98 -g
 
 SRCS			=	srcs/main.cpp	\
 					srcs/Server.cpp	\

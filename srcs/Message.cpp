@@ -107,7 +107,8 @@ std::string Message::toString() const {
         message += ":" + this->prefix + " ";
     }
     // Add the command
-    message += this->command + " ";
+    if (this->command.length() > 0)
+        message += this->command + " ";
     // Add the parameters
     for (size_t i = 0; i < this->params.size(); i++) {
         message += this->params[i] + " ";

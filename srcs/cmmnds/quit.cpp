@@ -25,5 +25,5 @@ void	quit(Message &msg, User &usr)
 	//
 	// send quit_msg to other users from same channels ??
 	// ...
-	server->removeUser(usr.getSocket());
+	server->removeUser(usr.getSocket(), false);
 }

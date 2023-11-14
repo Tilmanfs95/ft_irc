@@ -77,6 +77,7 @@ std::string             Server::getPassword() const
 
 void                    Server::run()
 {
+    signal(SIGPIPE, SIG_IGN);
     struct sockaddr_in      c_address;
     socklen_t               c_addrlen = sizeof(c_address);
     while (running)
@@ -94,14 +95,18 @@ void                    Server::run()
             }
             else if (this->fds[i].revents & POLLOUT)
             {   
-                try
-                {
+                // try
+                // {
                     std::string msg = this->users[this->fds[i].fd].getOutMessage().toString();
-                    while (msg != "")
+                    while (msg != END_OF_MESSAGE && msg != "")
                     {
 						ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.length() > OUT_BUFFER_SIZE ? OUT_BUFFER_SIZE : msg.length(), 0);
-                        if (sent < 0)
+                        if (sent < 0) {
+                            
+                            // std::cout << ":>:" << msg << ":<:" << std::endl;
 							std::cout << "\033[1;31mError sending message\033[0m" << std::endl;
+                            // exit(1);
+                        }
 						else if (sent == 0)
 							std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
                         else
@@ -110,20 +115,21 @@ void                    Server::run()
                                 std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
                             else
                                 std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
-							msg.erase(0, sent);
 						}
+							msg.erase(0, sent);
                     }
-                }
-                catch(const std::exception& e)
-                {
-                    // std::cerr << e.what() << '\n';
-                }
+                // }
+                // catch(const std::exception& e)
+                // {
+                //     // std::cerr << e.what() << 'here is the error' << '\n';
+                //     // std::cout << "here man" << std::endl;
+                // }
             }
-            // else if (this->fds[i].revents & POLLERR)
-            // {
-            //     std::cout << "Error on socket " << this->fds[i].fd << std::endl;
-            //     // what to do here?
-            // }
+            else if (this->fds[i].revents & POLLERR)
+            {
+                std::cout << "Error on socket " << this->fds[i].fd << std::endl;
+                // what to do here?
+            }
         }
     }
     disconnect();
@@ -204,7 +210,7 @@ void                    Server::registerUser(int socket)
     std::cout << "\033[1;32mSocket " << socket << ":\033[0m Registered as " << usr.getNickname() << std::endl;
 }
 
-void                    Server::removeUser(int socket)
+void                    Server::removeUser(int socket, bool errorActive)
 {
     // Print disconnect message | DEBUG
     if (this->users.find(socket) != this->users.end() && this->users[socket].getNickname() != "")
@@ -250,7 +256,9 @@ void                    Server::removeUser(int socket)
     // remove user from users map
     this->users.erase(socket);
     // close user socket
-    close(socket);
+    if (!errorActive) {
+        close(socket);
+    }
 }
 
 void                    Server::receiveMessage(int socket)
@@ -260,14 +268,16 @@ void                    Server::receiveMessage(int socket)
     if (valread < 0)
     {
         // how to handle this situation if we could not read from socket?
-        std::cerr << "Error reading from socket" << std::endl;
+        // std::perror("lol");
+        removeUser(socket, true);
     }
-    else if (valread == 0) // client disconnected
-        removeUser(socket);
+    if (valread <= 0) // client disconnected
+        removeUser(socket, false);
     else
     {
         User &usr = this->users[socket];
         usr.in_buffer.append(std::string(buffer));
+        std::cout << "DEBUG: " << usr.in_buffer << std::endl;
         while (this->users.find(socket) != this->users.end() && usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
         {
             std::string msg_str = usr.in_buffer.substr(0, usr.in_buffer.find(END_OF_MESSAGE));
@@ -300,7 +310,7 @@ void                    Server::handleMessage(Message &msg, User &usr)
 		if (cmmnd == "PASS")
 			pass(msg, usr);
 		else
-			removeUser(usr.getSocket());
+			removeUser(usr.getSocket(), false);
 	}
 	else
 	{

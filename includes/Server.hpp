@@ -86,7 +86,7 @@ public:
     void                    registerUser(int socket);
     // removes user and closes socket
     // calls the channels removeUser() method for every channel the user is in
-    void                    removeUser(int socket);
+    void                    removeUser(int socket, bool errorActive);
     // reads from socket and starts the handleMessage() for every complete message
     void                    receiveMessage(int socket);
 };

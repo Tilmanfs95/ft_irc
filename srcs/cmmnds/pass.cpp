@@ -27,8 +27,8 @@ void    pass(Message &msg, User &usr)
         if (msg.getParams()[0] == server->getPassword())
             usr.setVerified(true);
         else
-            server->removeUser(usr.getSocket());
+            server->removeUser(usr.getSocket(), false);
     }
     else
-        server->removeUser(usr.getSocket());
+        server->removeUser(usr.getSocket(), false);
 }

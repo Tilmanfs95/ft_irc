@@ -128,7 +128,8 @@ void		User::addOutMessage(const Message &msg)
 Message     User::getOutMessage()
 {
     if (this->out_messages.empty())
-        throw std::runtime_error("No message to send");
+        return (Message::fromString(""));
+    //     throw std::runtime_error("No message to send");
     Message msg = this->out_messages.front();
     this->out_messages.pop();
     return msg;
