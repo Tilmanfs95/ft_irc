@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:01:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/17 13:43:37 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ void    nick(Message &msg, User &usr)
     std::string nick;
     std::string nick_upper;
     if (msg.getParams().size() == 0)
+    {
         usr.addOutMessage(Message::fromString(ERR_NONICKNAMEGIVEN(usr)));
+        return ;
+    }
     nick = msg.getParams()[0];
     nick_upper = nick;
     std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);

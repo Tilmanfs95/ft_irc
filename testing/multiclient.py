@@ -5,9 +5,9 @@ import sys
 
 # Tool to test the irc server with many clients at the same time
 
-server_address = ('irc.esgehtumheilbronn.de', 6667)
+server_address = ('127.0.0.1', 6667)
 server_password = "hallo"
-client_amount = 10
+client_amount = 100
 
 
 exit_flag = False
