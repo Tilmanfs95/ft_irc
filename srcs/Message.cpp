@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:43 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 13:13:37 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:54:40 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ Message  Message::fromString(const std::string &msg) {
     }
     // Command
     iss >> token;
-    std::transform(token.begin(), token.end(), token.begin(), ::toupper);
+    for (std::string::iterator it = token.begin(); it != token.end(); ++it) {
+        *it = std::toupper(static_cast<unsigned char>(*it));
+    }
     message.setCommand(token);
 	message.trailing_exists = false;
     while (iss >> token)

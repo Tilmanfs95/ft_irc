@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:00:32 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:56:29 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ void	leaveAllChannels(User &usr)
 	while (usr.channels.size() > 0)
 	{
 		channel = usr.channels[0];
-		std::transform(channel.begin(), channel.end(), channel.begin(), ::toupper);
+		for (std::string::iterator it = channel.begin(); it != channel.end(); ++it) {
+			*it = std::toupper(static_cast<unsigned char>(*it));
+		}
 		server->channels[channel].removeUser(usr, "");
 		if (server->channels[channel].users.size() == 0)
 		    server->channels.erase(channel);
@@ -60,7 +62,9 @@ void	join(Message &msg, User &usr)
 	while (std::getline(channels, channel, ','))
 	{
 		channel_upper = channel;
-		std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+		for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+			*it = std::toupper(static_cast<unsigned char>(*it));
+		}
 		if (std::getline(keys, key, ',') == false)
 			key = "";
 		if (channel[0] != '#' && channel[0] != '&')

@@ -6,12 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:13:02 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:52:53 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
-#include <fcntl.h>
 
 std::string     Server::name;
 int             Server::port;
@@ -165,7 +164,9 @@ void                    Server::registerUser(int socket)
 {
     User &usr = this->users[socket];
     std::string nickname_upper = usr.getNickname();
-    std::transform(nickname_upper.begin(), nickname_upper.end(), nickname_upper.begin(), ::toupper);
+    for (std::string::iterator it = nickname_upper.begin(); it != nickname_upper.end(); ++it) {
+        *it = std::toupper(static_cast<unsigned char>(*it));
+    }
     this->nick_to_sock.insert(std::pair<std::string, int>(nickname_upper, socket));
     usr.setRegistered(true);
 	// send welcome messages
@@ -225,7 +226,9 @@ void                    Server::removeUser(int socket)
         for (size_t i = 0; i < this->users[socket].channels.size(); i++)
         {
             std::string channel_upper = this->users[socket].channels[i];
-            std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+            for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+                *it = std::toupper(static_cast<unsigned char>(*it));
+            }
             this->channels[channel_upper].removeUser(this->users[socket], "");
             // check if channel is empty
             if (this->channels[channel_upper].users.size() == 0)

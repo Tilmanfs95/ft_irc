@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:01:29 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:58:41 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,9 @@ void		modeO(Message &msg, User &usr, Channel &chan, char sign, std::string rpls[
 	else
 	{
 		nick_upper = msg.getParams()[2];
-		std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
+		for (std::string::iterator it = nick_upper.begin(); it != nick_upper.end(); ++it) {
+            *it = std::toupper(static_cast<unsigned char>(*it));
+        }
 		if (server->nick_to_sock.find(nick_upper) == server->nick_to_sock.end())
 		{
 			usr.addOutMessage(Message::fromString(ERR_USERNOTINCHANNEL(usr, msg.getParams()[2], chan.getName())));
@@ -204,7 +206,9 @@ void		mode(Message &msg, User &usr)
 	{
 		std::string	channel = msg.getParams()[0];
 		std::string	channel_upper = channel;
-		std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+		for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+            *it = std::toupper(static_cast<unsigned char>(*it));
+        }
 		// check if channel exists
 		if (server->channels.find(channel_upper) == server->channels.end())
 		{

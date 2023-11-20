@@ -177,11 +177,15 @@ bool			Channel::isOperator(const std::string &nickname) const
 void			Channel::sendMessage(const Message &msg, const std::string &sender)
 {
 	std::string	sender_upper = sender;
-	std::transform(sender_upper.begin(), sender_upper.end(), sender_upper.begin(), ::toupper);
+	for (std::string::iterator it = sender_upper.begin(); it != sender_upper.end(); ++it) {
+		*it = std::toupper(static_cast<unsigned char>(*it));
+	}
 	for (size_t i = 0; i < this->users.size(); i++)
 	{
 		std::string user_upper = this->users[i];
-		std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
+		for (std::string::iterator it = user_upper.begin(); it != user_upper.end(); ++it) {
+			*it = std::toupper(static_cast<unsigned char>(*it));
+		}
 		int socket = Server::getInstance().nick_to_sock[user_upper];
 		if (user_upper != sender_upper)
 			Server::getInstance().users[socket].addOutMessage(msg);

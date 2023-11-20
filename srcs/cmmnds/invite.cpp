@@ -30,9 +30,13 @@ void    invite(Message &msg, User &usr)
         std::string target_nick = msg.getParams()[0];
         std::string channel = msg.getParams()[1];
         std::string target_user_upper = target_nick;
-        std::transform(target_user_upper.begin(), target_user_upper.end(), target_user_upper.begin(), ::toupper);
+        for (std::string::iterator it = target_user_upper.begin(); it != target_user_upper.end(); ++it) {
+			*it = std::toupper(static_cast<unsigned char>(*it));
+		}
         std::string channel_upper = channel;
-        std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+        for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+			*it = std::toupper(static_cast<unsigned char>(*it));
+		}
         // check if target user exists
         if (server->nick_to_sock.find(target_user_upper) == server->nick_to_sock.end())
         {

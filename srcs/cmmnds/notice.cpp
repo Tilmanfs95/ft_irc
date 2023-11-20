@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   notice.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:48:32 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:01:53 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 21:00:50 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ void	notice(Message &msg, User &usr)
 		while(std::getline(targets_stream, trgt, ','))
 		{
 			trgt_upper = trgt;
-			std::transform(trgt_upper.begin(), trgt_upper.end(), trgt_upper.begin(), ::toupper);
+			for (std::string::iterator it = trgt_upper.begin(); it != trgt_upper.end(); ++it) {
+                *it = std::toupper(static_cast<unsigned char>(*it));
+            }
 			if (trgt[0] == '#' || trgt[0] == '&')
 			{
 				if (server->channels.find(trgt_upper) != server->channels.end())

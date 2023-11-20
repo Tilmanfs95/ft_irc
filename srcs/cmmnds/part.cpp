@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 17:05:12 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:02:00 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 21:01:39 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ void 	part(Message &msg, User &usr)
 		while(std::getline(targets_stream, trgt, ','))
 		{
 			trgt_upper = trgt;
-			std::transform(trgt_upper.begin(), trgt_upper.end(), trgt_upper.begin(), ::toupper);
+			for (std::string::iterator it = trgt_upper.begin(); it != trgt_upper.end(); ++it) {
+                *it = std::toupper(static_cast<unsigned char>(*it));
+            }
 			if (server->channels.find(trgt_upper) != server->channels.end())
 			{
 				// check if user is in channel

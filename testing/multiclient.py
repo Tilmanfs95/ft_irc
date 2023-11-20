@@ -7,7 +7,7 @@ import sys
 
 server_address = ('127.0.0.1', 6667)
 server_password = "hallo"
-client_amount = 500
+client_amount = 5
 
 
 exit_flag = False

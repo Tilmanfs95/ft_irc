@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/17 13:43:37 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 21:00:18 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ void    nick(Message &msg, User &usr)
     }
     nick = msg.getParams()[0];
     nick_upper = nick;
-    std::transform(nick_upper.begin(), nick_upper.end(), nick_upper.begin(), ::toupper);
+    for (std::string::iterator it = nick_upper.begin(); it != nick_upper.end(); ++it) {
+        *it = std::toupper(static_cast<unsigned char>(*it));
+    }
     if (check_nick_chars(nick) == false)
         usr.addOutMessage(Message::fromString(ERR_ERRONEUSNICKNAME(usr, nick)));
     else if (server->nick_to_sock.find(nick_upper) != server->nick_to_sock.end())
@@ -60,7 +62,9 @@ void    nick(Message &msg, User &usr)
             for (std::vector<std::string>::iterator it = usr.channels.begin(); it != usr.channels.end(); it++)
             {
                 std::string channel_upper = *it;
-                std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+                for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+                    *it = std::toupper(static_cast<unsigned char>(*it));
+                }
                 if (std::find(server->channels[channel_upper].users.begin(), server->channels[channel_upper].users.end(), usr.getNickname()) != server->channels[channel_upper].users.end())
                 {
                     // erase old nickname from channel
@@ -76,7 +80,9 @@ void    nick(Message &msg, User &usr)
             // change the nickname in the server->nick_to_sock map
             server->nick_to_sock.insert(std::pair<std::string, int>(nick_upper, usr.getSocket()));
             std::string old_nick_upper = usr.getNickname();
-            std::transform(old_nick_upper.begin(), old_nick_upper.end(), old_nick_upper.begin(), ::toupper);
+            for (std::string::iterator it = old_nick_upper.begin(); it != old_nick_upper.end(); ++it) {
+                *it = std::toupper(static_cast<unsigned char>(*it));
+            }
             server->nick_to_sock.erase(old_nick_upper);
             // first send the messages and then change the nickname so that the sender of the message is still the old nickname
             usr.setNickname(nick);

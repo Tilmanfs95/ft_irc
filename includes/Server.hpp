@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:13:31 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:39:32 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "User.hpp"
 #include "Message.hpp"
 #include "defines.hpp"
-
 #include <iostream>
 #include <vector>
 #include <map>
@@ -30,6 +29,7 @@
 #include <poll.h>
 #include <cstdio>
 #include <signal.h>
+#include <fcntl.h>
 
 // forward declaration
 class User;

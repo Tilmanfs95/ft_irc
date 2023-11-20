@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 19:03:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:00:41 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:57:15 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,13 @@ void	kick_user(User &initiator, std::string channel, std::string user, std::stri
 {
 	Server	*server = &Server::getInstance();
 	std::string user_upper = user;
-	std::transform(user_upper.begin(), user_upper.end(), user_upper.begin(), ::toupper);
+	for (std::string::iterator it = user_upper.begin(); it != user_upper.end(); ++it) {
+		*it = std::toupper(static_cast<unsigned char>(*it));
+	}
 	std::string channel_upper = channel;
-	std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+	for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+		*it = std::toupper(static_cast<unsigned char>(*it));
+	}
 	// check if target user exists (silently ignore if not)
 	if (server->nick_to_sock.find(user_upper) == server->nick_to_sock.end())
 		return ;
