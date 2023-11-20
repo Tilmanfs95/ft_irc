@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 18:52:48 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 18:57:03 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,16 +99,19 @@ void                    Server::run()
                 {
                     ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.length() > OUT_BUFFER_SIZE ? OUT_BUFFER_SIZE : msg.length(), 0);
                     if (sent < 0)
+                    {
                         std::cout << "\033[1;31mError sending message\033[0m" << std::endl;
+                        removeUser(this->fds[i].fd, false);
+                    }
                     else if (sent == 0)
                         std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
-                    else
-                    {
-                        if (this->users[this->fds[i].fd].getRegistered() == true)
-                            std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
-                        else
-                            std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
-                    }
+                    // else
+                    // {
+                    //     if (this->users[this->fds[i].fd].getRegistered() == true)
+                    //         std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
+                    //     else
+                    //         std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
+                    // }
                     msg.erase(0, sent); 
                 }
             }
@@ -118,7 +121,7 @@ void                    Server::run()
                 if (this->fds[i].fd == this->socket)
                     stop();
                 else
-                    removeUser(this->fds[i].fd, true); 
+                    removeUser(this->fds[i].fd, false); 
             }
         }
     }
@@ -255,7 +258,8 @@ void                    Server::receiveMessage(int socket)
     char buffer[BUFFER_SIZE] = {0};
     ssize_t valread = recv(socket, buffer, BUFFER_SIZE - 1, 0);
     if (valread < 0) // error
-        removeUser(socket, true);
+        removeUser(socket, false);
+        // removeUser(socket, true);
     else if (valread == 0) // client disconnected
         removeUser(socket, false);
     else
