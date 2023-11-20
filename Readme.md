@@ -22,11 +22,8 @@
     
 
 ## TODO:
-
-    - [ ] test the partial data receiving
     - [ ] check if the signal handler is complete (only SIGINT is handled)
-    - [ ] check if poll() is used correctly (especially the timeout !)
-    - [ ] in Server::receiveMessage() loop until all data is received before processing it ??
+    - [ ] check if poll() is used correctly (especially the timeout !) (I changed it to 0 !) 
     - [ ] check all used libraries for c++ alternatives (e.g. <unistd.h> in main.cpp...)
     - [ ] implement ALL THE STUFF FROM THE SUBJECT
     - [ ] Bonus ?

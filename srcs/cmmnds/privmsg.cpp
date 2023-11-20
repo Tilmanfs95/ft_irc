@@ -3,26 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:00:49 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:02:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:41:12 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/commands.hpp"
-
-
-
-// ERR_NOSUCHNICK (401) - done
-// ERR_NOSUCHSERVER (402) - not needed because we don't support multiple servers
-// ERR_CANNOTSENDTOCHAN (404) - not needed because users can't be banned from channels
-// ERR_TOOMANYTARGETS (407) - not needed because we don't limit the number of targets
-// ERR_NORECIPIENT (411) - done
-// ERR_NOTEXTTOSEND (412) - done
-// ERR_NOTOPLEVEL (413) - not needed ?
-// ERR_WILDTOPLEVEL (414) - not needed ?
-// RPL_AWAY (301) - do we support away messages ? if not, not needed
 
 void	privmsg(Message &msg, User &usr)
 {
@@ -33,7 +21,6 @@ void	privmsg(Message &msg, User &usr)
 		usr.addOutMessage(Message::fromString(ERR_NOTEXTTOSEND(usr)));
 	else
 	{
-		// if (msg.getTrailing().size() == 0)
 		if (msg.getParams().size() > 1)
 			msg.setTrailing(msg.getParams()[1]);
 		std::string trgt;
@@ -43,7 +30,9 @@ void	privmsg(Message &msg, User &usr)
 		while(std::getline(targets_stream, trgt, ','))
 		{
 			trgt_upper = trgt;
-			std::transform(trgt_upper.begin(), trgt_upper.end(), trgt_upper.begin(), ::toupper);
+			for (std::string::iterator it = trgt_upper.begin(); it != trgt_upper.end(); ++it) {
+                *it = std::toupper(static_cast<unsigned char>(*it));
+            }
 			if (trgt[0] == '#' || trgt[0] == '&')
 			{
 				if (server->channels.find(trgt_upper) != server->channels.end())

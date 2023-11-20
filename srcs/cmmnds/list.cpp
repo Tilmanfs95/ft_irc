@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   list.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 10:02:16 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:00:55 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:39:11 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-// RPL_LISTSTART (321)
-// RPL_LIST (322)
-// RPL_LISTEND (323)
 
 void    list(Message &msg, User &usr)
 {
@@ -36,7 +32,9 @@ void    list(Message &msg, User &usr)
         std::string channel;
         std::string chnnllst = msg.getParams()[0];
         std::string chnnllst_upper = chnnllst;
-        std::transform(chnnllst_upper.begin(), chnnllst_upper.end(), chnnllst_upper.begin(), ::toupper);
+        for (std::string::iterator it = chnnllst_upper.begin(); it != chnnllst_upper.end(); ++it) {
+            *it = std::toupper(static_cast<unsigned char>(*it));
+        }
         std::istringstream iss(chnnllst_upper);
 
         // send RPL_LIST for each channel

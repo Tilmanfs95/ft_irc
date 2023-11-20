@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 11:45:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/11 13:34:28 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:41:02 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-
-// ERR_NEEDMOREPARAMS
-// ERR_NOORIGIN
-
 
 void	ping(Message &msg, User &usr)
 {

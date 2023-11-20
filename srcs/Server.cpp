@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 14:06:27 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:55:51 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
-#include <fcntl.h>
 
-// Server                 *Server::instance = NULL;
 std::string     Server::name;
 int             Server::port;
 std::string     Server::password;
@@ -77,11 +75,12 @@ std::string             Server::getPassword() const
 
 void                    Server::run()
 {
+    signal(SIGPIPE, SIG_IGN);
     struct sockaddr_in      c_address;
     socklen_t               c_addrlen = sizeof(c_address);
     while (running)
     {
-        if (poll(this->fds.data(), this->fds.size(), 1) < 0 && running == true) // ore use another timeout?
+        if (poll(this->fds.data(), this->fds.size(), 0) < 0 && running == true)
             throw std::runtime_error("Polling failed");
         for (size_t i = 0; i < this->fds.size(); i++)
         {   
@@ -94,36 +93,35 @@ void                    Server::run()
             }
             else if (this->fds[i].revents & POLLOUT)
             {   
-                try
+                std::string msg = this->users[this->fds[i].fd].getOutMessage().toString();
+                while (msg != END_OF_MESSAGE && msg != "")
                 {
-                    std::string msg = this->users[this->fds[i].fd].getOutMessage().toString();
-                    while (msg != "")
+                    ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.length() > OUT_BUFFER_SIZE ? OUT_BUFFER_SIZE : msg.length(), 0);
+                    if (sent < 0)
                     {
-						ssize_t sent = send(this->fds[i].fd, msg.c_str(), msg.length() > OUT_BUFFER_SIZE ? OUT_BUFFER_SIZE : msg.length(), 0);
-                        if (sent < 0)
-							std::cout << "\033[1;31mError sending message\033[0m" << std::endl;
-						else if (sent == 0)
-							std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
-                        else
-						{
-                            if (this->users[this->fds[i].fd].getRegistered() == true)
-                                std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
-                            else
-                                std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
-							msg.erase(0, sent);
-						}
+                        std::cout << "\033[1;31mError sending message\033[0m" << std::endl;
+                        removeUser(this->fds[i].fd);
                     }
-                }
-                catch(const std::exception& e)
-                {
-                    // std::cerr << e.what() << '\n';
+                    else if (sent == 0)
+                        std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
+                    else
+                    {
+                        if (this->users[this->fds[i].fd].getRegistered() == true)
+                            std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
+                        else
+                            std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
+                    }
+                    msg.erase(0, sent); 
                 }
             }
-            // else if (this->fds[i].revents & POLLERR)
-            // {
-            //     std::cout << "Error on socket " << this->fds[i].fd << std::endl;
-            //     // what to do here?
-            // }
+            else if (this->fds[i].revents & POLLERR)
+            {
+                std::cout << "Error on socket " << this->fds[i].fd << std::endl;
+                if (this->fds[i].fd == this->socket)
+                    stop();
+                else
+                    removeUser(this->fds[i].fd); 
+            }
         }
     }
     disconnect();
@@ -166,7 +164,9 @@ void                    Server::registerUser(int socket)
 {
     User &usr = this->users[socket];
     std::string nickname_upper = usr.getNickname();
-    std::transform(nickname_upper.begin(), nickname_upper.end(), nickname_upper.begin(), ::toupper);
+    for (std::string::iterator it = nickname_upper.begin(); it != nickname_upper.end(); ++it) {
+        *it = std::toupper(static_cast<unsigned char>(*it));
+    }
     this->nick_to_sock.insert(std::pair<std::string, int>(nickname_upper, socket));
     usr.setRegistered(true);
 	// send welcome messages
@@ -211,7 +211,6 @@ void                    Server::removeUser(int socket)
         std::cout << this->users[socket].getNickname() << " disconnected" << std::endl;
     else
         std::cout << "Socket " << socket << " disconnected" << std::endl;
-    
     // remove user from fds vector
     for (size_t i = 1; i < this->fds.size(); i++)
     {
@@ -227,7 +226,9 @@ void                    Server::removeUser(int socket)
         for (size_t i = 0; i < this->users[socket].channels.size(); i++)
         {
             std::string channel_upper = this->users[socket].channels[i];
-            std::transform(channel_upper.begin(), channel_upper.end(), channel_upper.begin(), ::toupper);
+            for (std::string::iterator it = channel_upper.begin(); it != channel_upper.end(); ++it) {
+                *it = std::toupper(static_cast<unsigned char>(*it));
+            }
             this->channels[channel_upper].removeUser(this->users[socket], "");
             // check if channel is empty
             if (this->channels[channel_upper].users.size() == 0)
@@ -257,15 +258,13 @@ void                    Server::receiveMessage(int socket)
 {
     char buffer[BUFFER_SIZE] = {0};
     ssize_t valread = recv(socket, buffer, BUFFER_SIZE - 1, 0);
-    if (valread < 0)
-    {
-        // how to handle this situation if we could not read from socket?
-        std::cerr << "Error reading from socket" << std::endl;
-    }
+    if (valread < 0) // error
+        removeUser(socket);
     else if (valread == 0) // client disconnected
         removeUser(socket);
     else
     {
+        std::cout << buffer << std::endl;
         User &usr = this->users[socket];
         usr.in_buffer.append(std::string(buffer));
         while (this->users.find(socket) != this->users.end() && usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
@@ -273,7 +272,6 @@ void                    Server::receiveMessage(int socket)
             std::string msg_str = usr.in_buffer.substr(0, usr.in_buffer.find(END_OF_MESSAGE));
             usr.in_buffer.erase(0, usr.in_buffer.find(END_OF_MESSAGE) + strlen(END_OF_MESSAGE));
             Message msg = Message::fromString(msg_str);
-            // msg.print();
             if (usr.getRegistered() == true)
                 std::cout << "\033[0;33mFrom\t" << usr.getNickname() << ":\033[0m\t" << msg_str << std::endl;
             else
@@ -292,7 +290,7 @@ void                    Server::handleMessage(Message &msg, User &usr)
     if (cmmnd == "CAP") // ignore CAP messages
 		return ;
     else if (cmmnd == "QUIT")
-        quit(msg, usr);
+        quit(usr);
 	else if (cmmnd == "PING")
 		ping(msg, usr);
 	else if (usr.getVerified() == false) // only allow PASS command
@@ -330,9 +328,6 @@ void                    Server::handleMessage(Message &msg, User &usr)
             invite(msg, usr);
         else if (msg.getCommand() == "LIST")
             list(msg, usr);
-		// ...
-		// ..
-		// .
 		else
 			usr.addOutMessage(Message::fromString(ERR_UNKNOWNCOMMAND(usr, msg.getCommand())));
 	}
