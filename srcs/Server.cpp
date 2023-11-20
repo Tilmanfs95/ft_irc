@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:52:53 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:55:51 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,6 +264,7 @@ void                    Server::receiveMessage(int socket)
         removeUser(socket);
     else
     {
+        std::cout << buffer << std::endl;
         User &usr = this->users[socket];
         usr.in_buffer.append(std::string(buffer));
         while (this->users.find(socket) != this->users.end() && usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
@@ -289,7 +290,7 @@ void                    Server::handleMessage(Message &msg, User &usr)
     if (cmmnd == "CAP") // ignore CAP messages
 		return ;
     else if (cmmnd == "QUIT")
-        quit(msg, usr);
+        quit(usr);
 	else if (cmmnd == "PING")
 		ping(msg, usr);
 	else if (usr.getVerified() == false) // only allow PASS command

@@ -6,15 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 10:02:16 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:57:48 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:39:11 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-// RPL_LISTSTART (321)
-// RPL_LIST (322)
-// RPL_LISTEND (323)
 
 void    list(Message &msg, User &usr)
 {

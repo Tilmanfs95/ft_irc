@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:45:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 13:14:49 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:56:15 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Message.hpp"
 # include "User.hpp"
 # include "num_replies.hpp"
+# include <string>
 
 // forward declaration
 class User;
@@ -25,7 +26,6 @@ class User;
 void    pass(Message &msg, User &usr);
 void    nick(Message &msg, User &usr);
 void    user(Message &msg, User &usr);
-void	quit(Message &msg, User &usr);
 void	join(Message &msg, User &usr);
 void	ping(Message &msg, User &usr);
 void	privmsg(Message &msg, User &usr);
@@ -37,6 +37,7 @@ void	names(Message &msg, User &usr);
 void	mode(Message &msg, User &usr);
 void    invite(Message &msg, User &usr);
 void    list(Message &msg, User &usr);
+void	quit(User &usr);
 
 #endif
 

@@ -6,17 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 16:11:10 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 21:02:39 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:42:09 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-// ERR_NEEDMOREPARAMS 
-// ERR_NOTONCHANNEL		
-// RPL_NOTOPIC    		           
-// RPL_TOPIC			
-// ERR_CHANOPRIVSNEEDED 
 
 void	topic(Message &msg, User &usr)
 {

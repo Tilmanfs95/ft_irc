@@ -6,26 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 19:03:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:57:15 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:39:01 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-
-// ERR_NEEDMOREPARAMS (461)
-// ERR_NOSUCHCHANNEL (403)
-// ERR_CHANOPRIVSNEEDED (482)
-// ERR_USERNOTINCHANNEL (441)
-// ERR_NOTONCHANNEL (442)
-
-// The KICK command can be used to request the forced removal of a user
-// from a channel.  It causes the <user> to PART from the <channel> by
-// force.  For the message to be syntactically correct, there MUST be
-// either one channel parameter and multiple user parameter, or as many
-// channel parameters as there are user parameters.  If a "comment" is
-// given, this will be sent instead of the default message, the nickname
-// of the user issuing the KICK.
 
 void	kick_user(User &initiator, std::string channel, std::string user, std::string comment)
 {

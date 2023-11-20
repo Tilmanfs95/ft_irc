@@ -6,19 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:51:18 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 21:00:18 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:40:23 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-// ERR_NONICKNAMEGIVEN
-// ERR_ERRONEUSNICKNAME
-// ERR_NICKNAMEINUSE
-// ERR_NICKCOLLISION -- only for multiple servers (not implemented)
-// ERR_UNAVAILRESOURCE -- only if nick is reserved by nick delay mechanism (not implemented)
-// ERR_RESTRICTED -- only if nick is restricted (not implemented)
-
 
 bool    check_nick_chars(std::string nick)
 {
@@ -26,7 +18,7 @@ bool    check_nick_chars(std::string nick)
         return false;
     for (size_t i = 0; i < nick.size(); i++)
     {
-		if (i == 0 && (nick[i] == '#' || nick[i] == '&')) // also check for other channel prefixes that we don't support ??
+		if (i == 0 && (nick[i] == '#' || nick[i] == '&'))
 			return false;
         if (nick[i] == ',' || nick[i] == '*' || nick[i] == '?' || nick[i] == '!' || nick[i] == '@')
             return false;

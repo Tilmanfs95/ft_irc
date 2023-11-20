@@ -6,24 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:18:59 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:56:29 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:38:45 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-// ERR_NEEDMOREPARAMS
-// ERR_BANNEDFROMCHAN -- not needed
-// ERR_INVITEONLYCHAN              
-// ERR_BADCHANNELKEY
-// ERR_CHANNELISFULL               
-// ERR_BADCHANMASK
-// ERR_NOSUCHCHANNEL -- not needed              
-// ERR_TOOMANYCHANNELS -- not needed ?!
-// ERR_TOOMANYTARGETS -- what is this ?!             
-// ERR_UNAVAILRESOURCE -- what is this ?!
-// RPL_TOPIC
-
 
 void	leaveAllChannels(User &usr)
 {

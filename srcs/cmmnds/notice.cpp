@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:48:32 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 21:00:50 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:40:47 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	notice(Message &msg, User &usr)
 		return ;
 	else
 	{
-		// if (msg.getTrailing().size() == 0)
 		if (msg.getParams().size() > 1)
 			msg.setTrailing(msg.getParams()[1]);
 		std::string trgt;

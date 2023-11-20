@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 23:21:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:02:39 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:42:58 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-#include <string>
-
-// ERR_NEEDMOREPARAMS
-// ERR_ALREADYREGISTRED
 
 void    user(Message &msg, User &usr)
 {

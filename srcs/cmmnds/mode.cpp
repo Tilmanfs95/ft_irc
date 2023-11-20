@@ -6,19 +6,11 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:35:40 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:58:41 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:39:24 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/commands.hpp"
-
-// ERR_NEEDMOREPARAMS     
-// ERR_CHANOPRIVSNEEDED		
-// ERR_USERNOTINCHANNEL     
-// ERR_UNKNOWNMODE				
-// RPL_CHANNELMODEIS							             				          
-// ERR_NOSUCHCHANNEL
-// ERR_NOTONCHANNEL
 
 // +i				set channel to invite-only
 // -i				remove invite-only status from channel
