@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:18:07 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 14:59:35 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:14:49 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void    pass(Message &msg, User &usr)
         if (msg.getParams()[0] == server->getPassword())
             usr.setVerified(true);
         else
-            server->removeUser(usr.getSocket(), false);
+            server->removeUser(usr.getSocket());
     }
     else
-        server->removeUser(usr.getSocket(), false);
+        server->removeUser(usr.getSocket());
 }

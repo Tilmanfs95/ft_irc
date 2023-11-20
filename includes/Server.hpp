@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 12:57:48 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:13:31 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ public:
     void                    registerUser(int socket);
     // removes user and closes socket
     // calls the channels removeUser() method for every channel the user is in
-    void                    removeUser(int socket, bool errorActive);
+    void                    removeUser(int socket);
     // reads from socket and starts the handleMessage() for every complete message
     void                    receiveMessage(int socket);
 };

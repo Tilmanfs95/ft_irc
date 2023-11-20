@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:10:41 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/29 15:02:23 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:15:17 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ void	quit(Message &msg, User &usr)
 	//
 	// send quit_msg to other users from same channels ??
 	// ...
-	server->removeUser(usr.getSocket(), false);
+	server->removeUser(usr.getSocket());
 }

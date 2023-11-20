@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 18:57:03 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 20:13:02 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,17 +101,17 @@ void                    Server::run()
                     if (sent < 0)
                     {
                         std::cout << "\033[1;31mError sending message\033[0m" << std::endl;
-                        removeUser(this->fds[i].fd, false);
+                        removeUser(this->fds[i].fd);
                     }
                     else if (sent == 0)
                         std::cout << "\033[1;31mNothing sent\033[0m" << std::endl;
-                    // else
-                    // {
-                    //     if (this->users[this->fds[i].fd].getRegistered() == true)
-                    //         std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
-                    //     else
-                    //         std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
-                    // }
+                    else
+                    {
+                        if (this->users[this->fds[i].fd].getRegistered() == true)
+                            std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
+                        else
+                            std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
+                    }
                     msg.erase(0, sent); 
                 }
             }
@@ -121,7 +121,7 @@ void                    Server::run()
                 if (this->fds[i].fd == this->socket)
                     stop();
                 else
-                    removeUser(this->fds[i].fd, false); 
+                    removeUser(this->fds[i].fd); 
             }
         }
     }
@@ -203,7 +203,7 @@ void                    Server::registerUser(int socket)
     std::cout << "\033[1;32mSocket " << socket << ":\033[0m Registered as " << usr.getNickname() << std::endl;
 }
 
-void                    Server::removeUser(int socket, bool errorActive)
+void                    Server::removeUser(int socket)
 {
     // Print disconnect message | DEBUG
     if (this->users.find(socket) != this->users.end() && this->users[socket].getNickname() != "")
@@ -248,9 +248,7 @@ void                    Server::removeUser(int socket, bool errorActive)
     // remove user from users map
     this->users.erase(socket);
     // close user socket
-    if (!errorActive) {
-        close(socket);
-    }
+    close(socket);
 }
 
 void                    Server::receiveMessage(int socket)
@@ -258,10 +256,9 @@ void                    Server::receiveMessage(int socket)
     char buffer[BUFFER_SIZE] = {0};
     ssize_t valread = recv(socket, buffer, BUFFER_SIZE - 1, 0);
     if (valread < 0) // error
-        removeUser(socket, false);
-        // removeUser(socket, true);
+        removeUser(socket);
     else if (valread == 0) // client disconnected
-        removeUser(socket, false);
+        removeUser(socket);
     else
     {
         User &usr = this->users[socket];
@@ -297,7 +294,7 @@ void                    Server::handleMessage(Message &msg, User &usr)
 		if (cmmnd == "PASS")
 			pass(msg, usr);
 		else
-			removeUser(usr.getSocket(), false);
+			removeUser(usr.getSocket());
 	}
 	else
 	{
