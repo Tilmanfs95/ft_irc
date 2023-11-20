@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 18:40:50 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 14:07:20 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/20 18:12:50 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ Message     User::getOutMessage()
 {
     if (this->out_messages.empty())
         return (Message::fromString(""));
-    //     throw std::runtime_error("No message to send");
     Message msg = this->out_messages.front();
     this->out_messages.pop();
     return msg;
