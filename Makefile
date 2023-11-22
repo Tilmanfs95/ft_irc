@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
+#    By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/10/26 11:02:30 by tfriedri         ###   ########.fr        #
+#    Updated: 2023/11/21 22:24:07 by tilmanfs         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,17 +36,26 @@ SRCS			=	srcs/main.cpp	\
 					srcs/cmmnds/invite.cpp	\
 					srcs/cmmnds/list.cpp	\
 
+BSRCS			=	bonus/main.cpp			\
+					bonus/Bot.cpp			\
+					srcs/Message.cpp		\
+
 OBJS			=	$(SRCS:.cpp=.o)
+
+BOBJS			=	$(BSRCS:.cpp=.o)
 
 $(NAME):			$(OBJS)
 					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
+bot:				$(BOBJS)
+					$(CXX) $(CPPFLAGS) $(BOBJS) -o hackerbot
+
 all:				$(NAME)
 
 clean:
-					rm -rf $(OBJS)
+					rm -rf $(OBJS) $(BOBJS)
 
 fclean:				clean
-					rm -f $(NAME)
+					rm -f $(NAME) hackerbot
 
 re:					fclean all

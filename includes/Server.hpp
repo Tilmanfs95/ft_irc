@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 02:15:27 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 20:39:32 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/21 20:40:21 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ class Channel;
 class Server
 {
 private:
+    // singleton instance
+    static Server                   *instance;
 	// private constructor & destructor for singleton
     Server();
     ~Server();
@@ -55,12 +57,10 @@ private:
     void                    disconnect();
     // handles a message from a user
     void                    handleMessage(Message &msg, User &usr);
-    
 public:
-    // singleton
-    static Server                   *instance;
+
     static void                     setup(const char* name, const char* port, const char* password);
-    static Server&                  getInstance();
+    static Server                   &getInstance();
     // A map that contains all users that are connected to the server
     // <socket, User>
     std::map<int, User>             users;

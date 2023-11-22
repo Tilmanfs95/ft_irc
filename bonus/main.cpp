@@ -5,25 +5,26 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/29 15:35:17 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/21 19:20:08 by tilmanfs         ###   ########.fr       */
+/*   Created: 2023/11/21 19:19:16 by tilmanfs          #+#    #+#             */
+/*   Updated: 2023/11/21 20:38:02 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "Bot.hpp"
 
 void signalHandler(int) {
-    Server::getInstance().stop();
+    Bot::getInstance().stop();
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
     signal(SIGINT, signalHandler);
     try
     {
-        if (argc != 3)
-            throw std::runtime_error("Usage: " + std::string(argv[0]) + " <port> <password>");
-        Server::setup(SERVER_NAME, argv[1], argv[2]);
-        Server::getInstance().run();
+        if (argc != 4)
+            throw std::runtime_error("Usage: " + std::string(argv[0]) + " <server> <port> <password>");
+        Bot::setup(argv[1], argv[2], argv[3]);
+        Bot::getInstance().run();
     }
     catch(const std::exception& e)
     {

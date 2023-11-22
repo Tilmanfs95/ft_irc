@@ -23,7 +23,7 @@
 
 ## TODO:
     - [ ] check if the signal handler is complete (only SIGINT is handled)
-    - [ ] check if poll() is used correctly (especially the timeout !) (I changed it to 0 !) 
+    - [ ] POLL timeout 0 , 1 oder -1 ??????
     - [ ] check all used libraries for c++ alternatives (e.g. <unistd.h> in main.cpp...)
     - [ ] implement ALL THE STUFF FROM THE SUBJECT
     - [ ] Bonus ?

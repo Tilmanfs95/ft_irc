@@ -6,15 +6,16 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 23:55:51 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/21 22:25:57 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 
-std::string     Server::name;
-int             Server::port;
-std::string     Server::password;
+Server          *Server::instance   = NULL;
+std::string     Server::name        = "";
+int             Server::port        = 0;
+std::string     Server::password    = "";
 
 Server::Server()
 {
@@ -49,6 +50,7 @@ Server::Server()
     // Flag server as running
     this->running = true;
     std::cout << "\033[1;32mServer " << this->name << " created on port " << this->port << "\033[0m" << std::endl;
+    Server::instance = this;
 }
 
 Server::~Server()
