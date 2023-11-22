@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 16:18:52 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:31:27 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ void    Bot::run()
             char buffer[1024] = {0};
             if (recv(socket, buffer, 1024, 0) < 0)
                 throw std::runtime_error("Failed to receive message");
-            // std::cout << "\033[0;32mReceived:\033[0m\t" << buffer;
             in_buffer += buffer;
         }
         if (fds[0].revents & POLLOUT)
@@ -191,12 +190,12 @@ void    Bot::work()
                 if (cmmnd == "JOIN")
                 {
                     std::string channel = msg.getParams()[0];
-                    // std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
                     if (channel == victim)
                     {
-                        out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing and joining the channel " + victim + ". The password is: " + word + ". If you want I can flood the channel now."));
-                        // leave channel
-                        // out_messages.push(Message::fromString("PART " + victim));
+                        if (!word.empty())
+                            out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing and joining the channel " + victim + ". The password is: " + word + ". If you want I can flood the channel now."));
+                        else
+                            out_messages.push(Message::fromString("PRIVMSG " + customer + " :Hahaha that was easy, the channel " + victim + " has no password. If you want I can flood the channel now."));
                         bruteforcing = false;
                         waiting_for_response = false;
                         wordlist.close();
@@ -265,8 +264,11 @@ void    Bot::work()
                         out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on the brute forcing. Don't mind me, just a simple hackerbot doing my thing. I'll let you know when I'm done, but don't bother me until then, I've got work to do. See you in a bit, or not, depending on how long it takes me to take over the world."));
                         wordlist.open("bonus/wordlist.txt");
                         bruteforcing = true;
+                        waiting_for_response = true;
                         customer = sender;
                         victim = channel;
+                        word = "";
+                        out_messages.push(Message::fromString("JOIN " + victim));
                     }
                 }
                 // check for flood command
