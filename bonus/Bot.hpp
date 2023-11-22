@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:24:29 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 04:32:33 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 13:08:28 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ class Bot
     std::string                     in_buffer;
     //
     void                            sendMsg(Message msg);
-    void                            floodChannel();
+    // void                            floodChannel();
+    std::string                     generateRandomMessage();
     void                            processMessages();
   public:
     static void setup(const char* server, const char* port, const char* password);

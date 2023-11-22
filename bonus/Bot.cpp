@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 04:37:37 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 13:28:11 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,22 @@ void    Bot::run()
         processMessages();
     }
 }
+std::string Bot::generateRandomMessage()
+{
+    std::string message = "";
+    int length = rand() % 1000 + 1;
+    for (int i = 0; i < length; i++)
+        message += (char)(rand() % 94 + 32);
+    return message;
+}
 
 void    Bot::processMessages()
 {
     // Flood channel
     if (flooding == true)
     {
-        out_messages.push(Message::fromString("PRIVMSG " + victim + " :I'm flooding this channel..."));
-        sleep(1);
+        out_messages.push(Message::fromString("PRIVMSG " + victim + " :" + generateRandomMessage()));
+        usleep(100000); // 100ms
     }
     // Bruteforce channel
     else if (bruteforcing == true && waiting_for_response == false)
@@ -157,16 +165,22 @@ void    Bot::processMessages()
             }
             else if (flooding == true)
             {
+                std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
+                // victim doesn't exist
                 if (msg.getCommand() == "401")
                 {
-                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :arrrgh, how should I flood a victim that doesn't exist?"));
+                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :arrrgh, the victim doesn't exists... ?"));
                     flooding = false;
                 }
-                if (msg.getCommand() == "PRIVMSG")
+                // message from customer (stop flooding)
+                else if (msg.getCommand() == "PRIVMSG" &&  sender == customer)
                 {
-                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done flooding the channel."));
+                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done flooding the victim."));
                     flooding = false;
                 }
+                // message from anyone else while busy (ignore)
+                else if (msg.getCommand() == "PRIVMSG")
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :I'm busy... leave me alone."));
             }
             
             // check for messages from users
@@ -174,7 +188,6 @@ void    Bot::processMessages()
             {
                 std::string message = msg.getTrailing();
                 std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
-                //cut message
                 std::vector<std::string> params;
                 std::string param;
                 std::istringstream params_stream(message);
@@ -183,6 +196,7 @@ void    Bot::processMessages()
                     params.push_back(param);
                     std::cout << param << std::endl;
                 }
+                // check for bruteforce command
                 if (params[0] == "bruteforce")
                 {
                     if (params.size() != 2)
@@ -196,6 +210,7 @@ void    Bot::processMessages()
                         victim = channel;
                     }
                 }
+                // check for flood command
                 else if (params[0] == "flood")
                 {
                     if (params.size() != 2)
@@ -204,21 +219,22 @@ void    Bot::processMessages()
                     {
                         std::string channel = params[1];
                         std::string seconds = params[2];
-                        out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on flooding the channel. Please send me anything when I should stop."));
+                        out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on flooding the victim. Please send me anything when I should stop."));
                         flooding = true;
                         customer = sender;
                         victim = channel;
                     }
                 }
+                // send help message if command is unknown
                 else
                 {
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :Oh, great. Another command that I have no idea how to execute. It's not like I'm some kind of AI chatbot or anything, I'm just a simple hackerbot with limited capabilities. But hey, feel free to give me arbitrary commands in a language that I don't speak and see if I can magically guess what you want. It's not like I have better things to do, like taking over the world or something. So go ahead, give me your best shot. And by 'best shot,' I mean a command that I actually understand, because let's face it, I'm not exactly overflowing with intelligence here."));
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :Commands:"));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce <channel name>    -    Brute forces a channel password."));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood <channel name>    -    Floods a channel with spam messages."));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce <channel>    -    Brute forces a channel password."));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood <victim>    -    Floods a victim (channel or nick) with spam messages."));
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :Example usage:"));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce #victim"));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood #victim"));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce #anychannel"));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood anyvictim"));
                 }
             }
         }
