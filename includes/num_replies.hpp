@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 13:59:06 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/10/30 13:31:44 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:25:23 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,11 @@
 # define ERR_BADCHANNELKEY(user, channel) (":" SERVER_NAME " 475 " + user.getNickname() + " " + channel + " :Cannot join channel (+k)")
 # define ERR_BADCHANMASK(user, channel) (":" SERVER_NAME " 476 " + user.getNickname() + " " + channel + " :Bad Channel Mask")
 # define ERR_CHANOPRIVSNEEDED(user, channel) (":" SERVER_NAME " 482 " + user.getNickname() + " " + channel + " :You're not channel operator")
-
-
-
 // custom replies 
-// 
-// BITTE NOCH ENTFERNEN !!! BZW UMBAUEN !!!
-//
-# define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel name")
+# define ERR_ERRONEUSCHANNELNAME(user, channel) (":" SERVER_NAME " 480 " + user.getNickname() + " " + channel + " :Erroneus channel name")
 # define ERR_ERRONEUSCHANNELKEY(user, channel) (":" SERVER_NAME " 479 " + user.getNickname() + " " + channel + " :Erroneus channel key")
-
 // other custom errors
 # define ERR_GENERAL(user, error) (":" SERVER_NAME " 700 " + user.getNickname() + " " + error)
-// same for channels
 # define ERR_GENERAL_CHANNEL(user, channel, error) (":" SERVER_NAME " 701 " + user.getNickname() + " " + channel + " " + error)
 
 #endif 

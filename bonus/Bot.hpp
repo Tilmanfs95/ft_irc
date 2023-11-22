@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:24:29 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 13:08:28 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:05:46 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "../includes/Message.hpp"
 #include "../includes/defines.hpp"
 #include <iostream>
+#include <fstream>
 #include <stdexcept>
 #include <cstring>
 #include <netinet/in.h>
@@ -33,6 +34,7 @@ class Bot
     static std::string              server;
     static int                      port;
     static std::string              password;
+    static std::string              nick;
     int                             socket;
     struct sockaddr_in              server_address;
     struct pollfd                   fds[1];
@@ -41,6 +43,8 @@ class Bot
     bool                            sent_register;
     //
     bool                            bruteforcing;
+    std::ifstream                   wordlist;
+    std::string                     word;
     bool                            waiting_for_response;
     bool                            flooding;
     std::string                     customer;
@@ -50,11 +54,11 @@ class Bot
     std::string                     in_buffer;
     //
     void                            sendMsg(Message msg);
-    // void                            floodChannel();
+    void                            runAttacks();
     std::string                     generateRandomMessage();
-    void                            processMessages();
+    void                            work();
   public:
-    static void setup(const char* server, const char* port, const char* password);
+    static void setup(const char* server, const char* port, const char* password, const char* nickname);
     static Bot  &getInstance();
     void        run();
     void        stop();

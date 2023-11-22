@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:00:49 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/20 23:41:12 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:13:55 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,13 @@ void	privmsg(Message &msg, User &usr)
 			if (trgt[0] == '#' || trgt[0] == '&')
 			{
 				if (server->channels.find(trgt_upper) != server->channels.end())
+				{
+					// check if user is in channel
+					if (std::find(server->channels[trgt_upper].users.begin(), server->channels[trgt_upper].users.end(), usr.getNickname()) == server->channels[trgt_upper].users.end())
+						usr.addOutMessage(Message::fromString(ERR_NOTONCHANNEL(usr, trgt)));
+					else
 					server->channels[trgt_upper].sendMessage(Message::fromString(":" + usr.getUserIdent() + " PRIVMSG " + trgt + " :" + msg.getTrailing()), usr.getNickname());
+				}
 				else
 					usr.addOutMessage(Message::fromString(ERR_NOSUCHNICK(usr, trgt)));
 			}

@@ -26,5 +26,5 @@
     - [ ] POLL timeout 0 , 1 oder -1 ??????
     - [ ] check all used libraries for c++ alternatives (e.g. <unistd.h> in main.cpp...)
     - [ ] implement ALL THE STUFF FROM THE SUBJECT
-    - [ ] Bonus ?
+    - [ ] Check if bot is running good!
 	- [ ] forbid to send messages to channels if not in it ? (most irc-servers allow it?!)

