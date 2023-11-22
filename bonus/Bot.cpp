@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 03:16:47 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 04:37:37 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,19 @@ void    Bot::run()
 
 void    Bot::processMessages()
 {
-    while (in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer
+    // Flood channel
+    if (flooding == true)
+    {
+        out_messages.push(Message::fromString("PRIVMSG " + victim + " :I'm flooding this channel..."));
+        sleep(1);
+    }
+    // Bruteforce channel
+    else if (bruteforcing == true && waiting_for_response == false)
+    {
+        out_messages.push(Message::fromString("JOIN " + victim)); // ADD PASSWORDS HERE !!!!
+        waiting_for_response = true;
+    }
+    while (in_buffer.find(END_OF_MESSAGE) != std::string::npos)
     {
         std::string msg_str = in_buffer.substr(0, in_buffer.find(END_OF_MESSAGE));
         in_buffer.erase(0, in_buffer.find(END_OF_MESSAGE) + strlen(END_OF_MESSAGE)); // IMMER ???
@@ -126,27 +138,35 @@ void    Bot::processMessages()
         
         if (registered == true)
         {
-
-            // wait for joining users
-            // if (msg.getCommand() == "JOIN")
-            // {
-            //     std::string channel = msg.getParams()[0];
-            //     std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
-            //     std::cout << "\033[0;32mReceived:\033[0m\t" << sender << " " << channel << std::endl;
-            //     if (channel == "#hackerchannel")
-            //     {
-            //         out_messages.push(Message::fromString("PRIVMSG " + sender + " :Hello " + sender));
-            //     }
-            // }
             if (bruteforcing == true)
             {
                 if (msg.getCommand() == "PRIVMSG")
                     out_messages.push(Message::fromString("PRIVMSG " + msg.getPrefix().substr(0, msg.getPrefix().find("!")) + " :Busy taking over the world. Brb."));
+                if (msg.getCommand() == "JOIN")
+                {
+                    std::string channel = msg.getParams()[0];
+                    // std::string sender = msg.getPrefix().substr(0, msg.getPrefix().find("!"));
+                    if (channel == victim)
+                    {
+                        out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing the channel."));
+                        // leave channel
+                        out_messages.push(Message::fromString("PART " + victim));
+                        bruteforcing = false;
+                    }
+                }
             }
             else if (flooding == true)
             {
+                if (msg.getCommand() == "401")
+                {
+                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :arrrgh, how should I flood a victim that doesn't exist?"));
+                    flooding = false;
+                }
                 if (msg.getCommand() == "PRIVMSG")
-                    out_messages.push(Message::fromString("PRIVMSG " + msg.getPrefix().substr(0, msg.getPrefix().find("!")) + " :Busy taking over the world. Brb."));
+                {
+                    out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done flooding the channel."));
+                    flooding = false;
+                }
             }
             
             // check for messages from users
@@ -171,32 +191,34 @@ void    Bot::processMessages()
                     {
                         std::string channel = params[1];
                         out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on the brute forcing. Don't mind me, just a simple hackerbot doing my thing. I'll let you know when I'm done, but don't bother me until then, I've got work to do. See you in a bit, or not, depending on how long it takes me to take over the world."));
-                        // out_messages.push(Message::fromString("PRIVMSG " + sender + " :Bruteforcing " + channel));
                         bruteforcing = true;
+                        customer = sender;
+                        victim = channel;
                     }
                 }
                 else if (params[0] == "flood")
                 {
-                    if (params.size() != 3)
+                    if (params.size() != 2)
                         out_messages.push(Message::fromString("PRIVMSG " + sender + " :Invalid number of parameters"));
                     else
                     {
                         std::string channel = params[1];
                         std::string seconds = params[2];
-                        out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on flooding the channel. Don't mind me, just a simple hackerbot doing my thing. I'll let you know when I'm done, but don't bother me until then, I've got work to do. See you in a bit."));
-                        // out_messages.push(Message::fromString("PRIVMSG " + sender + " :Flooding " + channel + " for " + seconds + " seconds"));
+                        out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on flooding the channel. Please send me anything when I should stop."));
                         flooding = true;
+                        customer = sender;
+                        victim = channel;
                     }
                 }
                 else
                 {
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :Oh, great. Another command that I have no idea how to execute. It's not like I'm some kind of AI chatbot or anything, I'm just a simple hackerbot with limited capabilities. But hey, feel free to give me arbitrary commands in a language that I don't speak and see if I can magically guess what you want. It's not like I have better things to do, like taking over the world or something. So go ahead, give me your best shot. And by 'best shot,' I mean a command that I actually understand, because let's face it, I'm not exactly overflowing with intelligence here."));
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :Commands:"));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce <channel name>    -    Brute forces a channel with a random password."));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood <channel name> <seconds>    -    Floods a channel for the given time with spam messages."));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce <channel name>    -    Brute forces a channel password."));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood <channel name>    -    Floods a channel with spam messages."));
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :Example usage:"));
                     out_messages.push(Message::fromString("PRIVMSG " + sender + " :    bruteforce #victim"));
-                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood #victim 10"));
+                    out_messages.push(Message::fromString("PRIVMSG " + sender + " :    flood #victim"));
                 }
             }
         }

@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:24:29 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 03:06:31 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 04:32:33 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,16 @@ class Bot
     bool                            sent_register;
     //
     bool                            bruteforcing;
+    bool                            waiting_for_response;
     bool                            flooding;
     std::string                     customer;
     std::string                     victim;
     //
     std::queue<Message>             out_messages;
     std::string                     in_buffer;
-    
+    //
     void                            sendMsg(Message msg);
+    void                            floodChannel();
     void                            processMessages();
   public:
     static void setup(const char* server, const char* port, const char* password);
