@@ -6,7 +6,7 @@
 /*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 16:31:27 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/22 18:40:06 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,9 @@ void    Bot::work()
                         customer = sender;
                         victim = channel;
                         word = "";
+                        // leave channel before bruteforcing (if already in channel)
+                        out_messages.push(Message::fromString("PART " + victim));
+                        // try to join channel with empty password
                         out_messages.push(Message::fromString("JOIN " + victim));
                     }
                 }
