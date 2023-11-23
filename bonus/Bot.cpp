@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Bot.cpp                                            :+:      :+:    :+:   */
+/*   bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/23 15:23:20 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/23 23:17:12 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ Bot::Bot()
     bruteforcing = false;
     waiting_for_response = false;
     flooding = false;
+    tries = 0;
     // initialize the singleton instance
     Bot::instance = this;
 	std::cout << "Bot created" << std::endl;
@@ -151,6 +152,7 @@ void   Bot::runAttacks()
                 if (!word.empty())
                 {
                     waiting_for_response = true;
+                    tries++;
                     out_messages.push(Message::fromString("JOIN " + victim + " " + word));
                 }
             }
@@ -179,15 +181,17 @@ void	Bot::checkMessages(Message &msg)
 			std::string channel = msg.getParams()[0];
 			if (channel == victim)
 			{
+                std::stringstream triesstr;
+                triesstr << tries;
 				if (!word.empty())
-					out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing and joining the channel " + victim + ". The password is: " + word + ". If you want I can flood the channel now."));
+					out_messages.push(Message::fromString("PRIVMSG " + customer + " :I'm done brute forcing and joining the channel " + victim + " with " + triesstr.str() + " tries. The password is: " + word + ". If you want I can flood the channel now."));
 				else
 					out_messages.push(Message::fromString("PRIVMSG " + customer + " :Hahaha that was easy, the channel " + victim + " has no password. If you want I can flood the channel now."));
 				bruteforcing = false;
 				waiting_for_response = false;
 				wordlist.close();
-				std::cout << "Succesfully brute forced " << victim << ". The password is " << word << std::endl;
-			}
+				std::cout << "Succesfully brute forced " << victim << " (" << tries << " tries). The password is " << word << std::endl;
+            }
 		}
 		// check for wrong key response
 		else if (cmmnd == "475" || cmmnd == "479")
@@ -257,6 +261,7 @@ void	Bot::checkMessages(Message &msg)
 				customer = sender;
 				victim = channel;
 				word = "";
+                tries = 0;
 				// leave channel before bruteforcing (if already in channel)
 				out_messages.push(Message::fromString("PART " + victim));
 				// try to join channel with empty password

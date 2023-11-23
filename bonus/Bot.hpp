@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Bot.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:24:29 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/23 14:42:56 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/23 22:54:59 by tilmanfs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Bot
     bool                            bruteforcing;
     std::ifstream                   wordlist;
     std::string                     word;
+    long unsigned int               tries;
     bool                            waiting_for_response;
     bool                            flooding;
     std::string                     customer;
