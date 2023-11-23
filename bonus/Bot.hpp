@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Bot.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:24:29 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/22 16:05:46 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/23 13:38:21 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ class Bot
     //
     void                            sendMsg(Message msg);
     void                            runAttacks();
-    std::string                     generateRandomMessage();
+	std::string                     generateRandomMessage();
+	void							checkMessages(Message &msg);
     void                            work();
   public:
     static void setup(const char* server, const char* port, const char* password, const char* nickname);

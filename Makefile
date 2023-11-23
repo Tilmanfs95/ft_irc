@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+         #
+#    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/11/21 22:24:07 by tilmanfs         ###   ########.fr        #
+#    Updated: 2023/11/23 12:50:13 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ BOBJS			=	$(BSRCS:.cpp=.o)
 $(NAME):			$(OBJS)
 					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
-bot:				$(BOBJS)
+bonus:				$(BOBJS)
 					$(CXX) $(CPPFLAGS) $(BOBJS) -o hackerbot
 
 all:				$(NAME)
