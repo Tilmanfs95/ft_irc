@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tilmanfs <tilmanfs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 12:39:09 by tfriedri          #+#    #+#             */
-/*   Updated: 2023/11/21 22:25:57 by tilmanfs         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:08:33 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,9 @@ void                    Server::run()
                     else
                     {
                         if (this->users[this->fds[i].fd].getRegistered() == true)
-                            std::cout << "\033[0;33mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
+                            std::cout << "\033[0;32mTo\t" << this->users[this->fds[i].fd].getNickname() << ":\033[0m\t" << msg.substr(0, sent);
                         else
-                            std::cout << "\033[0;33mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
+                            std::cout << "\033[0;32mTo\tsocket " << this->fds[i].fd << ":\033[0m\t" << msg.substr(0, sent);
                     }
                     msg.erase(0, sent); 
                 }
@@ -266,7 +266,7 @@ void                    Server::receiveMessage(int socket)
         removeUser(socket);
     else
     {
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         User &usr = this->users[socket];
         usr.in_buffer.append(std::string(buffer));
         while (this->users.find(socket) != this->users.end() && usr.in_buffer.find(END_OF_MESSAGE) != std::string::npos) // while there are full messages in buffer

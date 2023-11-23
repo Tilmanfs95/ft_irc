@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:24:29 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/23 13:38:21 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/23 14:42:56 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <cstring>
+#include <signal.h>
 #include <netinet/in.h>
 #include <poll.h>
 #include <queue>

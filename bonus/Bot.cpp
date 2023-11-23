@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:32:00 by tilmanfs          #+#    #+#             */
-/*   Updated: 2023/11/23 13:38:49 by tfriedri         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:23:20 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ Bot::~Bot()
     // close socket
     close(socket);
     // close wordlist if open
-    if (wordlist.is_open())
-        wordlist.close();
+    if (wordlist.is_open()){
+    	wordlist.close();
+	}
 	std::cout << "Bot destroyed" << std::endl;
 }
 
@@ -93,7 +94,7 @@ void    Bot::run()
         if (fds[0].revents & POLLIN)
         {
             char buffer[1024] = {0};
-            if (recv(socket, buffer, 1024, 0) < 0)
+            if (recv(socket, buffer, 1023, 0) < 0)
                 throw std::runtime_error("Failed to receive message");
             in_buffer += buffer;
         }
@@ -185,7 +186,7 @@ void	Bot::checkMessages(Message &msg)
 				bruteforcing = false;
 				waiting_for_response = false;
 				wordlist.close();
-				std::cout << "Succefully brute forced " << victim << ". The password is " << password << std::endl;
+				std::cout << "Succesfully brute forced " << victim << ". The password is " << word << std::endl;
 			}
 		}
 		// check for wrong key response
@@ -271,7 +272,6 @@ void	Bot::checkMessages(Message &msg)
 			else
 			{
 				std::string channel = params[1];
-				std::string seconds = params[2];
 				out_messages.push(Message::fromString("PRIVMSG " + sender + " :Alright, got it. I'll get started on flooding the victim. Please send me anything when I should stop."));
 				flooding = true;
 				customer = sender;

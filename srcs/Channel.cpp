@@ -26,7 +26,7 @@ Channel::Channel(std::string name, std::string key): name(name), key(key)
 
 Channel::~Channel()
 {
-	std::cout << "Channel " << this->name << " closed" << std::endl;
+	// std::cout << "Channel " << this->name << " closed" << std::endl;
 }
 
 
