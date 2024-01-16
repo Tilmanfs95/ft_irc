@@ -6,12 +6,14 @@
 #    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/21 11:14:30 by tilmanfs          #+#    #+#              #
-#    Updated: 2023/11/23 12:50:13 by tfriedri         ###   ########.fr        #
+#    Updated: 2024/01/16 17:56:30 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME			=	ircserv
+
+BOTNAME			=	hackerbot
 
 CPPFLAGS		=	-Wall -Werror -Wextra -std=c++98 -g
 
@@ -47,15 +49,17 @@ BOBJS			=	$(BSRCS:.cpp=.o)
 $(NAME):			$(OBJS)
 					$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
-bonus:				$(BOBJS)
-					$(CXX) $(CPPFLAGS) $(BOBJS) -o hackerbot
+$(BOTNAME):			$(BOBJS)
+					$(CXX) $(CPPFLAGS) $(BOBJS) -o $(BOTNAME)
 
 all:				$(NAME)
+
+bonus:				$(BOTNAME)
 
 clean:
 					rm -rf $(OBJS) $(BOBJS)
 
 fclean:				clean
-					rm -f $(NAME) hackerbot
+					rm -f $(NAME) $(BOTNAME)
 
 re:					fclean all
