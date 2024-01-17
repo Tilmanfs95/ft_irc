@@ -12,7 +12,7 @@ It’s always a good thing to know.
 
 Version: 8
 
-![Static Badge](https://img.shields.io/badge/SUCCESS-125-darkgreen?style=for-the-badge&logo=42)
+![Static Badge](https://img.shields.io/badge/SUCCESS-125%25-darkgreen?style=for-the-badge&logo=42)
 
 ## helpful links:
 
